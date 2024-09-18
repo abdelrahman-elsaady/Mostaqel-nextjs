@@ -26,16 +26,16 @@ export default function Footer() {
                   <ReusLink href="/" text="عن مستقل" />
                 </li>
                 <li>
-                  <ReusLink href="/faq" text="الأسئلة الشائعة" />
+                  <ReusLink href="/" text="الأسئلة الشائعة" />
                 </li>
                 <li>
-                  <ReusLink href="/guarantee" text="ضمان حقوق" />
+                  <ReusLink href="/" text="ضمان حقوق" />
                 </li>
                 <li>
-                  <ReusLink href="/terms" text="شروط الاستخدام" />
+                  <ReusLink href="/" text="شروط الاستخدام" />
                 </li>
                 <li>
-                  <ReusLink href="/privacy" text="بيان الخصوصية" />
+                  <ReusLink href="/" text="بيان الخصوصية" />
                 </li>
               </ul>
             </div>
@@ -44,40 +44,40 @@ export default function Footer() {
               <h5>مشاريع</h5>
               <ul className="list-unstyled">
                 <li>
-                  <ReusLink href="/projects/business" text="مشاريع أعمال" />
+                  <ReusLink href="/" text="مشاريع أعمال" />
                 </li>
                 <li>
-                  <ReusLink href="/projects/programming" text="مشاريع برمجة" />
+                  <ReusLink href="/" text="مشاريع برمجة" />
                 </li>
                 <li>
                   <ReusLink
-                    href="/projects/engineering"
+                    href="/"
                     text="مشاريع هندسة وعمار"
                   />
                 </li>
                 <li>
-                  <ReusLink href="/projects/design" text="مشاريع تصميم" />
+                  <ReusLink href="/" text="مشاريع تصميم" />
                 </li>
                 <li>
-                  <ReusLink href="/projects/marketing" text="مشاريع تسويق" />
+                  <ReusLink href="/" text="مشاريع تسويق" />
                 </li>
                 <li>
                   <ReusLink
-                    href="/projects/writing-translation"
+                    href="/"
                     text="مشاريع كتابة وترجمة"
                   />
                 </li>
                 <li>
                   <ReusLink
-                    href="/projects/support"
+                    href="/"
                     text="مشاريع دعم ومساعدة"
                   />
                 </li>
                 <li>
-                  <ReusLink href="/projects/training" text="مشاريع تدريب" />
+                  <ReusLink href="/" text="مشاريع تدريب" />
                 </li>
                 <li>
-                  <ReusLink href="/categories" text="التصنيفات" />
+                  <ReusLink href="/" text="التصنيفات" />
                 </li>
               </ul>
             </div>
@@ -88,19 +88,19 @@ export default function Footer() {
                   <h5>روابط</h5>
                   <ul className="list-unstyled">
                     <li>
-                      <ReusLink href="/companies" text="مستقل للمؤسسات" />
+                      <ReusLink href="/" text="مستقل للمؤسسات" />
                     </li>
                     <li>
-                      <ReusLink href="/jobs" text="إبحث عن عمل" />
+                      <ReusLink href="/" text="إبحث عن عمل" />
                     </li>
                     <li>
-                      <ReusLink href="/portfolio" text="معرض الأعمال" />
+                      <ReusLink href="/" text="معرض الأعمال" />
                     </li>
                     <li>
-                      <ReusLink href="/blog" text="مدونة مستقل" />
+                      <ReusLink href="/" text="مدونة مستقل" />
                     </li>
                     <li>
-                      <ReusLink href="/help" text="مركز المساعدة" />
+                      <ReusLink href="/" text="مركز المساعدة" />
                     </li>
                   </ul>
                 </div>

@@ -38,7 +38,7 @@ export default function Navbar() {
               <li className="log-btn m-2 ">
                 <Link
                   className=" nav-link text-white border border-white d-flex p-2"
-                  href="#"
+                  href=""
                 >
                   دخول
                   <FaSignInAlt className="ml-2 mt-1" />
