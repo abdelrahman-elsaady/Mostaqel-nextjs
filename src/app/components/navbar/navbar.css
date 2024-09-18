@@ -1,0 +1,19 @@
+
+.nav-item:hover{
+    /* margin-top: 50px; */
+    background-color: #5db1e9;
+    
+    margin: 0;
+}
+
+.nav-item{
+    padding: 10px;
+}
+.log-btn:hover{
+    background-color: #5db1e9;
+
+}
+.logo{
+    max-height: 36px;
+
+}
