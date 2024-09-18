@@ -17,3 +17,16 @@
     max-height: 36px;
 
 }
+.navvvvv{
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+    
+      
+}
+body {
+    padding-top: 65px; 
+  }

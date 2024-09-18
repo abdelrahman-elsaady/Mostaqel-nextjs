@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <>
 
-      <div className="container-fluid">
+      <div className="container-fluid ">
         {/* <div className="d-flex">
         <h1 className="col-5">fsds</h1>
         <h1 className="col">fsds</h1>
@@ -21,7 +21,7 @@ export default function Navbar() {
         <h1 className="col">fsds</h1>
         </div>  */}
 
-        <div className=" navbar-expand-lg   bg-primary row">
+        <div className=" navvvvv g-0 navbar-expand-lg   bg-primary row">
 
           <div className="col-6   ">
             <ul className="navbar-nav mr-auto  ">

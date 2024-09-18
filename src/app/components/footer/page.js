@@ -14,6 +14,7 @@ export default function Footer() {
 
   return (
     <>
+    
       <footer className="container-fluid bg-light pt-4 " dir="rtl">
         <div className="container-fluid">
           <div className="row">

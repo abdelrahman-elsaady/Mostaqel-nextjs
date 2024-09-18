@@ -26,7 +26,8 @@ export default function Home() {
  
   return (
     <>
-      <div className="container-fluid" dir="rtl">
+<div className="container-fluid">
+      <div className=" " dir="rtl">
         {/* الديفاييه الاولى */}
         <div className="row">
           <div className=" col-12 g-0 vh-100 first-div d-flex align-items-center justify-content-center ">
@@ -43,7 +44,7 @@ export default function Home() {
                     placeholder=" ادخل عنوان المشروع الذي تريد تنفيذه..  "
                     required
                   />
-                  <button className="  btn btn-primary mt-3 position-absolute end-5 ">
+                  <button className=" gamal  btn btn-primary mt-3 position-absolute end-5 ">
                     {" "}
                     ابدأ مشروعك الان
                   </button>
@@ -287,12 +288,14 @@ export default function Home() {
 
             {/* الديفاااية السابعةةةةةةة */}
             
-            <div>
+            <div className="" dir="rtl">
             <Accordion/>
             </div>
 
  
 
+
+      </div>
 
       </div>
     </>
