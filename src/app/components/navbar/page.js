@@ -60,10 +60,12 @@ export default function Navbar() {
                 </Link>
               </li>
               <li className="pt-2">
+              <Link  href="/"  >
                 <img
                   className={`logo max-height ${styles.logo}`}
                   src="https://mostaql.hsoubcdn.com/public/assets/images/custom/mostaql-logo-white.svg?id=dc639dfc13cb096309795e9d84ddd15c"
                 ></img>
+                </Link>
               </li>
 
               <li className=" ">

@@ -16,9 +16,9 @@ const AddProject = () => {
   {/* start */}
         <div>
             <nav className="navbar navbar-light ">
-              <a className="navbar-brand pe-3 fs-3" href="#">
+              <h3 className="navbar-brand pe-3 fs-3" href="#">
                 اضافة مشروع
-              </a>
+              </h3>
   
               <div
                 className="d-flex justify-content-between align-items-center "
@@ -31,7 +31,7 @@ const AddProject = () => {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                     <i class="bi bi-question-circle-fill ps-2" ></i>
+                     <i className="bi bi-question-circle-fill ps-2" ></i>
   
                     كيف تضيف مشروع
                   </button>
