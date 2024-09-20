@@ -6,23 +6,34 @@ import { FaCcVisa, FaCcPaypal, FaCcMastercard } from "react-icons/fa";
 
 import ReusLink from "../reusableComponents/FooterLinks";
 import MostaqlWebSites from "../reusableComponents/footerWebSites";
-import "./footer.css";
+import styles from "./footer.module.css";
 import Image from "next/image";
 //  import Span from "./../reusable/FooterSpan";
 export default function Footer() {
-  // console.log(Span);
 
   return (
     <>
-    
-      <footer className="container-fluid bg-light pt-4 " dir="rtl">
+      <footer className={`container-fluid bg-light pt-4 ${styles.foooter}`} dir="rtl">
+      {/* <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Enable both scrolling & backdrop</button>
+
+<div  class="offcanvas offcanvas-end w-25 " data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+  <div class="offcanvas-header ">
+    <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Backdroped with scrolling</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  
+  <div class="offcanvas-body">
+    <p>Try scrolling the rest of the page to see this option in action.</p>
+  </div>
+</div> */}
+
         <div className="container-fluid">
           <div className="row">
-
             <div className="col-md-3 col-sm-6 mb-3">
               <h5>مستقل</h5>
               <ul className="list-unstyled">
                 <li>
+                  
                   <ReusLink href="/" text="عن مستقل" />
                 </li>
                 <li>
@@ -50,10 +61,7 @@ export default function Footer() {
                   <ReusLink href="/" text="مشاريع برمجة" />
                 </li>
                 <li>
-                  <ReusLink
-                    href="/"
-                    text="مشاريع هندسة وعمار"
-                  />
+                  <ReusLink href="/" text="مشاريع هندسة وعمار" />
                 </li>
                 <li>
                   <ReusLink href="/" text="مشاريع تصميم" />
@@ -62,16 +70,10 @@ export default function Footer() {
                   <ReusLink href="/" text="مشاريع تسويق" />
                 </li>
                 <li>
-                  <ReusLink
-                    href="/"
-                    text="مشاريع كتابة وترجمة"
-                  />
+                  <ReusLink href="/" text="مشاريع كتابة وترجمة" />
                 </li>
                 <li>
-                  <ReusLink
-                    href="/"
-                    text="مشاريع دعم ومساعدة"
-                  />
+                  <ReusLink href="/" text="مشاريع دعم ومساعدة" />
                 </li>
                 <li>
                   <ReusLink href="/" text="مشاريع تدريب" />
@@ -86,8 +88,11 @@ export default function Footer() {
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <h5>روابط</h5>
-                  <ul className="list-unstyled">
-                    <li>
+                  
+
+                  <ul className="list-unstyled  ">
+                    
+                    <li className="">
                       <ReusLink href="/" text="مستقل للمؤسسات" />
                     </li>
                     <li>
@@ -107,7 +112,7 @@ export default function Footer() {
 
                 <div className="col-md-6 col-sm-6 mb-3 ">
                   <h5>تابع مستقل على</h5>
-                  <ul className="list-group list-group-horizontal">
+                  <ul className="list-group list-group-horizontal list-unstyled">
                     <li className="ml-3">
                       <ReusLink
                         href="/"
@@ -125,14 +130,14 @@ export default function Footer() {
                 <div className="col-md-6"></div>
                 <div className="col-md-6">
                   <h5>وسائل الدفع المتاحة</h5>
-                  <ul className="list-group list-group-horizontal">
-                    <li className="ml-3">
+                  <ul className="list-group list-group-horizontal list-unstyled">
+                    <li className="ms-3">
                       <FaCcPaypal className="h2" />
                     </li>
-                    <li className="ml-3">
+                    <li className="ms-3">
                       <FaCcVisa className="h2" />
                     </li>
-                    <li className="ml-3">
+                    <li className="ms-3">
                       <FaCcMastercard className="h2" />
                     </li>
                   </ul>
@@ -163,7 +168,7 @@ export default function Footer() {
                   src="https://static.hsoubcdn.com/footer/img/hsoub-logo.svg"
                   width={100}
                   height={36}
-                  className="logo  d-inline"
+                  className={`logo  d-inline ${styles.logo}`}
                   alt="logo"
                 ></Image>
               </Link>
@@ -234,8 +239,6 @@ export default function Footer() {
                 />
               </div>
             </div>
-
-       
           </div>
         </div>
       </footer>

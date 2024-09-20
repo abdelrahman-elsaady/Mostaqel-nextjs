@@ -20,7 +20,7 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import Div3Rues from "./components/reusableComponents/div-3-home";
 import Div5Rues from "./components/reusableComponents/div-5-home";
 import Div6Rues from "./components/reusableComponents/div-6-home";
-import Accordion from "./components/reusableComponents/accordion-home";
+// import Accordion from "./components/reusableComponents/accordion-home";
 export default function Home() {
 
  
@@ -29,10 +29,11 @@ export default function Home() {
 <div className="container-fluid">
       <div className=" " dir="rtl">
         {/* الديفاييه الاولى */}
+        {/* <h1 className="">kjgjy</h1> */}
         <div className="row">
           <div className=" col-12 g-0 vh-100 first-div d-flex align-items-center justify-content-center ">
             <div className="text-center text-white">
-              <h1 className="mb-5">وظف أفضل المستقلين لإنجاز أعمالك عن بعد</h1>
+              <h2 className="mb-5">وظف أفضل المستقلين لإنجاز أعمالك عن بعد</h2>
               <h6 className="mb-5">
                 أنجز مشاريعك بسهولة وأمان عبر أكبر منصة عمل حر بالعالم العربي
               </h6>
@@ -44,15 +45,15 @@ export default function Home() {
                     placeholder=" ادخل عنوان المشروع الذي تريد تنفيذه..  "
                     required
                   />
-                  <button className=" gamal  btn btn-primary mt-3 position-absolute end-5 ">
-                    {" "}
+                  <button className=" gamal  btn btn-primary mt-3 position-absolute start-0 mx-2 ">
+                    
                     ابدأ مشروعك الان
                   </button>
                 </form>
               </div>
               <button className="btn btn-outline-light mt-4 ">
-                {" "}
-                ابحث عن عمل{" "}
+                
+                ابحث عن عمل
               </button>
             </div>
           </div>
@@ -278,7 +279,7 @@ export default function Home() {
             />
             <Div6Rues
               img="/tony.jpg"
-              job="  مدير أكاديمية حسوب"
+              job="    زعيم عصابة"
               details="علاقتي بمستقل متعلقة بصورة رئيسة بزيادة الإنتاجية، فإذا أحسنت استخدام مستقل وتوظيف المستقلين ستتفاجئ بارتفاع حجم الإنتاجية في شركتك، لأنك ستكتشف أنك لا تملك يدين فقط بل أيادٍ كثيرة تنجز أعمالك، فالقيمة التي أضافها لي مستقل هي إنجاز مهام أكثر في وقت أقل."
               name="   توني سوبرانو "
             />
@@ -288,8 +289,8 @@ export default function Home() {
 
             {/* الديفاااية السابعةةةةةةة */}
             
-            <div className="" dir="rtl">
-            <Accordion/>
+            <div className="" >
+            {/* <Accordion/> */}
             </div>
 
  

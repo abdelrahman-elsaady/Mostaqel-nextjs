@@ -4,10 +4,15 @@ import "./globals.css";
 import Navbar from "./components/navbar/page";
 import Footer from "./components/footer/page";
 import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import Script from 'next/script';
 
 const NotoKufiArabic = Noto_Kufi_Arabic({
   subsets: ['arabic'] 
 });
+  
+
+  
 
 
 export const metadata = {
@@ -16,20 +21,37 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
 
 
       <body
-        className={NotoKufiArabic.className}
+        className={NotoKufiArabic.className} 
       >
+
+
 <Navbar></Navbar>
+
+
+
         {children}
+
 
 <Footer></Footer>
 
+
+
+   <Script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+          strategy="beforeInteractive" // Or "afterInteractive"
+        /> 
+
       </body>
+
 
     </html>
   );
+
+
 }

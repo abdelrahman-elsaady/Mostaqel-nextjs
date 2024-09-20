@@ -1,17 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 
 .first-div{
-/* background-color: blue;   */
   background-image:url("https://mostaql.hsoubcdn.com/public/images/header-bg-0.jpg") ;
     background-size: 100%, 100%;
-    /* background-color: black; */
 }
 iframe {
+
     width: 100%;
     height: 100%;
+
   }
   .div-1{
     scrollbar-gutter: 0;
@@ -25,3 +27,5 @@ iframe {
   right: 0;
 
 } */
+
+

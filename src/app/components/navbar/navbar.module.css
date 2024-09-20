@@ -1,15 +1,16 @@
 
-.nav-item:hover{
-    /* margin-top: 50px; */
+.navItem:hover{
+    margin-top: 50px;
     background-color: #5db1e9;
     
     margin: 0;
 }
 
-.nav-item{
+
+.navItem{
     padding: 10px;
 }
-.log-btn:hover{
+.logBtn:hover{
     background-color: #5db1e9;
 
 }
@@ -27,6 +28,16 @@
     
       
 }
-body {
-    padding-top: 65px; 
+.bodyy {
+    padding-top: 60px; 
   }
+
+
+  .offcanvas {
+    z-index: 1050; 
+  }
+
+/* 
+  h1{
+    background-color: black;
+  } */

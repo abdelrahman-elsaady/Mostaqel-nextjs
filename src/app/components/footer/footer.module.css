@@ -1,5 +1,5 @@
 
-li{
+.foooter li{
     margin-bottom: 5px;
 }
 .copyRight{
@@ -10,3 +10,7 @@ li{
     max-height: 36px;
 
 }
+.foooter ul {
+    padding: 0;
+    margin: 0;
+  }
