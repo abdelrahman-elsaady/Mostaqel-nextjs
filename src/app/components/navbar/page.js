@@ -8,7 +8,7 @@ import styles from "./navbar.module.css";
 
 async function fetchUserData(id) {
   try {
-    const response = await fetch(`http://localhost:3344/users/${id}`);
+    const response = await fetch(`${process.env.BASE_URL}/users/${id}`);
     if (response.ok) {
       return await response.json();
     } else {
@@ -24,7 +24,10 @@ async function fetchUserData(id) {
 export default async function Navbar() {
   const cookieStore = cookies();
   const token = cookieStore.get('token');
-  
+
+  // let url = process.env.NEXTAUTH_URL
+  //     console.log('API URL:', url); 
+
   let isLoggedIn = false;
   let user = null;
 

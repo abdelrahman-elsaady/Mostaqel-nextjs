@@ -36,8 +36,10 @@ export default function Projects() {
 
   useEffect(() => {
     async function fetchProjects() {
+      let url = process.env.BASE_URL
+      console.log('API URL:', url); 
       try {
-        const response = await axios.get('http://localhost:3344/projects');
+        const response = await axios.get(`${process.env.BASE_URL}/projects`);
         console.log('Fetched projects:', response.data);
         setProjects(response.data);
       } catch (error) {

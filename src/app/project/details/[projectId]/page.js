@@ -43,8 +43,8 @@ export default function ProjectDetails() {
                 const id = projectId.toString();
                 
                 const [projectResponse, proposalsResponse] = await Promise.all([
-                  fetch(`http://localhost:3344/projects/${id}`),
-                  fetch(`http://localhost:3344/proposals/project/${id}`)
+                  fetch(`${process.env.BASE_URL}/projects/${id}`),
+                  fetch(`${process.env.BASE_URL}/proposals/project/${id}`)
                 ]);
         
                 if (!projectResponse.ok) {
