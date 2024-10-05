@@ -8,8 +8,10 @@
 
 
 .navItem{
-    padding: 10px;
+    padding: 10px; 
+
 }
+
 .logBtn:hover{
     background-color: #5db1e9;
 
@@ -25,19 +27,37 @@
         left: 0;
         right: 0;
         width: 100%;
-    
+        z-index: 1000;
+
       
 }
 .bodyy {
     padding-top: 60px; 
+    /* z-index: 1000; */
+
   }
 
 
   .offcanvas {
-    z-index:2000; 
+    z-index:-1; 
   }
 
+  .userAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 /* 
   h1{
     background-color: black;
   } */
+
+  /* .navbarContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  } */
+  

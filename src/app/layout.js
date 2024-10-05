@@ -11,9 +11,7 @@ const NotoKufiArabic = Noto_Kufi_Arabic({
   subsets: ['arabic'] 
 });
   
-
-  
-
+    
 
 export const metadata = {
   title: "Create Next App",
