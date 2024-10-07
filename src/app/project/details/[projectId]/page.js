@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { FaTag } from "react-icons/fa6";
 import { FaStar, FaRegStar } from 'react-icons/fa';
+import { Rating } from '@mui/material';
 // import { formatDistanceToNow } from 'date-fns';
 // import { ar } from 'date-fns/locale';
 function formatDateArabic(dateString) {
@@ -163,12 +164,8 @@ export default function ProjectDetails() {
                 <div>
                   <div className="d-flex align-items-center">
                     <strong className="me-2">{proposal.freelancer.firstName}</strong>
-                    <div className="star-rating">
-                      {[...Array(5)].map((_, i) => (
-                        i < Math.floor(proposal.freelancer.rating) ? 
-                          <FaStar key={i} className="text-warning" /> : 
-                          <FaRegStar key={i} className="text-warning" />
-                      ))}
+                    <div className="star-rating" dir="ltr">
+                    <Rating  name="half-rating-read" value={proposal.freelancer.averageRating} precision={0.5} readOnly />
                     </div>
                   </div>
                   <div className="d-flex text-muted small">

@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
 export async function loginUser(formData) {
+
   const email = formData.get('email')
   const password = formData.get('password')
 
@@ -24,7 +25,9 @@ export async function loginUser(formData) {
       let id = getIdFromToken(data.token)
     //   localStorage.setItem('token', data.token);
       cookies().set('token', data.token, { httpOnly: true, secure: true })
+
       return { success: true, id }
+      
     } else {
       throw new Error('Invalid response from server')
     }
@@ -33,6 +36,7 @@ export async function loginUser(formData) {
     return { success: false, error: 'البريد الالكتروني او كلمة المرور غير صحيحة' }
   }
 }
+
 
 function getIdFromToken(token) {
   try {

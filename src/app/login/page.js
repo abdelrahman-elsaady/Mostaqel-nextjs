@@ -5,9 +5,13 @@ import { loginUser } from './../actions/auth'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 export default function Login() {
+
+
   async function handleSubmit(formData) {
+
     'use server'
     const result = await loginUser(formData)
+    
     if (result.success) {
       revalidatePath('/')
       redirect('/')

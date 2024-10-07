@@ -187,7 +187,7 @@ export default async function Navbar() {
               </li>
 
               <li className={`nav-item ${styles.navItem}`} >
-                <Link className="nav-link text-white d-flex" href="/">
+                <Link className="nav-link text-white d-flex" href="/freelancers">
                   ابحث عن مستقلين
                   <FaUsers className="ms-1 mt-1" />
                 </Link>
