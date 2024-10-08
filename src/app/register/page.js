@@ -3,10 +3,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import styles from "./register.module.css";
-import axios from 'axios';
-// ... other imports ...
+// import axios from 'axios';
 
 import { signIn } from "next-auth/react";
 
@@ -34,20 +33,29 @@ const RegisterForm = () => {
     setIsSubmitting(true);
     console.log(data);
     try {
-      const response = await fetch('http://localhost:3344/users', {
+      const response = await fetch(`${process.env.BASE_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        if (result.message == 'Email already exists') {
+          setRegistrationMessage("هذا البريد الإلكتروني موجود بالفعل");
+        }else{
+          throw new Error('Network response was not ok');
+        }
+      }else{
+
+        setRegistrationMessage("تم التسجيل بنجاح. يرجى التحقق من بريدك الإلكتروني للتفعيل.");
       }
 
-      const result = await response.json();
-      setRegistrationMessage("تم التسجيل بنجاح. يرجى التحقق من بريدك الإلكتروني للتفعيل.");
+      // console.log(result.message);
+
+      // router.push('/login');
     } catch (error) {
       setRegistrationMessage("حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى.");
       console.error("Registration error:", error);
@@ -85,12 +93,12 @@ const RegisterForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.formGroup}>
             <label>الاسم الأول</label>
-            <input {...register("firstname")} placeholder="أدخل اسمك الأول" />
+            <input {...register("firstName")} placeholder="أدخل اسمك الأول" />
             <p className={styles.error}>{errors.firstName?.message}</p>
           </div>
           <div className={styles.formGroup}>
             <label>الاسم الأخير</label>
-            <input {...register("lastname")} placeholder="أدخل اسمك الأخير" />
+            <input {...register("lastName")} placeholder="أدخل اسمك الأخير" />
             <p className={styles.error}>{errors.lastName?.message}</p>
           </div>
           <div className={styles.formGroup}>

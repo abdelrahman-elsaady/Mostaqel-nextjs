@@ -154,7 +154,7 @@ export default async function Navbar() {
                   <li className={`nav-item ${styles.navItem}`}>
                     <Link className="nav-link text-white" href="/profile">
                       <img
-                        src={user?.profilePicture || "/default-avatar.png"}
+                        src={user?.profilePicture || "Default-user.png"}
                         alt="Profile"
                         className={styles.userAvatar}
                       />

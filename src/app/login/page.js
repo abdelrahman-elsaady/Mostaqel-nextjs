@@ -1,24 +1,41 @@
-
+'use client'
 import React from 'react'
 import styles from "./login.module.css"
 import { loginUser } from './../actions/auth'
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
+import { handleLogin } from './../actions/login'
+import { useState } from 'react'
 export default function Login() {
 
+  // let result=""
+  // var errorMessage = ""
 
-  async function handleSubmit(formData) {
+  const [error, setError] = useState('')
 
-    'use server'
-    const result = await loginUser(formData)
-    
-    if (result.success) {
-      revalidatePath('/')
-      redirect('/')
-    } else {
-      return result.error
+  async function onSubmit(formData) {
+    const result = await handleLogin(formData)
+    if (result?.error) {
+      setError(result.error)
     }
   }
+
+
+  // async function onSubmit(formData) {
+
+  //   'use server'
+  //  const  result = await loginUser(formData)
+  // //  'use server'
+  //   // const user = await loginUser()
+  //   if (result.success) {
+  //     // revalidatePath('/')
+  //     redirect('/')
+  //   } else {
+  //     // errorMessage = result.error
+  //     return result.error 
+  //   }
+  // }
+
+  // console.log(errorMessage);
 
   return (
     <div dir="rtl" className="container mt-5">
@@ -41,7 +58,16 @@ export default function Login() {
                 <span>أو</span>
               </div>
 
-              <form action={handleSubmit}>
+              {error && <div className="alert alert-danger">{error}</div>}
+
+              <form action={onSubmit}> {/* ... existing form fields ... */}
+                <div>
+                  {/* This will display the error message returned by the server action */}
+                  {/* {formData => formData.error && (
+                    <div className="alert alert-danger">{formData.error}</div>
+                  )} */}
+                </div>
+
                 <div className="form-group">
                   <label htmlFor="email">البريد الإلكتروني *</label>
                   <input

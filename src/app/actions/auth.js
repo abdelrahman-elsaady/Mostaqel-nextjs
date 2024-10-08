@@ -9,14 +9,16 @@ export async function loginUser(formData) {
   const password = formData.get('password')
 
   try {
-    const response = await fetch('http://localhost:3344/users/login', {
+    const response = await fetch(`${process.env.BASE_URL}/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     })
 
     if (!response.ok) {
-      throw new Error('Login failed')
+      let data = await response.json();
+      throw new Error(data.message)
+      
     }
 
     let data = await response.json()
