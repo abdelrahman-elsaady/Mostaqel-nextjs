@@ -13,10 +13,13 @@ export default function Login() {
   const [error, setError] = useState('')
 
   async function onSubmit(formData) {
+
     const result = await handleLogin(formData)
     if (result?.error) {
       setError(result.error)
     }
+
+    
   }
 
 

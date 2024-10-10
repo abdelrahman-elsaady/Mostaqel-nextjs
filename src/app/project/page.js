@@ -8,7 +8,7 @@ import { MdOutlineLocalActivity } from "react-icons/md";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from "next/link";
-
+import Cookies from 'universal-cookie';
 
 function formatDateArabic(dateString) {
   const now = new Date();
@@ -30,6 +30,10 @@ function formatDateArabic(dateString) {
 }
 
 export default function Projects() {
+
+  const cookies = new Cookies();
+  console.log(cookies.get('token'));
+  
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

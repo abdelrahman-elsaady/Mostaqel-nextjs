@@ -26,7 +26,7 @@ export async function loginUser(formData) {
     if (data && data.token) {
       let id = getIdFromToken(data.token)
     //   localStorage.setItem('token', data.token);
-      cookies().set('token', data.token, { httpOnly: true, secure: true })
+      cookies().set('token', data.token)
 
       return { success: true, id }
       
@@ -51,4 +51,12 @@ function getIdFromToken(token) {
     console.error('Error decoding token:', error)
     return null
   }
+}
+
+export async function getIdFromCookie() {
+  const token = cookies().get('token')?.value
+  if (!token) {
+    return null
+  }
+  return getIdFromToken(token)
 }

@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 
 import styles from "./navbar.module.css";
 
+
+
 async function fetchUserData(id) {
   try {
     const response = await fetch(`${process.env.BASE_URL}/users/${id}`);
@@ -21,8 +23,23 @@ async function fetchUserData(id) {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
 export default async function Navbar() {
+
+
+
   const cookieStore = cookies();
+
+
   const token = cookieStore.get('token');
 
   // let url = process.env.NEXTAUTH_URL
@@ -41,6 +58,8 @@ export default async function Navbar() {
       }
     }
   }
+
+
 
   // ... rest of the component remains the same ...
 
@@ -154,7 +173,7 @@ export default async function Navbar() {
                   <li className={`nav-item ${styles.navItem}`}>
                     <Link className="nav-link text-white" href="/profile">
                       <img
-                        src={user.profilePicture ? user.profilePicture : "https://th.bing.com/th/id/OIP.yYH0Z8hoEboWVtgM6i0xeQHaEK?rs=1&pid=ImgDetMain"}
+                        src={user.profilePicture}
                         alt="Profile"
                         className={styles.userAvatar}
                       />

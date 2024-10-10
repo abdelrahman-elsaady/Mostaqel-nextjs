@@ -9,8 +9,12 @@ import styles from "./register.module.css";
 
 import { signIn } from "next-auth/react";
 
+import Cookies from 'universal-cookie';
 
+// const cookies = new Cookies("token", { path: '/' });
+const cookies = new Cookies();
 
+console.log(cookies.get('ggg'));
 
 const schema = yup.object().shape({
   firstName: yup.string().required("الاسم الأول مطلوب"),

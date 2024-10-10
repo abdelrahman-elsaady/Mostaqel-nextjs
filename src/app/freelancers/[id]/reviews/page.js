@@ -13,6 +13,7 @@ export default async function Reviews({params}) {
   const reviews = await res.json();
   console.log(reviews.reviews);
 
+  
   let ratingBreakdown =reviews.ratingBreakdown
 
   return (

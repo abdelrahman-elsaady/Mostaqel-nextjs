@@ -11,6 +11,9 @@ export async function getFreelancer(id) {
   return res.json();
 }
 
+
+
+
 export default async function FreelancerLayout({ children, params }) {
   const { id } = params;
   const freelancerData = await getFreelancer(id);
