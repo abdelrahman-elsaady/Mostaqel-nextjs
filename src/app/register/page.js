@@ -51,13 +51,24 @@ const RegisterForm = () => {
           throw new Error('Network response was not ok');
         }
       }else{
+
         Swal.fire({
+           
+
+          toast: true,
+
           title: 'تم التسجيل بنجاح',
+
           text: 'يرجى تسجيل الدخول.',
           icon: 'success',
-          timer: 3000
+          timer: 3000,
+          showConfirmButton: false,
+          timerProgressBar: true,
+           
         });
-        router.push('/login');
+         
+           router.push('/login');
+
       }
 
       // console.log(result.message);
