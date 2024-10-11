@@ -3,10 +3,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-// import ReCAPTCHA from "react-google-recaptcha";
 import styles from "./register.module.css";
-// import axios from 'axios';
-
+import Swal from "sweetalert2";
 import { signIn } from "next-auth/react";
 
 import Cookies from 'universal-cookie';
@@ -53,8 +51,13 @@ const RegisterForm = () => {
           throw new Error('Network response was not ok');
         }
       }else{
-
-        setRegistrationMessage("تم التسجيل بنجاح. يرجى التحقق من بريدك الإلكتروني للتفعيل.");
+        Swal.fire({
+          title: 'تم التسجيل بنجاح',
+          text: 'يرجى تسجيل الدخول.',
+          icon: 'success',
+          timer: 3000
+        });
+        router.push('/login');
       }
 
       // console.log(result.message);

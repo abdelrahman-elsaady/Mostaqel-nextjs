@@ -327,7 +327,7 @@ export default function Projects() {
 
                       <small className="pe-3">
                         <MdOutlineLocalActivity />
-                        {project.proposalsCount > 0 ? `${project.proposalsCount} عرض` : 'أضف أول عرض'}
+                        {project.proposals.length > 0 ? `${project.proposals.length} عرض` : 'أضف أول عرض'}
                       </small>
 
                     </div>

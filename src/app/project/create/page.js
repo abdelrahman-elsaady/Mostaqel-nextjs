@@ -97,7 +97,7 @@ const  AddProject = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3344/projects",
+        `${process.env.BASE_URL}/projects`,
         {
           ...formData,
           client: userId, 
