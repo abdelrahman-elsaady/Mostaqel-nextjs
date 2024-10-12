@@ -8,6 +8,7 @@ import { Rating } from '@mui/material';
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'universal-cookie';
 import Swal from 'sweetalert2';
+import { useAppContext } from '../../../context/AppContext';
 
 
 function formatDateArabic(dateString) {
@@ -30,81 +31,37 @@ function formatDateArabic(dateString) {
 }
 export default function ProjectDetails() {
 
+  const { getProjectById, isLoggedIn, userId, token } = useAppContext();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { projectId } = useParams();
-  const [proposalsss, setProposalsss] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState('');
-  const [token, setToken] = useState(null);
   const [proposalForm, setProposalForm] = useState({
     deliveryTime: '',
     amount: '',
     proposal: '',
-    receivables:''
+    receivables: ''
   });
+
 
 
 
   const [proposals, setProposals] = useState([]);
 
 
-  useEffect(() => {
-
-
-    const cookies = new Cookies();
-    const token = cookies.get('token');
-    setToken(token);
-    console.log(token);
-    if (token) {
-    
-        const decoded = jwtDecode(token);
-        setUserId(decoded.id);
-        // console.log(decoded.id);
-        // console.log(userId);
-      
-        setIsLoggedIn(true);
-     
-    }
-      //  console.log(userId);
-    // console.log("userId");
-    // console.log(project.client._id);
-    const fetchProjectAndProposals = async () => {
+    useEffect(() => {
+    const fetchProject = async () => {
       try {
-        // Ensure projectId is a string
-        const id = projectId.toString();
-
-        const projectResponse = await fetch(`${process.env.BASE_URL}/projects/${id}`);
-
-
-
-        if (!projectResponse.ok) {
-          throw new Error('Failed to fetch project data');
-        }
-
-        const projectData = await projectResponse.json();
+        const projectData = await getProjectById(projectId);
         setProject(projectData);
-        console.log(projectData);
-        // if (proposalsResponse.ok) {
-        //   const proposalsData = await proposalsResponse.json();
-        //   setProposals(proposalsData.proposals);
-        //   console.log(proposalsData.proposals);
-        //   console.log(proposalsData.proposals);
-        // } else {
-        //   console.log('No proposals found or error fetching proposals');
-        //   setProposals([]);
-        // }
-
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     };
-
-    fetchProjectAndProposals();
-  }, [projectId,userId]);
+    fetchProject();
+  }, [projectId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -137,7 +94,7 @@ export default function ProjectDetails() {
         return JSON.stringify(budget); // Fallback for unexpected object structure
       }
     }
-    return `$${budget}`; // For simple number values
+    return `$${budget}`; // For simple number value
   };
 
   const handleSubmitProposal = async (e) => {
@@ -193,7 +150,11 @@ export default function ProjectDetails() {
 
 
 
-  if (loading) return <div className="text-center mt-5">جاري التحميل...</div>;
+  if (loading) return  <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+  <div className="spinner-border text-primary" role="status">
+    <span className="visually-hidden">جاري التحميل...</span>
+  </div>
+</div>;
   if (error) return <div className="text-center mt-5 text-danger">خطأ: {error}</div>;
   if (!project) return <div className="text-center mt-5">لم يتم العثور على المشروع</div>;
 

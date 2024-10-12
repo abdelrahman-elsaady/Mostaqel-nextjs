@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Script from 'next/script';
 // import { icons } from '@react-icons/all-files';
+import { AppProvider } from './context/AppContext';
 
 const NotoKufiArabic = Noto_Kufi_Arabic({
   subsets: ['arabic'] 
@@ -25,6 +26,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
 
   return (
+    
     <html lang="en">
 
 
@@ -32,7 +34,7 @@ export default function RootLayout({ children }) {
         className={NotoKufiArabic.className} 
       >
 
-
+<AppProvider>
 <Navbar></Navbar>
 
 
@@ -41,6 +43,7 @@ export default function RootLayout({ children }) {
 
 
 <Footer></Footer>
+</AppProvider>
 
 
 

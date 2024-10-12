@@ -1,30 +1,17 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { FaStar, FaRegStar } from 'react-icons/fa';
+import { useAppContext } from './../context/AppContext';
 import Link from 'next/link';
 import { Rating } from '@mui/material';
 
 export default function Freelancers() {
-  const [freelancers, setFreelancers] = useState([]);
+  const { freelancers, fetchFreelancers } = useAppContext();
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
 
+
   useEffect(() => {
-    async function fetchFreelancers() {
-      try {
-        const response = await axios.get(`${process.env.BASE_URL}/users`);
-        const sortedFreelancers = response.data.users.sort((a, b) => 
-          new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setFreelancers(sortedFreelancers);
-        setFilteredFreelancers(sortedFreelancers);
-        console.log(filteredFreelancers);
-      } catch (err) {
-        console.error("Error fetching freelancers:", err);
-      }
-    }
     fetchFreelancers();
   }, []);
 
@@ -36,7 +23,6 @@ export default function Freelancers() {
       return categoryMatch && searchMatch;
     });
     setFilteredFreelancers(filtered);
-    console.log(filteredFreelancers);
   }, [freelancers, selectedCategories, searchTerm]);
 
   const handleCategoryChange = (category) => {

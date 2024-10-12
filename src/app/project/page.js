@@ -4,6 +4,7 @@
 import { MdPerson2 } from "react-icons/md";
 import { BiAlarm } from "react-icons/bi";
 import { MdOutlineLocalActivity } from "react-icons/md";
+import { useAppContext } from '../context/AppContext';
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -32,40 +33,18 @@ function formatDateArabic(dateString) {
 export default function Projects() {
 
   // const cookies = new Cookies();
+  // const [error, setError] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
   // console.log(cookies.get('token'));
   
-  const [projects, setProjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { projects, fetchProjects, isLoggedIn } = useAppContext();
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
-    async function fetchProjects() {
-      let url = process.env.BASE_URL
-      console.log('API URL:', url); 
-      try {
-        let response = await axios.get(`${process.env.BASE_URL}/projects`);
-        console.log('Fetched projects:', response.data);
-        setProjects(response.data);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        setError(error.message || 'An error occurred while fetching projects');
-      } finally {
-        setIsLoading(false);
-      }
-
-      // setFilteredProjects(response.data);
-
-    }
-
-
     fetchProjects();
-
-
   }, []);
-
 
   useEffect(() => {
     const filtered = projects.filter(project => {
@@ -76,6 +55,7 @@ export default function Projects() {
     });
     setFilteredProjects(filtered);
   }, [projects, selectedCategories, searchTerm]);
+
 
   const handleCategoryChange = (category) => {
     setSelectedCategories(prev => 
@@ -92,8 +72,8 @@ export default function Projects() {
 
 
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {error}</p>;
 
 
   return (
