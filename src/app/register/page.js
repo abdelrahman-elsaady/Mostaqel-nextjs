@@ -6,13 +6,13 @@ import * as yup from "yup";
 import styles from "./register.module.css";
 import Swal from "sweetalert2";
 import { signIn } from "next-auth/react";
-
+import { useRouter } from "next/navigation";
 import Cookies from 'universal-cookie';
 
 // const cookies = new Cookies("token", { path: '/' });
 const cookies = new Cookies();
 
-console.log(cookies.get('ggg'));
+// console.log(cookies.get('ggg'));
 
 const schema = yup.object().shape({
   firstName: yup.string().required("الاسم الأول مطلوب"),
@@ -26,14 +26,14 @@ const RegisterForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationMessage, setRegistrationMessage] = useState("");
-  
+  const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    console.log(data);
+    // console.log(data);
     try {
       const response = await fetch(`${process.env.BASE_URL}/users`, {
         method: 'POST',
@@ -42,41 +42,44 @@ const RegisterForm = () => {
         },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
+      let result = await response.json();
 
-      if (!response.ok) {
+      console.log(result);
+      console.log(response);
+      // log
+      // if(res)
         if (result.message == 'Email already exists') {
-          setRegistrationMessage("هذا البريد الإلكتروني موجود بالفعل");
-        }else{
-          throw new Error('Network response was not ok');
+          // setRegistrationMessage("هذا البريد الإلكتروني موجود بالفعل");
+          Swal.fire({
+            title: 'البريد الإلكتروني موجود بالفعل',
+            text: 'يرجى تسجيل الدخول.',
+            icon: 'error',
+          });
         }
-      }else{
+
+      if(result.message == 'user saved successfully') {
 
         Swal.fire({
-           
-
-          toast: true,
-
-          title: 'تم التسجيل بنجاح',
-
-          text: 'يرجى تسجيل الدخول.',
+          title: 'نجاح!',
+          text: 'تم التسجيل بنجاح',
           icon: 'success',
-          timer: 3000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-           
+          confirmButtonText: 'حسناً'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push('/login');
+          }
         });
-         
-           router.push('/login');
 
       }
-
-      // console.log(result.message);
-
-      // router.push('/login');
     } catch (error) {
-      setRegistrationMessage("حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى.");
-      console.error("Registration error:", error);
+   
+      // setRegistrationMessage("حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى.");
+      Swal.fire({
+        title: 'حدث خطأ أثناء التسجيل',
+        text: 'يرجى المحاولة مرة أخرى.',
+        icon: 'error',
+      });
+      // console.log(result.message);
     }
     setIsSubmitting(false);
   };

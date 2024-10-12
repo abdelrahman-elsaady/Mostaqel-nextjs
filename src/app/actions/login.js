@@ -12,7 +12,8 @@ export async function handleLogin(formData) {
   let result = await loginUser(formData)
   
   if (result.success) {
-    revalidatePath('/')
+    
+    // revalidatePath('/')
     redirect('/')
   } else {
     return { error: result.error || 'Login failed. Please try again.' }

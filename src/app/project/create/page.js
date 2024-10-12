@@ -149,10 +149,10 @@ const  AddProject = () => {
 
 
     <>
+<div style={{backgroundColor : '#f0f0f0'}}>
+    <div className="container-fluid" dir="rtl" style={{backgroundColor : '#f0f0f0'}}>
 
-    <div className="container-fluid" dir="rtl" style={{backgroundColor : '#f5f5f5bd'}}>
-
-      <div className="row mt-5" > 
+      <div className="row pt-5" > 
 
           
     
@@ -303,6 +303,7 @@ const  AddProject = () => {
     </div>
 
     </div>
+    </div>
     </>
   );
 };
@@ -439,11 +440,11 @@ export default AddProject;
               <li>جزء المشروع والمهام الكبيرة إلى عدة مراحل صغيرة.</li>
             </ul>
           </div>
-   
-//           </div>
-//         </div>
-//         </div>
-//       </>
+  //  </div>
+  //         </div>
+  //       </div>
+  //       </div>
+  //     </>
 //     );
 //   };
   

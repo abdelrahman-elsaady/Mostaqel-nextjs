@@ -1,23 +1,56 @@
-import React from "react";
+'use client';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import Link from 'next/link';
 import { Rating } from '@mui/material';
-async function getFreelancers() {
-  try {
-    const response = await axios.get(`${process.env.BASE_URL}/users`);
-    return response.data.users;
-  } catch (err) {
-    console.error("Error fetching freelancers:", err);
-    return [];
-  }
-}
 
-export default async function Projects() {
+export default function Freelancers() {
+  const [freelancers, setFreelancers] = useState([]);
+  const [filteredFreelancers, setFilteredFreelancers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const freelancers = await getFreelancers();
+  useEffect(() => {
+    async function fetchFreelancers() {
+      try {
+        const response = await axios.get(`${process.env.BASE_URL}/users`);
+        const sortedFreelancers = response.data.users.sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setFreelancers(sortedFreelancers);
+        setFilteredFreelancers(sortedFreelancers);
+        console.log(filteredFreelancers);
+      } catch (err) {
+        console.error("Error fetching freelancers:", err);
+      }
+    }
+    fetchFreelancers();
+  }, []);
 
- console.log(freelancers);
+  useEffect(() => {
+    const filtered = freelancers.filter(freelancer => {
+      const categoryMatch = selectedCategories.length === 0 || 
+        (freelancer.category ? selectedCategories.includes(freelancer.category.name) : false);
+      const searchMatch = freelancer.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+      return categoryMatch && searchMatch;
+    });
+    setFilteredFreelancers(filtered);
+    console.log(filteredFreelancers);
+  }, [freelancers, selectedCategories, searchTerm]);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category) 
+        : [...prev, category]
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <>
 
@@ -44,111 +77,38 @@ export default async function Projects() {
         <div className="row mt-4">
           {/* sidebar */}
           <aside className="col-lg-3 col-md-2 pe-5" style={{ marginRight: '40px' }}>
-            {/* search */}
-            <div className="mb-3">
-              <label htmlFor="search" className="form-label">
-                بحث
-              </label>
+        <div className="mb-3">
+          <label htmlFor="search" className="form-label">بحث</label>
+          <input
+            type="text"
+            id="search"
+            className="form-control"
+            style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+
+        <div>
+          <p className="mb-3">التخصص</p>
+          {['البرمجة وتطوير الويب'  ,'التصميم والوسائط المتعددة','الكتابة والترجمة','التسويق الرقمي','البيانات والتحليل','مهارات متخصصة','الصوت والفيديو','إدارة الأعمال'].map((category, index) => (
+            <div className="form-check" key={index}>
               <input
-                type="text"
-                id="search"
-                className="form-control"
-                style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+                type="checkbox"
+                className="form-check-input"
+                id={`category${index + 1}`}
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCategoryChange(category)}
               />
+              <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                {category}
+              </label>
             </div>
-
-            {/*filters */}
-            <div>
-              <p className="mb-3">التخصص</p>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category1"
-                />
-
-                <label className="form-check-label" htmlFor="category1">
-
-                  أعمال وخدمات استشارية
-                </label>
-
-
-
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category2"
-                />
-                <label className="form-check-label" htmlFor="category2">
-                  برمجة، تطوير المواقع والتطبيقات
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category3"
-                />
-                <label className="form-check-label" htmlFor="category3">
-                  هندسة، عمارة وتصميم داخلي
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category4"
-                />
-                <label className="form-check-label" htmlFor="category4">
-                  تصميم، فيديو وصوتيات
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category5"
-                />
-                <label className="form-check-label" htmlFor="category5">
-                  تسويق إلكتروني ومبيعات
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category6"
-                />
-                <label className="form-check-label" htmlFor="category6">
-                  كتابة، تحرير، ترجمة ولغات
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category7"
-                />
-                <label className="form-check-label" htmlFor="category7">
-                  دعم، مساعدة وإدخال بيانات
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="category8"
-                />
-                <label className="form-check-label" htmlFor="category8">
-                  تدريب وتعليم عن بُعد
-                </label>
-              </div>
-            </div>
+          ))}
+        </div>
 
             {/* skills */}
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <p>المسمي الوظيفي</p>
               <input
                 type="text"
@@ -165,10 +125,10 @@ export default async function Projects() {
                 style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
 
               />
-            </div>
+            </div> */}
 
             {/* delivery */}
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <div>
                 <p>التقييم</p>
                   <div className="rating">
@@ -218,19 +178,19 @@ export default async function Projects() {
                 </label>
 
               </div>
-            </div>
+            </div> */}
           </aside>
 
           {/* content */}
           <section className="col-lg-8 col-md-7" style={{ marginLeft: '50px' }}>
             <div className="list-group">
-            {freelancers.length > 0 ? (
-      <div className="proposals-list">
+            {filteredFreelancers.length > 0 ? ( 
+              
+              filteredFreelancers.map((freelancer, index) => (
+          <div className="proposals-list" key={freelancer._id}>
+          <Link href={`/freelancers/${freelancer._id}`}  className="text-decoration-none">
 
-        {freelancers.map((freelancer, index) => (
-          <Link href={`/freelancers/${freelancer._id}`} key={index} className="text-decoration-none">
-
-          <div key={index} className="list-group-item list-group-item-action p-4">
+          <div  className="list-group-item list-group-item-action p-4">
             <div className="d-flex justify-content-between align-items-start mb-2">
               <div className="d-flex">
                 <img 
@@ -268,10 +228,10 @@ export default async function Projects() {
           </div>
           </Link>
 
-        ))}
-      </div>
+          </div>
+        ))
     ) : (
-      <p>لا يوجد عروض بعد.</p>
+      <h4>  مفييييييييشششش</h4>
     )}
             </div>
           </section>

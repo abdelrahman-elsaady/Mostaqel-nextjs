@@ -1,8 +1,10 @@
 
-import { FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell, FaEnvelope } from "react-icons/fa";
+import { FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell, FaEnvelope, FaHome, FaUser } from "react-icons/fa";
 import Link from "next/link";
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken';
+import { FaBriefcase } from "react-icons/fa6";
+import { GiTicket } from "react-icons/gi";
 
 import styles from "./navbar.module.css";
 
@@ -62,6 +64,7 @@ export default async function Navbar() {
 
 
   // ... rest of the component remains the same ...
+
 
 // 'use client'
 
@@ -142,7 +145,7 @@ export default async function Navbar() {
 
   return (
     <>
-      <div className={`container-fluid ${styles.bodyy}`  }>
+      <div className={`container-fluid  d-none d-md-block ${styles.bodyy}`  }>
         <div className=  {`navvvvv g-0   bg-primary row ${styles.navvvvv}`}>
           <div className="col-6  ">
             <ul className="navbar-nav mr-auto flex-row ">
@@ -197,7 +200,27 @@ export default async function Navbar() {
           </div>
 
           <div className="col-6  ">
-            <ul className="d-flex navbar-nav mr-auto position-relative flex-row">
+
+            
+            <ul className="d-flex navbar-nav mr-auto  flex-row " style={{height: '100%'}}>
+
+{isLoggedIn && (
+              <>
+              <li className= {`nav-item ${styles.navItem}`}  >
+                <Link className="nav-link text-white d-flex" href="/project">
+                   اعمالي
+                  <FaBriefcase className="ms-1 mt-1" />
+                </Link>
+              </li>
+              <li className= {`nav-item ${styles.navItem}`}  >
+                <Link className="nav-link text-white d-flex" href="/project">
+                   عروضي
+                  <GiTicket className="ms-1 mt-1" />
+                </Link>
+              </li>
+              </>
+)}  
+
               <li className= {`nav-item ${styles.navItem}`}  >
                 <Link className="nav-link text-white d-flex" href="/project">
                   تصفح المشاريع
@@ -205,12 +228,15 @@ export default async function Navbar() {
                 </Link>
               </li>
 
+{!isLoggedIn && (
               <li className={`nav-item ${styles.navItem}`} >
                 <Link className="nav-link text-white d-flex" href="/freelancers">
                   ابحث عن مستقلين
                   <FaUsers className="ms-1 mt-1" />
                 </Link>
               </li>
+)}
+
               <li className={`nav-item ${styles.navItem}`} >
                 <Link className="nav-link text-white d-flex" href="/project/create">
                   أضف مشروع
@@ -330,6 +356,73 @@ export default async function Navbar() {
           </div>
         </div>
       </div>
+      <div className={`fixed-bottom bg-white d-md-none ${styles.bottomNav}`}>
+        <ul className="nav justify-content-around">
+          <li className="nav-item">
+            <Link href="/" className={`nav-link text-center ${styles.bottomNavLink}`}>
+              <FaHome className={styles.bottomNavIcon} />
+              <div>الرئيسية</div>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link href="/freelancers" className={`nav-link text-center ${styles.bottomNavLink}`}>
+              <FaUsers className={styles.bottomNavIcon} />
+              <div>المستقلين</div>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link href="/projects" className={`nav-link text-center ${styles.bottomNavLink}`}>
+              <FaCubes className={styles.bottomNavIcon} />
+              <div>المشاريع</div>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <button 
+              className={`nav-link text-center ${styles.bottomNavLink}`} 
+              data-bs-toggle="modal" 
+              data-bs-target="#accountModal"
+            >
+              <FaUser className={styles.bottomNavIcon} />
+              <div>حسابي</div>
+            </button>
+          </li>
+        </ul>
+        </div>
+
+{/* Account Modal */}
+<div className="modal fade" id="accountModal" tabIndex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+  <div className="modal-dialog modal-fullscreen">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="accountModalLabel">حسابي</h5>
+        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div className="modal-body">
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item">
+            <Link href="/login" className="text-decoration-none text-dark">
+              <FaSignInAlt className="me-2" />
+              تسجيل دخول
+            </Link>
+          </li>
+          <li className="list-group-item">
+            <Link href="/register" className="text-decoration-none text-dark">
+              <FaUserPlus className="me-2" />
+              حساب جديد
+            </Link>
+          </li>
+          <li className="list-group-item">
+            <Link href="/project/create" className="text-decoration-none text-dark">
+              <FaPlus className="me-2" />
+              أضف مشروع
+            </Link>
+          </li>
+        </ul>
+        </div>
+          </div>
+        </div>
+      </div>
+
     </>
   );
 }

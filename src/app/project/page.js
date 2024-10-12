@@ -8,7 +8,7 @@ import { MdOutlineLocalActivity } from "react-icons/md";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from "next/link";
-import Cookies from 'universal-cookie';
+// import Cookies from 'universal-cookie';
 
 function formatDateArabic(dateString) {
   const now = new Date();
@@ -31,19 +31,22 @@ function formatDateArabic(dateString) {
 
 export default function Projects() {
 
-  const cookies = new Cookies();
-  console.log(cookies.get('token'));
+  // const cookies = new Cookies();
+  // console.log(cookies.get('token'));
   
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
     async function fetchProjects() {
       let url = process.env.BASE_URL
       console.log('API URL:', url); 
       try {
-        const response = await axios.get(`${process.env.BASE_URL}/projects`);
+        let response = await axios.get(`${process.env.BASE_URL}/projects`);
         console.log('Fetched projects:', response.data);
         setProjects(response.data);
       } catch (error) {
@@ -52,6 +55,9 @@ export default function Projects() {
       } finally {
         setIsLoading(false);
       }
+
+      // setFilteredProjects(response.data);
+
     }
 
 
@@ -59,6 +65,32 @@ export default function Projects() {
 
 
   }, []);
+
+
+  useEffect(() => {
+    const filtered = projects.filter(project => {
+      const categoryMatch = selectedCategories.length === 0 || 
+        (project.category ? selectedCategories.includes(project.category.name) : false);
+      const searchMatch = project.title.toLowerCase().includes(searchTerm.toLowerCase());
+      return categoryMatch && searchMatch;
+    });
+    setFilteredProjects(filtered);
+  }, [projects, selectedCategories, searchTerm]);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category) 
+        : [...prev, category]
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+
+
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -68,7 +100,7 @@ export default function Projects() {
 
     <>
 
-      <div dir="rtl">
+      <div dir="rtl" style={{backgroundColor:"#f0f0f0"}}>
 
         <div style={{ paddingTop: "20px" }}>
           <p style={{ display: "block" }}> الرئيسية / المشاريع</p>
@@ -81,11 +113,11 @@ export default function Projects() {
                 المشاريع المفتوحة
               </a>
 
-              <div
+              {/* <div
                 className="d-flex justify-content-between align-items-center "
                 style={{ marginLeft: "5%" }}
-              >
-                <div className="dropdown">
+              > */}
+                {/* <div className="dropdown">
                   <button
                     className="btn dropdown-toggle"
                     style={{ backgroundColor: '#ffffff', border: '1px solid #000', borderRadius: '0px' }}
@@ -108,117 +140,46 @@ export default function Projects() {
                       الاقل عروضا
                     </a>
                   </div>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
             </nav>
           </div>
 
           <div className="row mt-4">
             {/* sidebar */}
             <aside className="col-lg-3 col-md-2 pe-5" style={{ marginRight: '60px' }}>
-              {/* search */}
-              <div className="mb-3">
-                <label htmlFor="search" className="form-label">
-                  بحث
-                </label>
-                <input
-                  type="text"
-                  id="search"
-                  className="form-control"
-                  style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-                />
-              </div>
+        <div className="mb-3">
+          <label htmlFor="search" className="form-label">بحث</label>
+          <input
+            type="text"
+            id="search"
+            className="form-control"
+            style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
 
-              {/*filters */}
-              <div>
-                <h5 className="mb-3">التصنيف</h5>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category1"
-                  />
-
-                  <label className="form-check-label" htmlFor="category1">
-                    أعمال وخدمات استشارية
-                  </label>
-
-
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category2"
-                  />
-                  <label className="form-check-label" htmlFor="category2">
-                    برمجة، تطوير المواقع والتطبيقات
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category3"
-                  />
-                  <label className="form-check-label" htmlFor="category3">
-                    هندسة، عمارة وتصميم داخلي
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category4"
-                  />
-                  <label className="form-check-label" htmlFor="category4">
-                    تصميم، فيديو وصوتيات
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category5"
-                  />
-                  <label className="form-check-label" htmlFor="category5">
-                    تسويق إلكتروني ومبيعات
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category6"
-                  />
-                  <label className="form-check-label" htmlFor="category6">
-                    كتابة، تحرير، ترجمة ولغات
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category7"
-                  />
-                  <label className="form-check-label" htmlFor="category7">
-                    دعم، مساعدة وإدخال بيانات
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="category8"
-                  />
-                  <label className="form-check-label" htmlFor="category8">
-                    تدريب وتعليم عن بُعد
-                  </label>
-                </div>
-              </div>
+        <div>
+          <h5 className="mb-3">التصنيف</h5>
+          {['البرمجة وتطوير الويب'  ,'التصميم والوسائط المتعددة','الكتابة والترجمة','التسويق الرقمي','البيانات والتحليل','مهارات متخصصة','الصوت والفيديو','إدارة الأعمال'].map((category, index) => (
+            <div className="form-check" key={index}>
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id={`category${index + 1}`}
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCategoryChange(category)}
+              />
+              <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                {category}
+              </label>
+            </div>
+          ))}
+        </div>
 
               {/* skills */}
-              <div className="mt-4">
+              {/* <div className="mt-4">
                 <h5>المهارات</h5>
                 <input
                   type="text"
@@ -228,7 +189,7 @@ export default function Projects() {
                 />
               </div>
 
-              {/* delivery */}
+              
               <div className="mt-4">
                 <h5>مدة التسليم</h5>
                 <div className="form-check">
@@ -283,7 +244,7 @@ export default function Projects() {
                 </div>
               </div>
 
-              {/* budget */}
+              
               <div className="mt-4">
                 <h5>الميزانية</h5>
                 <input
@@ -297,14 +258,15 @@ export default function Projects() {
                   <span>25.00</span>
                   <span>10000.00</span>
                 </div>
-              </div>
+              </div> */}
             </aside>
 
             {/* content */}
             <section className="col-lg-8 col-md-7" style={{ marginLeft: '30px' }}>
               <div className="list-group">
-                {projects.map((project) => (
-                  <div key={project._id} className="list-group-item list-group-item-action p-4">
+                {filteredProjects.length > 0 ? (
+                  filteredProjects.map((project) => (
+                    <div key={project._id} className="list-group-item list-group-item-action p-4">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <Link className="mb-1" href={`/project/details/${project._id}`} style={{ textDecoration: 'none', color: "#2386c8" }}>{project.title}</Link>
                       <button className="btn btn-sm btn-info" style={{ backgroundColor: "#2386c8", border: 'none', borderRadius: '0px' }}>
@@ -334,7 +296,10 @@ export default function Projects() {
                     <p className="mb-1">{project.description}</p>
 
                   </div>
-                ))}
+                  ))
+                ) : (
+                  <p>المشروع اللي بتدور عليه مش موجود ينجم</p>
+                )}
               </div>
             </section>
           </div>
