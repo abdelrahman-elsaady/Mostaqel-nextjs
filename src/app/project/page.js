@@ -41,9 +41,10 @@ export default function Projects() {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetchProjects();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function Projects() {
       return categoryMatch && searchMatch;
     });
     setFilteredProjects(filtered);
+    console.log(projects);
   }, [projects, selectedCategories, searchTerm]);
 
 
@@ -72,8 +74,11 @@ export default function Projects() {
 
 
 
-  // if (isLoading) return <p>Loading...</p>;
-  // if (error) return <p>Error: {error}</p>;
+  if (loading) return  <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+  <div className="spinner-border text-primary" role="status">
+    <span className="visually-hidden">جاري التحميل...</span>
+  </div>
+</div>;
 
 
   return (
@@ -251,7 +256,7 @@ export default function Projects() {
                       <Link className="mb-1" href={`/project/details/${project._id}`} style={{ textDecoration: 'none', color: "#2386c8" }}>{project.title}</Link>
                       <button className="btn btn-sm btn-info" style={{ backgroundColor: "#2386c8", border: 'none', borderRadius: '0px' }}>
                         <i className="bi bi-plus" style={{ color: '#fff', fontSize: 'bold' }}></i>
-                        <a href="#" style={{ textDecoration: 'none', color: '#fff' }}> مشروع مماثل</a>
+                        {/* <a href="#" style={{ textDecoration: 'none', color: '#fff' }}> مشروع مماثل</a> */}
                       </button>
                     </div>
 

@@ -9,6 +9,8 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
+
   const [freelancers, setFreelancers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,16 +18,7 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [singleFreelancer, setSingleFreelancer] = useState(null);
   const [singleProject, setSingleProject] = useState(null);
-  useEffect(() => {
-    const cookies = new Cookies();
-    const token = cookies.get('token');
-    if (token) {
-      setToken(token);
-      const decoded = jwtDecode(token);
-      setUserId(decoded.id);
-      setIsLoggedIn(true);
-    }
-  }, []);
+
 
   const fetchFreelancers = async () => {
     try {
@@ -51,8 +44,8 @@ export const AppProvider = ({ children }) => {
 
   const getFreelancerById = async (id) => {
     try {
-      const response = await axios.get(`${process.env.BASE_URL}/users/${id}`);
-      // setSingleFreelancer(response.data.data);
+          const response = await axios.get(`${process.env.BASE_URL}/users/${id}`);
+      setSingleFreelancer(response.data.data);
       return response.data.data;
     } catch (err) {
       console.error("Error fetching freelancer:", err);
@@ -61,13 +54,55 @@ export const AppProvider = ({ children }) => {
 
   const getProjectById = async (id) => {
     try {
-      const response = await axios.get(`${process.env.BASE_URL}/projects/${id}`);
+        const response = await axios.get(`${process.env.BASE_URL}/projects/${id}`);
       // setSingleProject(response.data);
-      return response.data;
+      return response.data;   
     } catch (err) {
       console.error("Error fetching project:", err);
     }
   };
+
+  const updateProfile = async (userId, profileData) => {
+    try {
+      const response = await axios.patch(`${process.env.BASE_URL}/users/${userId}`, profileData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setIsProfileComplete(true);
+      return response.data;
+    } catch (err) {
+      console.error("Error updating profile:", err);
+    }
+  };
+
+  const fetchSkillsAndCategories = async () => {
+    try {
+      const [skillsResponse, categoriesResponse] = await Promise.all([
+        axios.get(`${process.env.BASE_URL}/skills`),
+        axios.get(`${process.env.BASE_URL}/categories`),
+      ]);
+      return {
+        skills: skillsResponse.data,
+        categories: categoriesResponse.data.categories
+      };
+    } catch (error) {
+      console.error("Error fetching skills and categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    const cookies = new Cookies();
+    const token = cookies.get('token');
+    if (token) {
+      setToken(token);
+      const decoded = jwtDecode(token);
+      setUserId(decoded.id);
+      setIsLoggedIn(true);
+      getFreelancerById(decoded.id);
+    }
+  }, []);
 
   return (
     <AppContext.Provider value={{
@@ -78,10 +113,14 @@ export const AppProvider = ({ children }) => {
       token,
       singleFreelancer,
       singleProject,
+      setSingleFreelancer,
       fetchFreelancers,
       fetchProjects,
       getFreelancerById,
-      getProjectById
+      getProjectById,
+      updateProfile,
+      fetchSkillsAndCategories,
+      isProfileComplete
     }}>
       {children}
     </AppContext.Provider>

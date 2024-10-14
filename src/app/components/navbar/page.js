@@ -1,11 +1,11 @@
-
+// 'use client'
 import { FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell, FaEnvelope, FaHome, FaUser } from "react-icons/fa";
 import Link from "next/link";
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken';
-import { FaBriefcase } from "react-icons/fa6";
+import { FaBriefcase, FaRegHandBackFist } from "react-icons/fa6";
 import { GiTicket } from "react-icons/gi";
-
+import { useAppContext } from "../../context/AppContext";
 import styles from "./navbar.module.css";
 
 
@@ -38,21 +38,23 @@ async function fetchUserData(id) {
 export default async function Navbar() {
 
 
+  // const { singleFreelancer, isLoggedIn ,} = useAppContext();
 
   const cookieStore = cookies();
+  // console.log(singleFreelancer);
 
 
   const token = cookieStore.get('token');
 
-  // let url = process.env.NEXTAUTH_URL
-  //     console.log('API URL:', url); 
+  let url = process.env.NEXTAUTH_URL
+      console.log('API URL:', url); 
 
   let isLoggedIn = false;
   let user = null;
 
   if (token) {
     isLoggedIn = true;
-    const decoded = jwt.decode(token.value);
+    let decoded = jwt.decode(token.value);
     if (decoded && decoded.id) {
       const userData = await fetchUserData(decoded.id);
       if (userData) {
@@ -207,7 +209,7 @@ export default async function Navbar() {
 {isLoggedIn && (
               <>
               <li className= {`nav-item ${styles.navItem}`}  >
-                <Link className="nav-link text-white d-flex" href="/project">
+                <Link className="nav-link text-white d-flex" href={`/freelancers/${user._id}/portfolio`}>
                    اعمالي
                   <FaBriefcase className="ms-1 mt-1" />
                 </Link>

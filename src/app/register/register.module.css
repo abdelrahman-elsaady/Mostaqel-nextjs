@@ -1,4 +1,4 @@
-.container {
+/* .container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,11 +8,52 @@
 
 .formContainer {
   background-color: white;
-  padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 1000px;
+}
+
+.content {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.leftColumn, .rightColumn {
+  flex: 1;
+}
+
+.leftColumn {
+  padding-left: 2rem;
+}
+
+.productList {
+  display: flex;
+}
+
+.productsSvg {
+  height: auto;
+  width: 50px;
+}
+
+.productTexts {
+  margin-right: 1rem;
+}
+
+.productItem {
+  margin-bottom: 1rem;
+}
+
+.productItem h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.productItem h5 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
 }
 
 .socialLogin {
@@ -23,7 +64,14 @@
 }
 
 .googleBtn, .microsoftBtn {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .separator {
@@ -37,34 +85,22 @@
 .separator::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ccc;
 }
 
 .separator span {
-  padding: 0 10px;
-  color: #777;
+  padding: 0 0.5rem;
 }
 
 .formGroup {
   margin-bottom: 1rem;
 }
 
-.formGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
 .formGroup input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-.error {
-  color: red;
-  font-size: 0.8rem;
-  margin-top: 0.2rem;
 }
 
 .checkbox {
@@ -75,7 +111,7 @@
 
 .submitBtn {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.5rem;
   background-color: #007bff;
   color: white;
   border: none;
@@ -83,12 +119,76 @@
   cursor: pointer;
 }
 
-.submitBtn:disabled {
-  background-color: #ccc;
+.error {
+  color: red;
+  font-size: 0.8rem;
 }
 
-.message {
-  margin-top: 1rem;
-  text-align: center;
-  color: #ff0000;
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .leftColumn {
+    display: none;
+  }
+
+  .rightColumn {
+    width: 100%;
+  }
+} */
+
+.container {
+  max-width: 1000px;
+}
+
+.btn-outline-secondary {
+  border-color: #ccc;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+.customInput {
+  border-radius: 0 !important;
+}
+.hr {
+  position: relative;
+  top: 0.5em;
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: 1em;
+}
+
+.form-control:focus {
+  border-color: #ced4da;  /* This is the default border color */
+  box-shadow: none;
+}
+
+.form-check-input:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
+.customInput:focus {
+  box-shadow: none;
+  border-color: #ced4da;  /* This is the default Bootstrap border color */
+}
+
+.customCheckbox:focus {
+  box-shadow: none;
+  border-color: #020d18;
+}
+.customCheckbox{
+  border-color: #f80b0b;
+  size: 50px;
+}
+/* Optional: If you want to add a subtle indication of focus */
+.customInput:focus, .customCheckbox:focus {
+  outline: 1px solid #ced4da;
 }

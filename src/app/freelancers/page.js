@@ -9,10 +9,11 @@ export default function Freelancers() {
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
-
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchFreelancers();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -36,6 +37,12 @@ export default function Freelancers() {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
+
+  if (loading) return  <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+  <div className="spinner-border text-primary" role="status">
+    <span className="visually-hidden">جاري التحميل...</span>
+  </div>
+</div>;
 
   return (
     <>
