@@ -64,7 +64,7 @@ export const AppProvider = ({ children }) => {
 
   const updateProfile = async (userId, profileData) => {
     try {
-      const response = await axios.patch(`${process.env.BASE_URL}//users/${userId}`, profileData, {
+      const response = await axios.patch(`${process.env.BASE_URL}/users/${userId}`, profileData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
