@@ -8,7 +8,7 @@ import { FaPlusCircle } from "react-icons/fa";
 
 async function fetchUserData(id) {
   try {
-    const response = await fetch(`http://localhost:3344/users/${id}`);
+    const response = await fetch(`${process.env.BASE_URL}/users/${id}`);
     if (response.ok) {
       return await response.json();
     } else {
