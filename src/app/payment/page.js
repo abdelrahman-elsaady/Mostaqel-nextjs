@@ -39,7 +39,7 @@ const CheckoutForm = ({ amount, onSuccess }) => {
             const { id } = paymentMethod;
             try {
                 console.log("Sending payment request to backend");
-                const response = await axios.post(`${process.env.BASE_URL}//balance/charge`, {
+                const response = await axios.post(`${process.env.BASE_URL}/balance/charge`, {
                     id,
                     amount: Math.round(amount * 100), // Ensure amount is in cents and rounded
                 });
@@ -104,12 +104,12 @@ export default function PaymentPage() {
             if (userId) {
                 const userData = await getFreelancerById(userId);
                 setUser(userData);
-                setLoading(false);
                 
                 
             }
         };
         fetchUser();
+        setLoading(false);
     }, [userId]);
     console.log(user);
     // useEffect(() => {

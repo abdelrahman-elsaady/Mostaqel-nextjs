@@ -5,7 +5,7 @@ export default async function Portfolio({params}) {
     let portfolio = [];
 
     try {
-        const response = await axios.get(`${process.env.BASE_URL}//users/${params.id}`);
+        const response = await axios.get(`${process.env.BASE_URL}/users/${params.id}`);
         portfolio = response.data.data.portfolio;
     } catch (error) {
         console.error('Error fetching portfolio:', error);
