@@ -44,7 +44,7 @@ export const AppProvider = ({ children }) => {
 
   const getFreelancerById = async (id) => {
     try {
-          const response = await axios.get(`${process.env.BASE_URL}//users/${id}`);
+          const response = await axios.get(`${process.env.BASE_URL}/users/${id}`);
       setSingleFreelancer(response.data.data);
       return response.data.data;
     } catch (err) {
