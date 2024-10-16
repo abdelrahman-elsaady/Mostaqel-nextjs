@@ -37,19 +37,11 @@ const [skillSearch, setSkillSearch] = useState('');
     jobTitle: ''
   });
 
-  useEffect(() => {
-    if (isProfileComplete) {
-      Swal.fire({
-        title: 'تم الحفظ بنجاح',
-        text: `شكراً ${formData.firstName}`,
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false
-      }).then(() => {
-        router.push('/');
-      });
-    }
-  }, [isProfileComplete, router]);
+  // useEffect(() => {
+  //   if (isProfileComplete) {
+     
+  //   }
+  // }, [isProfileComplete, router]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,8 +131,21 @@ const [skillSearch, setSkillSearch] = useState('');
     if (profilePicture) {
       formDataToSend.append('profilePicture', profilePicture);
     }
-    await updateProfile(userId, formDataToSend);
-    router.push('/');
+    const response = await updateProfile(userId, formDataToSend);
+    if(response.status === 200){
+      Swal.fire({
+        icon: 'success',
+        title: 'تم حفظ الملف الشخصي بنجاح',
+        showConfirmButton: false,
+        text: `شكراً ${formData.firstName}`,
+        timer: 1500
+      }).then(() => {
+        router.push('/');
+      });
+    }
+ 
+    // console.log(response);
+    // router.push('/');
   };
 
   const isFormComplete = () => {
