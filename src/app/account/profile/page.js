@@ -147,7 +147,7 @@ const [skillSearch, setSkillSearch] = useState('');
     return Object.values(formData).every(value => value !== '') && selectedSkills.length > 0;
   };
 
-//   if (!userData) return <div>Loading...</div>;
+
 if (isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
    <div className="spinner-border text-primary" role="status">
      <span className="visually-hidden">جاري التحميل...</span>
@@ -155,7 +155,7 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
  </div>;
   return (
     <>
-    {/* {isLoggedIn ?   */}
+    
     
     <div className="container-fluid py-5" style={{backgroundColor: '#f0f2f5'}} dir='rtl'>
     <div className="row justify-content-center">
@@ -407,7 +407,6 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
       </div>
     </div>
   </div>
-    {/* : <div>Please login to complete your profile</div>} */}
     </>
   );
 };
@@ -415,7 +414,3 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
 export default ProfileCompletion;
 
 
-// ... existing imports and component setup ...
-
-
-// ... rest of the component
