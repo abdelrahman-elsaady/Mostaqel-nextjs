@@ -8,7 +8,9 @@ import Image from 'next/image';
 import axios from 'axios';
 import {countries} from 'countries-list';
 import { BsPencilSquare } from "react-icons/bs";
-
+import Swal from 'sweetalert2';
+import { FaBriefcase } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 
 const ProfileCompletion = () => {
   const { userId, isLoggedIn, getFreelancerById, updateProfile, fetchSkillsAndCategories, isProfileComplete ,setSingleFreelancer} = useAppContext();
@@ -18,6 +20,10 @@ const ProfileCompletion = () => {
   const [categories, setCategories] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
+const [skillSearch, setSkillSearch] = useState('');
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -33,7 +39,15 @@ const ProfileCompletion = () => {
 
   useEffect(() => {
     if (isProfileComplete) {
-      router.push('/');
+      Swal.fire({
+        title: 'تم الحفظ بنجاح',
+        text: `شكراً ${formData.firstName}`,
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        router.push('/');
+      });
     }
   }, [isProfileComplete, router]);
 
@@ -59,11 +73,13 @@ const ProfileCompletion = () => {
           console.log(userData);
           setSelectedSkills(userData.skills || []);
           setProfilePicture(userData.profilePicture || null);
+          setIsLoading(false);
         }
       }
       const { skills: fetchedSkills, categories: fetchedCategories } = await fetchSkillsAndCategories();
       setSkills(fetchedSkills);
       setCategories(fetchedCategories);
+      setIsLoading(false);
     };
     fetchData();
   }, [userId]);
@@ -72,11 +88,14 @@ const ProfileCompletion = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  const toggleSkillDropdown = () => {
+    setIsSkillDropdownOpen(!isSkillDropdownOpen);
+  };
   const handleSkillClick = (skill) => {
     if (!selectedSkills.find((s) => s._id === skill._id)) {
       setSelectedSkills([...selectedSkills, skill]);
       setSkills(skills.filter((s) => s._id !== skill._id));
+      setIsSkillDropdownOpen(false); // Close the dropdown after selection
     }
   };
 
@@ -84,9 +103,22 @@ const ProfileCompletion = () => {
     const removedSkill = selectedSkills.find((skill) => skill._id === skillId);
     setSelectedSkills(selectedSkills.filter((skill) => skill._id !== skillId));
     if (removedSkill) {
-      setSkills([...skills, removedSkill]);
+      setSkills([...skills, removedSkill].sort((a, b) => a.name.localeCompare(b.name)));
     }
   };
+  useEffect(() => {
+    if (skillSearch) {
+      const filteredSkills = skills.filter(skill => 
+        skill.name.toLowerCase().includes(skillSearch.toLowerCase())
+      );
+      setSkills(filteredSkills);
+    } else {
+      // Reset to original skills list when search is empty
+      fetchSkillsAndCategories().then(({ skills: fetchedSkills }) => {
+        setSkills(fetchedSkills);
+      });
+    }
+  }, [skillSearch]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -116,240 +148,274 @@ const ProfileCompletion = () => {
   };
 
 //   if (!userData) return <div>Loading...</div>;
-
+if (isLoading) return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+   <div className="spinner-border text-primary" role="status">
+     <span className="visually-hidden">جاري التحميل...</span>
+  </div>
+ </div>;
   return (
     <>
     {/* {isLoggedIn ?   */}
     
-    <div className="container py-5" dir="rtl" style={{backgroundColor: '#e9e9e9'}}>
-  <h1 className="text-center mb-4">الملف الشخصي</h1>
-  <form onSubmit={handleSubmit}>
-    <div className="text-center mb-4">
-      <div className="position-relative d-inline-block">
-        <img
-          src={profilePicture || '/default-avatar.png'}
-          alt="Profile Picture"
-          width={150}
-          height={150}
-          className="rounded-circle"
-        />
-        <label htmlFor="profile-picture" className="btn btn-sm btn-primary position-absolute bottom-0 end-0">
-          <BsPencilSquare />
-        </label>
-        <input
-          type="file"
-          id="profile-picture"
-          className="d-none"
-          onChange={handleImageUpload}
-          accept="image/*"
-        />
-      </div>
-    </div>
+    <div className="container-fluid py-5" style={{backgroundColor: '#f0f2f5'}} dir='rtl'>
+    <div className="row justify-content-center">
+      <div className="col-lg-8">
+        <div className="card shadow-lg">
+          <div className="card-body p-5">
+            <h1 className="text-center mb-5 text-primary">الملف الشخصي</h1>
+            <form onSubmit={handleSubmit}>
+              <div className="text-center mb-5">
+                <div className="position-relative d-inline-block">
+                  <img
+                    src={profilePicture || '/default-avatar.png'}
+                    alt="Profile Picture"
+                    width={150}
+                    height={150}
+                    className="rounded-circle border border-3 border-primary"
+                  />
+                  <label htmlFor="profile-picture" className="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle">
+                    <BsPencilSquare />
+                  </label>
+                  <input
+                    type="file"
+                    id="profile-picture"
+                    className="d-none"
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                  />
+                </div>
+              </div>
 
-    <div className="row mb-3">
-      <div className="col-md-6 mb-3 mb-md-0">
-        <label className="form-label">الاسم</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="الاسم الأول"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div className="col-md-6">
-        <label className="form-label">اسم العائلة</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="اسم العائلة"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-    </div>
-
-    <div className="row mb-3">
-      <div className="col-md-6 mb-3 mb-md-0">
-        <label className="form-label">الدولة</label>
-        <select
-          className="form-select"
-          name="country"
-          value={formData.country}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="">اختر الدولة</option>
-          {Object.entries(countries).map(([code, country]) => (
-            <option key={code} value={country.name}>
-              {country.emoji} {country.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="col-md-6">
-        <label className="form-label">اللغة</label>
-        <select
-          className="form-select"
-          name="language"
-          value={formData.language}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="">اختر اللغة</option>
-          <option value="عربي">عربي</option>
-          <option value="English">English</option>
-        </select>
-      </div>
-    </div>
-
-    <div className="row mb-3">
-      <div className="col-md-6 mb-3 mb-md-0">
-        <label className="form-label">الجنس</label>
-        <select
-          className="form-select"
-          name="gender"
-          // defaultValue={formData.gender}
-          
-          value={formData.gender}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="">اختر الجنس</option>
-          <option value="ذكر">ذكر</option>
-          <option value="أنثى">أنثى</option>
-        </select>
-      </div>
-      <div className="col-md-6">
-        <label className="form-label">تاريخ الميلاد</label>
-        <input
-          type="date"
-          className="form-control"
-          name="dateOfBirth"
-          defaultValue={formData.dateOfBirth}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-    </div>
-
-    <div className="mb-3">
-      <label className="form-label">نوع الحساب</label>
-      <div>
-        <div className="form-check form-check-inline">
-          <input
-            className="form-check-input"
-            type="radio"
-            name="role"
-            id="freelancer"
-            value="freelancer"
-            checked={formData.role === 'freelancer'}
-            onChange={handleInputChange}
-            required
-          />
-          <label className="form-check-label" htmlFor="freelancer">مقدم خدمة</label>
-        </div>
-        <div className="form-check form-check-inline">
-          <input
-            className="form-check-input"
-            type="radio"
-            name="role"
-            id="client"
-            value="client"
-            checked={formData.role === 'client'}
-            onChange={handleInputChange}
-            required
-          />
-          <label className="form-check-label" htmlFor="client">صاحب عمل</label>
-        </div>
-      </div>
-    </div>
-
-    <div className="mb-3">
-      <label className="form-label">التصنيف</label>
-      <select
-        className="form-select"
-        name="category"
-        value={formData.category}
-        onChange={handleInputChange}
-        required
-      >
-        <option value="">اختر التصنيف</option>
-        {categories.map((category) => (
-          <option key={category._id} value={category._id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
-    </div>
-
-    <div className="mb-3">
-      <label className="form-label">المهارات</label>
-      <div className="d-flex flex-wrap gap-2 mb-2">
-        {selectedSkills.map((skill) => (
-          <span key={skill._id} className="badge bg-primary">
-            {skill.name}
-            <button
-              type="button"
-              className="btn-close btn-close-white ms-2"
-              onClick={() => handleRemoveSkill(skill._id)}
-            ></button>
-          </span>
-        ))}
-      </div>
-      <div className="d-flex flex-wrap gap-2">
-        {skills.map((skill) => (
-          <button
-            key={skill._id}
-            type="button"
-            className="btn btn-outline-primary btn-sm"
-            onClick={() => handleSkillClick(skill)}
-          >
-            {skill.name}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    <div className="mb-3">
-      <label className="form-label">السيرة الذاتية</label>
-      <textarea
-        className="form-control"
-        placeholder="السيرة الذاتية"
-        name="bio"
-        value={formData.bio}
-        onChange={handleInputChange}
-        required
-      ></textarea>
-    </div>
-
-    <div className="mb-3">
-      <label className="form-label">المسمى الوظيفي</label>
+              
+              <div className="mb-5">
+  <label className="form-label fw-bold fs-5 mb-3">  اختر نوع الحساب</label>
+  <div className="d-flex justify-content-center gap-4">
+    <div className="form-check form-check-inline">
       <input
-        type="text"
-        className="form-control"
-        placeholder="المسمى الوظيفي"
-        name="jobTitle"
-        value={formData.jobTitle}
+        className="form-check-input visually-hidden"
+        type="radio"
+        name="role"
+        id="freelancer"
+        value="freelancer"
+        checked={formData.role === 'freelancer'}
         onChange={handleInputChange}
         required
       />
+      <label 
+        className={`form-check-label btn btn-lg px-4 py-3 ${
+          formData.role === 'freelancer' ? 'btn-primary' : 'btn-outline-primary'
+        }`} 
+        htmlFor="freelancer"
+      >
+        <FaUser className="me-2" />
+        مقدم خدمة
+      </label>
     </div>
-
-    <div className="text-center">
-      <button type="submit" className="btn btn-primary" >
-          حفظ
-      </button>
+    <div className="or-divider pt-3">
+      <span className="bg-white px-3 fw-bold fs-5">أو</span>
     </div>
-  </form>
+    
+    <div className="form-check form-check-inline">
+      <input
+        className="form-check-input visually-hidden"
+        type="radio"
+        name="role"
+        id="client"
+        value="client"
+        checked={formData.role === 'client'}
+        onChange={handleInputChange}
+        required
+      />
+      <label 
+        className={`form-check-label btn btn-lg px-4 py-3 ${
+          formData.role === 'client' ? 'btn-primary' : 'btn-outline-primary'
+        }`} 
+        htmlFor="client"
+      >
+        <FaBriefcase className="me-2" />
+        صاحب عمل
+      </label>
+    </div>
+  </div>
 </div>
+
+              <div className="row g-4 mb-4">
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">الاسم</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-lg"
+                    placeholder="الاسم الأول"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">اسم العائلة</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-lg"
+                    placeholder="اسم العائلة"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="row g-4 mb-4">
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">الدولة</label>
+                  <select
+                    className="form-select form-select-lg"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">اختر الدولة</option>
+                    {Object.entries(countries).map(([code, country]) => (
+                      <option key={code} value={country.name}>
+                        {country.emoji} {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">اللغة</label>
+                  <select
+                    className="form-select form-select-lg"
+                    name="language"
+                    value={formData.language}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">اختر اللغة</option>
+                    <option value="عربي">عربي</option>
+                    <option value="English">English</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="row g-4 mb-4">
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">الجنس</label>
+                  <select
+                    className="form-select form-select-lg"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">اختر الجنس</option>
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                  </select>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label fw-bold">تاريخ الميلاد</label>
+                  <input
+                    type="date"
+                    className="form-control form-control-lg"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+  <label className="form-label fw-bold" >اختر مهاراتك</label>
+  <div className="mb-3">
+    <div className="form-control  d-flex flex-wrap gap-2 ">
+      {selectedSkills.map((skill) => (
+        <span key={skill._id} className=" badge bg-primary  d-flex align-items-center ">
+          {skill.name}
+
+          <button
+            type="button"
+            className="btn-close btn-close-white ms-2 small"
+            onClick={() => handleRemoveSkill(skill._id)}
+          ></button>
+        </span>
+      ))}
+    </div>
+  </div>
+  <div className="input-group mb-3">
+    <input
+      type="text"
+      className="form-control"
+      placeholder="ابحث عن مهارات..."
+      onChange={(e) => setSkillSearch(e.target.value)}
+    />
+  </div>
+  <div className="card p-3 mb-3">
+    <div className="d-flex flex-wrap gap-2">
+      {skills.slice(0, 10).map((skill) => (
+        <button
+          key={skill._id}
+          type="button"
+          className="btn btn-sm btn-outline-primary small"
+          onClick={() => handleSkillClick(skill)}
+        >
+          {skill.name}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+         
+
+              <div className="mb-4">
+                <label className="form-label fw-bold">السيرة الذاتية</label>
+                <textarea
+                  className="form-control form-control-lg"
+                  placeholder="اكتب نبذة عن نفسك"
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleInputChange}
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+
+              <div className="mb-4">
+                <label className="form-label fw-bold">المسمى الوظيفي</label>
+                <input
+                  type="text"
+                  className="form-control form-control-lg"
+                  placeholder="مثال: مصمم جرافيك"
+                  name="jobTitle"
+                  value={formData.jobTitle}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="text-center">
+                <button type="submit" className="btn btn-primary btn-lg px-5">
+                  حفظ الملف الشخصي
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
     {/* : <div>Please login to complete your profile</div>} */}
     </>
   );
 };
 
 export default ProfileCompletion;
+
+
+// ... existing imports and component setup ...
+
+
+// ... rest of the component

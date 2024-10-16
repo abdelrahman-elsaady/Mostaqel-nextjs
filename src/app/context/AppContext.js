@@ -15,9 +15,9 @@ export const AppProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState('');
-  const [token, setToken] = useState(null);
-  const [singleFreelancer, setSingleFreelancer] = useState(null);
-  const [singleProject, setSingleProject] = useState(null);
+  const [token, setToken] = useState('');
+  const [singleFreelancer, setSingleFreelancer] = useState({});
+  const [singleProject, setSingleProject] = useState({});
 
 
   const fetchFreelancers = async () => {
@@ -44,7 +44,7 @@ export const AppProvider = ({ children }) => {
 
   const getFreelancerById = async (id) => {
     try {
-          const response = await axios.get(`${process.env.BASE_URL}/users/${id}`);
+          const response = await axios.get(`${process.env.BASE_URL}//users/${id}`);
       setSingleFreelancer(response.data.data);
       return response.data.data;
     } catch (err) {
@@ -64,7 +64,7 @@ export const AppProvider = ({ children }) => {
 
   const updateProfile = async (userId, profileData) => {
     try {
-      const response = await axios.patch(`${process.env.BASE_URL}/users/${userId}`, profileData, {
+      const response = await axios.patch(`${process.env.BASE_URL}//users/${userId}`, profileData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -92,9 +92,19 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // let cookies = new Cookies();
+  // let token = cookies.get('token');
+
+  // if (token) {
+  //   setToken(token);
+  //   const decoded = jwtDecode(token);
+  //   setUserId(decoded.id);
+  //   setIsLoggedIn(true);
+  // }
+
   useEffect(() => {
-    const cookies = new Cookies();
-    const token = cookies.get('token');
+      let cookies = new Cookies();
+  let token = cookies.get('token');
     if (token) {
       setToken(token);
       const decoded = jwtDecode(token);
@@ -102,7 +112,7 @@ export const AppProvider = ({ children }) => {
       setIsLoggedIn(true);
       getFreelancerById(decoded.id);
     }
-  }, []);
+  }, [token]);
 
   return (
     <AppContext.Provider value={{

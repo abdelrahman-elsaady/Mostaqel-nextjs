@@ -14,18 +14,24 @@ import { BsGraphUpArrow } from "react-icons/bs";
 import { PiHeadset } from "react-icons/pi";
 import { TbReportSearch } from "react-icons/tb";
 import { IoDocumentTextOutline } from "react-icons/io5";
-
+import UserHome from "./components/home/page"
 // import { CiBadgeDollar, CiMedal, CiDollar, CiShieldCheck, CiUser, CiLock } from 'react-icons/fa';
+import { cookies } from 'next/headers'
 
 import Div3Rues from "./components/reusableComponents/div-3-home";
 import Div5Rues from "./components/reusableComponents/div-5-home";
 import Div6Rues from "./components/reusableComponents/div-6-home";
-// import Accordion from "./components/reusableComponents/accordion-home";
+
 export default function Home() {
+
+const cookieStore = cookies()
+const token = cookieStore.get('token')
+
 
  
   return (
     <>
+    {token ? <UserHome/> :
 <div className="container-fluid">
       <div className=" " dir="rtl">
         {/* الديفاييه الاولى */}
@@ -299,6 +305,7 @@ export default function Home() {
       </div>
 
       </div>
+      }
     </>
   );
 }

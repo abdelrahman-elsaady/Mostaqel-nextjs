@@ -1,28 +1,21 @@
 import React from 'react'
+import axios from 'axios';
 
 export default async function Portfolio({params}) {
     let portfolio = [];
 
     try {
-        const res = await fetch(`${process.env.BASE_URL}/portfolio/freelancer/${params.id}`);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch portfolio data');
-        }
-
-        const text = await res.text();
-        if (text) {
-            portfolio = JSON.parse(text);
-        }
+        const response = await axios.get(`${process.env.BASE_URL}//users/${params.id}`);
+        portfolio = response.data.data.portfolio;
     } catch (error) {
         console.error('Error fetching portfolio:', error);
     }
 
-    console.log(portfolio);
+    // console.log(portfolio.data.portfolio);
 
     return (
         <div>
-            {Array.isArray(portfolio) && portfolio.length > 0 ? (
+            {portfolio.length > 0 ? (
                 <div className='row'>
 
                     {portfolio.map((portfolio) => (

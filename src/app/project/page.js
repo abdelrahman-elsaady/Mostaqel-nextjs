@@ -37,14 +37,15 @@ export default function Projects() {
   // const [isLoading, setIsLoading] = useState(true);
   // console.log(cookies.get('token'));
   
-  const { projects, fetchProjects, isLoggedIn } = useAppContext();
+  const { projects, fetchProjects, isLoggedIn ,token} = useAppContext();
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  console.log(token);
   useEffect(() => {
     fetchProjects();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function Projects() {
     });
     setFilteredProjects(filtered);
     console.log(projects);
+    setLoading(false);
   }, [projects, selectedCategories, searchTerm]);
 
 
@@ -98,35 +100,7 @@ export default function Projects() {
                 المشاريع المفتوحة
               </a>
 
-              {/* <div
-                className="d-flex justify-content-between align-items-center "
-                style={{ marginLeft: "5%" }}
-              > */}
-                {/* <div className="dropdown">
-                  <button
-                    className="btn dropdown-toggle"
-                    style={{ backgroundColor: '#ffffff', border: '1px solid #000', borderRadius: '0px' }}
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    الاحدث
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a className="dropdown-item" href="#">
-                      الاقدم
-                    </a>
-                    <a className="dropdown-item" href="#">
-                      الاكثر عروضا
-                    </a>
-                    <a className="dropdown-item" href="#">
-                      الاقل عروضا
-                    </a>
-                  </div>
-                </div> */}
-              {/* </div> */}
+           
             </nav>
           </div>
 
@@ -163,87 +137,6 @@ export default function Projects() {
           ))}
         </div>
 
-              {/* skills */}
-              {/* <div className="mt-4">
-                <h5>المهارات</h5>
-                <input
-                  type="text"
-                  className="form-control"
-                  style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-
-                />
-              </div>
-
-              
-              <div className="mt-4">
-                <h5>مدة التسليم</h5>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="delivery1"
-                  />
-                  <label className="form-check-label" htmlFor="delivery1">
-                    أقل من أسبوع واحد
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="delivery2"
-                  />
-                  <label className="form-check-label" htmlFor="delivery2">
-                    من 1 إلى 2 أسابيع
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="delivery3"
-                  />
-                  <label className="form-check-label" htmlFor="delivery3">
-                    من 2 أسابيع إلى شهر
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="delivery4"
-                  />
-                  <label className="form-check-label" htmlFor="delivery4">
-                    من شهر إلى 3 أشهر
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="delivery5"
-                  />
-                  <label className="form-check-label" htmlFor="delivery5">
-                    أكثر من 3 أشهر
-                  </label>
-                </div>
-              </div>
-
-              
-              <div className="mt-4">
-                <h5>الميزانية</h5>
-                <input
-                  type="range"
-                  className="form-range"
-                  min="25"
-                  max="10000"
-                  id="budgetRange"
-                />
-                <div className="d-flex justify-content-between">
-                  <span>25.00</span>
-                  <span>10000.00</span>
-                </div>
-              </div> */}
             </aside>
 
             {/* content */}

@@ -117,7 +117,7 @@ export default function ProjectDetails() {
     }
 
     try {
-      const response = await fetch(`${process.env.BASE_URL}/proposals`, {
+      const response = await fetch(`http://localhost:3344/proposals`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

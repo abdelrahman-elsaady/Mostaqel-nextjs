@@ -40,11 +40,22 @@ export async function handleLogin(formData) {
     const userData = await fetchUserData(decoded.id);
     // revalidatePath('/')
     if (userData.data.skills.length == 0) {
-      redirect('/account/profile')
+      return {
+        success: true,
+        message: "Welcome! Let's set up your profile.",
+        redirectUrl: '/account/profile'
+      }
     } else {
-      redirect('/')
+      return {
+        success: true,
+        message: "Login successful. Redirecting to dashboard...",
+        redirectUrl: '/'
+      }
     }
   } else {
-    return { error: result.error || 'Login failed. Please try again.' }
+    return { 
+      success: false,
+      error: result.error || 'Login failed. Please try again.' 
+    }
   }
 }

@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { FaUser, FaBriefcase } from 'react-icons/fa';
 import React from 'react'
 import styless from './layout.module.css'
+import { cookies } from 'next/headers'
+
+
 
 export async function getFreelancer(id) {
   const res = await fetch(`${process.env.BASE_URL}/users/${id}`);
@@ -20,6 +23,8 @@ export default async function FreelancerLayout({ children, params }) {
   const freelancer = freelancerData.data;
 
   if (!freelancer) return <div>Freelancer not found</div>;
+  const cookieStore = cookies()
+  const token = cookieStore.get('token')
 
   return (
 
@@ -57,7 +62,17 @@ export default async function FreelancerLayout({ children, params }) {
           </div>
           
           {/* Add the three links */}
-          <div className="mt-3">
+          {/* {token && (
+            <div className="mt-3">
+              <Link href={`/freelancers/${id}/add-work`} className="btn btn-primary me-2">
+                اضف عمل
+              </Link>
+              <Link href={`/freelancers/${id}/edit-profile`} className="btn btn-secondary">
+                تعديل الملف الشخصي
+              </Link>
+            </div>
+          )}ص */}
+          <div className="mt-3  ">
             <ul className="nav nav-tabs ">
               <li className="nav-item">
                 <Link href={`/freelancers/${id}`} className={`nav-link active ${styless.medhat}`}  >الملف الشخصي</Link>
@@ -68,6 +83,18 @@ export default async function FreelancerLayout({ children, params }) {
               <li className="nav-item">
                 <Link href={`/freelancers/${id}/portfolio`} className="nav-link active"  >معرض الأعمال</Link>
               </li>
+            {token && (
+              <li className="nav-item position-absolute start-0 ">
+              {/* <div className="mt-3 position-absolute start-0 "> */}
+                <Link href={`/portifolio/create`} className="btn btn-primary ms-2"style={{borderRadius:'0px'}}>
+                  اضف عمل
+                </Link>
+                <Link href={`/account/profile`} className="btn btn-primary " style={{borderRadius:'0px'}}>
+                  تعديل الملف الشخصي
+                </Link>
+              {/* </div> */}
+              </li>
+            )}
             </ul>
           </div>
         </div>

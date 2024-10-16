@@ -46,8 +46,8 @@ export default async function Navbar() {
 
   const token = cookieStore.get('token');
 
-  let url = process.env.NEXTAUTH_URL
-      console.log('API URL:', url); 
+  // let url = process.env.NEXTAUTH_URL
+  //     console.log('API URL:', url); 
 
   let isLoggedIn = false;
   let user = null;
@@ -215,7 +215,7 @@ export default async function Navbar() {
                 </Link>
               </li>
               <li className= {`nav-item ${styles.navItem}`}  >
-                <Link className="nav-link text-white d-flex" href="/project">
+                <Link className="nav-link text-white d-flex" href="/freelancers/bids">
                    عروضي
                   <GiTicket className="ms-1 mt-1" />
                 </Link>

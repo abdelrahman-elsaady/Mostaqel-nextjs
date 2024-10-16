@@ -13,7 +13,7 @@ const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchFreelancers();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -24,6 +24,7 @@ const [loading, setLoading] = useState(true);
       return categoryMatch && searchMatch;
     });
     setFilteredFreelancers(filtered);
+    setLoading(false);
   }, [freelancers, selectedCategories, searchTerm]);
 
   const handleCategoryChange = (category) => {
