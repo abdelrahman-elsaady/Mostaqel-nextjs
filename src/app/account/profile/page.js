@@ -5,6 +5,9 @@ import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Cookies from 'universal-cookie';
+import { jwtDecode } from "jwt-decode";
+
 import axios from 'axios';
 import {countries} from 'countries-list';
 import { BsPencilSquare } from "react-icons/bs";
@@ -13,7 +16,7 @@ import { FaBriefcase } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 
 const ProfileCompletion = () => {
-  const { userId, isLoggedIn, getFreelancerById, updateProfile, fetchSkillsAndCategories, isProfileComplete ,setSingleFreelancer} = useAppContext();
+  const {  isLoggedIn, getFreelancerById, updateProfile, fetchSkillsAndCategories, isProfileComplete ,setSingleFreelancer} = useAppContext();
   const router = useRouter();
   const [userData, setUserData] = useState(null);
   const [skills, setSkills] = useState([]);
@@ -23,7 +26,7 @@ const ProfileCompletion = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
 const [skillSearch, setSkillSearch] = useState('');
-
+const [userId, setUserId] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -42,10 +45,22 @@ const [skillSearch, setSkillSearch] = useState('');
      
   //   }
   // }, [isProfileComplete, router]);
+// const [cookies, setCookies] = useCookies(['token']);
+    let cookies = new Cookies();
+  const [token, setToken] = useState( cookies.get('token'));
 
+
+  
   useEffect(() => {
+    // let token = cookies.get('token');
+    if(token){  
+      const decoded = jwtDecode(token);
+      setUserId(decoded.id);
+    }
+
+
     const fetchData = async () => {
-      if (userId) {
+      if (token) {
         const userData = await getFreelancerById(userId);
         setUserData(userData);
         setSingleFreelancer(userData);
@@ -71,9 +86,10 @@ const [skillSearch, setSkillSearch] = useState('');
       const { skills: fetchedSkills, categories: fetchedCategories } = await fetchSkillsAndCategories();
       setSkills(fetchedSkills);
       setCategories(fetchedCategories);
-      setIsLoading(false);
+      // setIsLoading(false);
     };
     fetchData();
+    // setIsLoading(false);
   }, [userId]);
 
   const handleInputChange = (e) => {
@@ -132,7 +148,8 @@ const [skillSearch, setSkillSearch] = useState('');
       formDataToSend.append('profilePicture', profilePicture);
     }
     const response = await updateProfile(userId, formDataToSend);
-    if(response.status === 200){
+    console.log(response);
+    if(response.message == 'User was edited successfully'){
       Swal.fire({
         icon: 'success',
         title: 'تم حفظ الملف الشخصي بنجاح',

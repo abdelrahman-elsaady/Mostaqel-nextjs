@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppContext } from '../../context/AppContext';
-
+import Swal from 'sweetalert2';
 const PortfolioItemForm = ({ searchParams }) => {
   const { id } = searchParams;
   const router = useRouter();
@@ -61,8 +61,8 @@ const PortfolioItemForm = ({ searchParams }) => {
 console.log(portfolioData);
 
     const url = id 
-      ? `${process.env.BASE_URL}//portfolio/${id}`
-      : '${process.env.BASE_URL}//portfolio';
+      ? `${process.env.BASE_URL}/portfolio/${id}`
+      : `${process.env.BASE_URL}/portfolio`;
     
     const method = id ? 'PATCH' : 'POST';
 
@@ -77,8 +77,14 @@ console.log(portfolioData);
       });
 
       if (res.ok) {
-        // router.push('/portfolio');
-        console.log('Portfolio item saved successfully');
+        Swal.fire({
+          title: 'تم إضافة العمل بنجاح',
+          icon: 'success',
+          confirmButtonText: 'حسنًا'
+        }).then(() => {
+          router.push('/');
+        });
+        // console.log('Portfolio item saved successfully');
       } else {
         console.error('Failed to save portfolio item');
       }

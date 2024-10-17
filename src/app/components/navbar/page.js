@@ -8,6 +8,7 @@ import { GiTicket } from "react-icons/gi";
 import { useAppContext } from "../../context/AppContext";
 import styles from "./navbar.module.css";
 
+import ClientNav from "./clientNav";
 
 
 async function fetchUserData(id) {
@@ -189,12 +190,13 @@ export default async function Navbar() {
                       <FaBell />
                     </Link>
                   </li>
-                  <li className={`nav-item ${styles.navItem}`}>
+                  {/* <li className={`nav-item ${styles.navItem}`}>
                     <Link className="nav-link text-white" href="/messages">
                       <FaEnvelope />
                     </Link>
-                  </li>
+                  </li> */}
 
+                  <ClientNav />
               </>
             )}
             </ul>

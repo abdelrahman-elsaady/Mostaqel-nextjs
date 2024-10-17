@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 // import { loadStripe } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-
+import Cookies from 'universal-cookie';
+import { jwtDecode } from "jwt-decode";
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 
@@ -39,7 +40,7 @@ const CheckoutForm = ({ amount, onSuccess }) => {
             const { id } = paymentMethod;
             try {
                 console.log("Sending payment request to backend");
-                const response = await axios.post(`${process.env.BASE_URL}/balance/charge`, {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/balance/charge`, {
                     id,
                     amount: Math.round(amount * 100), // Ensure amount is in cents and rounded
                 });
@@ -87,29 +88,41 @@ const CheckoutForm = ({ amount, onSuccess }) => {
 
 
 export default function PaymentPage() {
-    const { getFreelancerById, userId, updateProfile } = useAppContext();
+    const { getFreelancerById, updateProfile } = useAppContext();
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
     const [depositAmount, setDepositAmount] = useState('');
     const [showModal, setShowModal] = useState(false);
-
+      const [userId, setUserId] = useState('');
     console.log("Stripe Promise:", stripePromise);
 
 
 
     console.log("Stripe Key:", process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
     
+    let cookies = new Cookies();
+  const [token, setToken] = useState( cookies.get('token'));
+
+
     useEffect(() => {
+
+        if(token){  
+            const decoded = jwtDecode(token);
+            setUserId(decoded.id);
+          }
+
         const fetchUser = async () => {
-            if (userId) {
+            if (token) {
                 const userData = await getFreelancerById(userId);
-                setUser(userData);
-                
+                if(userData){
+                    setUser(userData);
+                    setLoading(false);
+                    console.log(userData);
+                }
                 
             }
         };
         fetchUser();
-        setLoading(false);
     }, [userId]);
     console.log(user);
     // useEffect(() => {

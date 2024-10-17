@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FaTag } from "react-icons/fa6";
 import { Rating } from '@mui/material';
@@ -42,6 +43,8 @@ export default function ProjectDetails() {
     proposal: '',
     receivables: ''
   });
+  const router = useRouter();
+
 
 
 
@@ -49,7 +52,7 @@ export default function ProjectDetails() {
   const [proposals, setProposals] = useState([]);
 
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchProject = async () => {
       try {
         const projectData = await getProjectById(projectId);
@@ -74,7 +77,7 @@ export default function ProjectDetails() {
       return updatedForm;
     });
 
-    
+
   };
 
   const calculateEarnings = () => {
@@ -99,7 +102,7 @@ export default function ProjectDetails() {
 
   const handleSubmitProposal = async (e) => {
     e.preventDefault();
-    
+
     console.log(userId);
     // console.log("userId");
     console.log(project.client._id);
@@ -107,7 +110,7 @@ export default function ProjectDetails() {
       Swal.fire({
         title: 'بلاش غباوة',
         text: 'لا يمكنك تقديم عرض على مشروعك الخاص',
-       
+
         imageUrl: "/balaash.gif",
         imageWidth: 400,
         imageHeight: 200,
@@ -117,7 +120,7 @@ export default function ProjectDetails() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3344/proposals`, {
+      const response = await fetch(`${process.env.BASE_URL}/proposals`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,12 +152,36 @@ export default function ProjectDetails() {
   };
 
 
+  const handleStartConversation = async (freelancerId) => {
+    try {
+      const response = await fetch(`http://localhost:3344/conversations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          projectId: projectId,
+          freelancerId: freelancerId,
+          clientId: project.client._id
+        }),
+      });
+      if (response.ok) {
+        const conversation = await response.json();
+        router.push(`/chat?conversationId=${conversation._id}`);
+      }
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+    }
+  };
 
-  if (loading) return  <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-  <div className="spinner-border text-primary" role="status">
-    <span className="visually-hidden">جاري التحميل...</span>
-  </div>
-</div>;
+
+
+  if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+    <div className="spinner-border text-primary" role="status">
+      <span className="visually-hidden">جاري التحميل...</span>
+    </div>
+  </div>;
   if (error) return <div className="text-center mt-5 text-danger">خطأ: {error}</div>;
   if (!project) return <div className="text-center mt-5">لم يتم العثور على المشروع</div>;
 
@@ -312,6 +339,17 @@ export default function ProjectDetails() {
 
                         </div>
                         <p className="mb-1">{proposal.proposal}</p>
+
+                        {userId == project.client._id && (
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => handleStartConversation(proposal.freelancer._id)}
+                          >
+                            Start Conversation
+                          </button>
+                        )}
+
+
                       </div>
                     ))}
                   </div>

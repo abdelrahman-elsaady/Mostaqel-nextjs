@@ -40,17 +40,9 @@ export async function handleLogin(formData) {
     const userData = await fetchUserData(decoded.id);
     // revalidatePath('/')
     if (userData.data.skills.length == 0) {
-      return {
-        success: true,
-        message: "Welcome! Let's set up your profile.",
-        redirectUrl: '/account/profile'
-      }
+     redirect('/account/profile')
     } else {
-      return {
-        success: true,
-        message: "Login successful. Redirecting to dashboard...",
-        redirectUrl: '/'
-      }
+      redirect('/')
     }
   } else {
     return { 

@@ -139,13 +139,13 @@ export default async function Home() {
 
         </div>
   <div className="col-md-7 text-center mx-3 pt-3 bg-white "  >
-    <Link href={`/freelancers/portfolio/${user.id}`} className='text-decoration-none text-muted'>
+    <Link href={`/freelancers/${user._id}/portfolio`} className='text-decoration-none text-muted'>
           <div className=" border-bottom ">
                <h4>اعمالي</h4>
                <h2>{user.portfolio.length}</h2>
           </div>
           </Link>
-          <Link href='portfolio/create' className='text-decoration-none text-muted'>
+          <Link href='portifolio/create' className='text-decoration-none text-muted'>
           <div className=" my-3 ">
                <h4 className='text-muted'> <FaPlusCircle className='me-2'/>
                اضف عمل جديد </h4>
