@@ -2,16 +2,35 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Cookies from 'universal-cookie';
+import { jwtDecode } from "jwt-decode";
 import { useAppContext } from '../../context/AppContext';
 import Swal from 'sweetalert2';
 const PortfolioItemForm = ({ searchParams }) => {
   const { id } = searchParams;
   const router = useRouter();
-  const { userId, token } = useAppContext();
+  // const { userId } = useAppContext();
   const [portfolioItem, setPortfolioItem] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
+  
+const [userId, setUserId] = useState('');
+
+const [loading, setLoading] = useState(true);
+
+  const cookies = new Cookies();
+  const token = cookies.get('token');
+  let decodedToken = jwtDecode(token);
+  // const userId = decodedToken.id;
+
+
+
+
 
   useEffect(() => {
+if (decodedToken) {
+  setUserId(decodedToken.id);
+  setLoading(false);
+}
     if (id) {
       getPortfolioItem(id);
     }
@@ -58,6 +77,8 @@ const PortfolioItemForm = ({ searchParams }) => {
       freelancerId: userId,
       image: profilePicture,
     };
+  
+
 console.log(portfolioData);
 
     const url = id 
@@ -65,7 +86,7 @@ console.log(portfolioData);
       : `${process.env.BASE_URL}/portfolio`;
     
     const method = id ? 'PATCH' : 'POST';
-
+    
     try {
       const res = await fetch(url, {
         method,
@@ -92,6 +113,10 @@ console.log(portfolioData);
       console.error('Error submitting form:', error);
     }
   };
+
+  if (loading) {
+    return <div className="loading-spinner"></div>;
+  }
 
   return (
     <div className="container pt-5" dir="rtl" style={{backgroundColor: '#f5f5f5'}}>

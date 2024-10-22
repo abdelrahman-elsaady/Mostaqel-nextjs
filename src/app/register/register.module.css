@@ -177,7 +177,7 @@
 }
 .customInput:focus {
   box-shadow: none;
-  border-color: #ced4da;  /* This is the default Bootstrap border color */
+  border-color: #ced4da; 
 }
 
 .customCheckbox:focus {

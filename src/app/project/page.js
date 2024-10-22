@@ -5,6 +5,7 @@ import { MdPerson2 } from "react-icons/md";
 import { BiAlarm } from "react-icons/bi";
 import { MdOutlineLocalActivity } from "react-icons/md";
 import { useAppContext } from '../context/AppContext';
+import ReactPaginate from 'react-paginate';
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -42,6 +43,8 @@ export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const projectsPerPage = 8;
   console.log(token);
   useEffect(() => {
     fetchProjects();
@@ -56,9 +59,19 @@ export default function Projects() {
       return categoryMatch && searchMatch;
     });
     setFilteredProjects(filtered);
-    console.log(projects);
-    setLoading(false);
+    setCurrentPage(0); // Reset to first page when filters change
+    if(filtered.length > 0){
+      setLoading(false);
+    }
   }, [projects, selectedCategories, searchTerm]);
+
+  const pageCount = Math.ceil(filteredProjects.length / projectsPerPage);
+  const offset = currentPage * projectsPerPage;
+  const currentPageProjects = filteredProjects.slice(offset, offset + projectsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
 
   const handleCategoryChange = (category) => {
@@ -106,7 +119,7 @@ export default function Projects() {
 
           <div className="row mt-4">
             {/* sidebar */}
-            <aside className="col-lg-3 col-md-2 pe-5" style={{ marginRight: '60px' }}>
+            <aside className="col-lg-3 col-md-2 pe-5 d-none d-md-block" >
         <div className="mb-3">
           <label htmlFor="search" className="form-label">بحث</label>
           <input
@@ -142,20 +155,21 @@ export default function Projects() {
             {/* content */}
             <section className="col-lg-8 col-md-7" style={{ marginLeft: '30px' }}>
               <div className="list-group">
-                {filteredProjects.length > 0 ? (
-                  filteredProjects.map((project) => (
-                    <div key={project._id} className="list-group-item list-group-item-action p-4">
+                {currentPageProjects.length > 0 ? (
+                  currentPageProjects.map((project) => (
+                    <Link href={`/project/details/${project._id}`} key={project._id} className="list-group-item list-group-item-action p-4">
+
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <Link className="mb-1" href={`/project/details/${project._id}`} style={{ textDecoration: 'none', color: "#2386c8" }}>{project.title}</Link>
-                      <button className="btn btn-sm btn-info" style={{ backgroundColor: "#2386c8", border: 'none', borderRadius: '0px' }}>
+                      {/* <button className="btn btn-sm btn-info" style={{ backgroundColor: "#2386c8", border: 'none', borderRadius: '0px' }}>
                         <i className="bi bi-plus" style={{ color: '#fff', fontSize: 'bold' }}></i>
-                        {/* <a href="#" style={{ textDecoration: 'none', color: '#fff' }}> مشروع مماثل</a> */}
-                      </button>
+                      </button> */}
+                        <h5 className='btn btn-sm btn-primary '> {project.status == 'closed' ? 'مغلق' : 'مفتوح'}</h5>
                     </div>
 
                     <div className="mb-3" style={{fontSize:12 }}>
 
-                      <small className="pe-3">
+                      <small className="">
                         <MdPerson2 />
                         {project.client.firstName}
                       </small>
@@ -173,12 +187,31 @@ export default function Projects() {
                     </div>
                     <p className="mb-1">{project.description}</p>
 
-                  </div>
+                  </Link>
                   ))
                 ) : (
                   <p>المشروع اللي بتدور عليه مش موجود ينجم</p>
                 )}
               </div>
+              <ReactPaginate
+          previousLabel={'السابق'}
+          nextLabel={'التالي'}
+          breakLabel={'...'}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageClick}
+          containerClassName={'pagination justify-content-center mt-4'}
+          pageClassName={'page-item'}
+          pageLinkClassName={'page-link'}
+          previousClassName={'page-item'}
+          previousLinkClassName={'page-link'}
+          nextClassName={'page-item'}
+          nextLinkClassName={'page-link'}
+          breakClassName={'page-item'}
+          breakLinkClassName={'page-link'}
+          activeClassName={'active'}
+        />
             </section>
           </div>
         </div>

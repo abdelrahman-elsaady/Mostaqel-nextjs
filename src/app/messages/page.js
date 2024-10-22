@@ -1,233 +1,110 @@
 
-'use client';
+'use client'
+
 
 import { useState, useEffect } from 'react';
-import { useAppContext } from '../context/AppContext';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 import Link from 'next/link';
+import Cookies from 'universal-cookie';
+import { jwtDecode } from "jwt-decode";
+export default function FreelancerChats() {
 
-export default function Messages() {
-  const { isLoggedIn, userId, token } = useAppContext();
   const [conversations, setConversations] = useState([]);
+  // const router = useRouter();
+  const [userId, setUserId] = useState('');
+
+  let cookies = new Cookies();
+  const [token, setToken] = useState( );
+const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchConversations();
-    }
-  }, [isLoggedIn]);
+    setToken(cookies.get('token'));
+ 
+    if(token){  
+      const decoded = jwtDecode(token);
+      setUserId(decoded.id);
+    
 
-  const fetchConversations = async () => {
-    try {
-      const response = await fetch(`http://localhost:3344/conversations`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
+    const fetchConversations = async () => {
+      try {
+
+    
+        const response = await axios.get(`${process.env.BASE_URL}/conversations/user/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+           
+        const data = response.data.conversations;
         setConversations(data);
+        console.log(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching conversations:', error);
       }
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
+    };
+    fetchConversations();
     }
-  };
+  }, [userId]);
+
+
+
+  if(conversations.length == 0) return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+  <div className="spinner-border text-primary" role="status">
+    <span className="visually-hidden">جاري التحميل...</span>
+  </div>
+</div>;
 
   return (
-    <div className="container mt-4">
-      <h2>Your Conversations</h2>
-      <ul className="list-group">
-        {conversations.map((conversation) => (
-          <li key={conversation._id} className="list-group-item">
-            <Link href={`chat?conversationId=${conversation._id}`}>
-              {conversation.projectId.title} - 
-              {conversation.client === userId ? 'Freelancer' : 'Client'}: 
-              {conversation.client === userId ? conversation.freelancerId.firstName : conversation.client.firstName}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className="container-fluid py-5" style={{ direction: "rtl", backgroundColor: "#f0f0f0" }}>
+      <div>
+        <nav className="navbar navbar-light">
+          <a className="navbar-brand pe-3" style={{ marginRight: "75px" }} href="#">
+            <h3>الرسائل</h3>
+          </a>
+        </nav>
+      </div>
+
+      <div className="row mt-4">
+        <section className="col-lg-8 col-md-7 mx-auto">
+          <div className="list-group">
+            {conversations.length > 0 ? (
+              conversations.map((conversation) => (
+                <Link href={`/chat/${conversation._id}`} key={conversation._id} className="text-decoration-none">
+                  <div className="list-group-item list-group-item-action p-4">
+                      <h5 className="mb-2 text-primary">{conversation.projectId.title}</h5>
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <div className="d-flex">
+                        <img 
+                          src={userId == conversation.client._id ? conversation.freelancerId.profilePicture : conversation.client.profilePicture || '/default-avatar.png'} 
+                          alt={userId == conversation.client._id ? conversation.freelancerId.firstName : conversation.client.firstName} 
+                          className="rounded-circle " 
+                          style={{width: '48px', height: '48px'}} 
+                        />
+                        <div>
+                          <div className="d-flex align-items-center">
+                            <strong className="me-2">{userId == conversation.client._id ? conversation.freelancerId.firstName : conversation.client.firstName}</strong>
+                          </div>
+                          <div className="text-muted small me-2">
+                            {userId == conversation.client._id ? conversation.freelancerId.jobTitle : conversation.client.jobTitle}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-muted small">
+                        {new Date(conversation.lastMessage.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <p className="mb-1">{conversation.lastMessage.content}</p>
+                  </div>
+                  </Link>
+              ))
+            ) : (
+              <h4>لا توجد محادثات</h4>
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-// 'use client';
-
-// import { useState, useEffect } from 'react';
-// import { useAppContext } from '../context/AppContext';
-// import { io } from 'socket.io-client';
-// import { useParams } from 'next/navigation';
-// export default function Messages( {searchParams}) {
-//   const { isLoggedIn, userId, token } = useAppContext();
-//   const [conversations, setConversations] = useState([]);
-//   const [selectedConversation, setSelectedConversation] = useState(null);
-//   const [messages, setMessages] = useState([]);
-//   const [newMessage, setNewMessage] = useState('');
-//   const [socket, setSocket] = useState(null);
-//   const { conversationId } = searchParams;
-
-// // const [conversationIdd, setConversationId] = useState(null)
-
-//   console.log(conversationId)
-//   useEffect(() => {
-//     if (isLoggedIn) {
-//       // Fetch conversations
-//       fetchConversations();
-
-//       // Initialize socket connection
-//       const newSocket = io('http://localhost:3344', {
-//         transports: ['websocket', 'polling'], // Allow fallback to polling
-//         reconnectionAttempts: 5,
-//         reconnectionDelay: 1000,
-//         timeout: 10000, // Increase timeout
-//       });
-  
-//       newSocket.on('connect', () => {
-//         console.log('Socket connected successfully');
-//         setSocket(newSocket);
-//       });
-  
-//       newSocket.on('connect_error', (error) => {
-//         console.error('Socket connection error:', error);
-//         console.log('Error details:', error.description);
-//       });
-  
-//       newSocket.on('error', (error) => {
-//         console.error('Socket general error:', error);
-//       });
-  
-//       return () => {
-//         if (newSocket) {
-//           console.log('Closing socket connection');
-//           newSocket.close();
-//         }
-//       };
-//     }
-//   }, [isLoggedIn]);
-
-//   useEffect(() => {
-//     if (socket) {
-//       socket.on('newMessage', (message) => {
-//         if (message.conversationId === selectedConversation?._id) {
-//           setMessages((prevMessages) => [...prevMessages, message]);
-//         }
-//         // Update conversation list or show notification
-//       });
-//     }
-//   }, [socket, selectedConversation]);
-
-//   const fetchConversations = async () => {
-//     try {
-//       const response = await fetch(`http://localhost:3344/conversations`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       if (response.ok) {
-//         const data = await response.json();
-//         console.log(data)
-//         setConversations(data);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching conversations:', error);
-//     }
-//   };
-
-//   const fetchMessages = async (conversationId) => {
-//     try {
-//       const response = await fetch(`http://localhost:3344/messages/${selectedConversation._id}`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       if (response.ok) {
-//         console.log(response.body)
-//         const data = await response.json();
-//         setMessages(data);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching messages:', error);
-//     }
-//   };
-
-//   const handleSendMessage = async () => {
-//     if (newMessage.trim() && selectedConversation) {
-//       try {
-//         const response = await fetch(`http://localhost:3344/messages`, {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${token}`,
-//           },
-//           body: JSON.stringify({
-//             conversationId: selectedConversation._id,
-//             content: newMessage,
-//             senderId: userId
-//           }),
-//         });
-//         if (response.ok) {
-//           const sentMessage = await response.json();
-//           setMessages((prevMessages) => [...prevMessages, sentMessage]);
-//           setNewMessage('');
-//           socket.emit('sendMessage', sentMessage);
-//         }
-//       } catch (error) {
-//         console.error('Error sending message:', error);
-//       }
-//     }
-//   };
-
-//   return (
-//     <div className="container mt-4">
-//       <div className="row">
-//         <div className="col-md-4">
-//           <h2>Conversations</h2>
-//           <ul className="list-group">
-//             {conversations.map((conversation) => (
-//               <li
-//                 key={conversation._id}
-//                 className={`list-group-item ${selectedConversation?._id === conversation._id ? 'active' : ''}`}
-//                 onClick={() => {
-//                   setSelectedConversation(conversation);
-//                   fetchMessages(conversation._id);
-//                 }}
-//               >
-//                 {conversation.projectId.title}
-//               </li>
-//             ))}
-//           </ul>
-//         </div>
-//         <div className="col-md-8">
-//           {selectedConversation ? (
-//             <>
-//               <h2>{selectedConversation.projectId.title}</h2>
-//               <div className="messages-container" style={{ height: '400px', overflowY: 'scroll' }}>
-//                 {messages.map((message) => (
-//                   <div key={message._id} className={`message ${message.sender === userId ? 'sent' : 'received'}`}>
-//                     <p>{message.content}</p>
-//                     <small>{new Date(message.createdAt).toLocaleString()}</small>
-//                   </div>
-//                 ))}
-//               </div>
-//               <div className="input-group mt-3">
-//                 <input
-//                   type="text"
-//                   className="form-control"
-//                   value={newMessage}
-//                   onChange={(e) => setNewMessage(e.target.value)}
-//                   placeholder="Type your message..."
-//                 />
-//                 <button className="btn btn-primary" onClick={handleSendMessage}>
-//                   Send
-//                 </button>
-//               </div>
-//             </>
-//           ) : (
-//             <p>Select a conversation to start messaging</p>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }

@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
+// import { useSession } from "next-auth/react"
+import { SessionProvider } from "next-auth/react"
 
 const AppContext = createContext();
 
@@ -18,7 +20,9 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState('');
   const [singleFreelancer, setSingleFreelancer] = useState({});
   const [singleProject, setSingleProject] = useState({});
+  // const { data: session } = useSession()
 
+  // console.log(session);
 
   const fetchFreelancers = async () => {
     try {
@@ -115,6 +119,8 @@ export const AppProvider = ({ children }) => {
   }, [token]);
 
   return (
+    
+    <SessionProvider>
     <AppContext.Provider value={{
       freelancers,
       projects,
@@ -134,6 +140,7 @@ export const AppProvider = ({ children }) => {
     }}>
       {children}
     </AppContext.Provider>
+    </SessionProvider>
   );
 };
 

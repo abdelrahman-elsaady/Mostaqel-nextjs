@@ -36,6 +36,10 @@ export async function handleLogin(formData) {
 
   
   if (result.success) {
+    return {
+      success: true,
+      message: 'Login successful'
+    }
     const decoded = jwt.decode(token.value);
     const userData = await fetchUserData(decoded.id);
     // revalidatePath('/')

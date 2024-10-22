@@ -1,0 +1,56 @@
+.chatMessages {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  max-width: 70%;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.sent {
+  align-self: flex-end;
+}
+
+.received {
+  align-self: flex-start;
+}
+
+.messageContent {
+  padding: 10px 15px;
+  border-radius: 18px;
+  background-color: #f0f0f0;
+  position: relative;
+}
+
+.sent .messageContent {
+  background-color: #0084ff;
+  color: white;
+}
+
+.messageContent p {
+  margin: 0;
+  padding: 0;
+}
+
+.messageTime {
+  font-size: 0.75rem;
+  color: #050505;
+  margin-top: 5px;
+  display: block;
+}
+
+.sent .messageTime {
+  text-align: right;
+}
+
+.senderAvatar {
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.sent .senderAvatar {
+  display: none;
+}

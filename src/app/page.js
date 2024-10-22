@@ -15,18 +15,50 @@ import { PiHeadset } from "react-icons/pi";
 import { TbReportSearch } from "react-icons/tb";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import UserHome from "./components/home/page"
+import Link from "next/link";
 // import { CiBadgeDollar, CiMedal, CiDollar, CiShieldCheck, CiUser, CiLock } from 'react-icons/fa';
 import { cookies } from 'next/headers'
+import jwt from 'jsonwebtoken';
+import { redirect } from 'next/navigation'
 
 import Div3Rues from "./components/reusableComponents/div-3-home";
 import Div5Rues from "./components/reusableComponents/div-5-home";
 import Div6Rues from "./components/reusableComponents/div-6-home";
 
-export default function Home() {
+
+
+async function fetchUserData(id) {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/users/${id}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error('Failed to fetch user data');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return null;
+  }
+}
+
+
+
+
+export  default async function Home() {
 
 const cookieStore = cookies()
 const token = cookieStore.get('token')
 
+if(token){
+const decoded = jwt.decode(token.value);
+
+    const userData = await fetchUserData(decoded.id);
+    // revalidatePath('/')
+    if (userData.data.skills.length == 0) {
+     redirect('/account/profile')
+    }
+}
 
  
   return (
@@ -46,21 +78,25 @@ const token = cookieStore.get('token')
               <div>
                 <form className="  d-flex position-relative">
                   <input
-                    className="form-control p-4"
+                    className="form-control p-4 "
                     type="text"
                     placeholder=" ادخل عنوان المشروع الذي تريد تنفيذه..  "
                     required
+                    style={{focus: "box-shadow: none" , borderRadius: "0"}}
                   />
-                  <button className=" gamal  btn btn-primary mt-3 position-absolute start-0 mx-2 ">
+                  <Link href="/project/create" style={{textDecoration: "none"}}>
+                  <button  className=" gamal  btn btn-primary  position-absolute start-0 py-3 mt-2 ms-2  " style={{borderRadius: "0"}}>
                     
                     ابدأ مشروعك الان
                   </button>
+                  </Link>
                 </form>
               </div>
-              <button className="btn btn-outline-light mt-4 ">
-                
+                <Link href="/project" style={{textDecoration: "none"}}>
+              <button className="btn btn-outline-light mt-4 " style={{borderRadius: "0"}}>
                 ابحث عن عمل
               </button>
+                </Link>
             </div>
           </div>
         </div>

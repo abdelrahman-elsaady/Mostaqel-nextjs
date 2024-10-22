@@ -3,7 +3,7 @@ import { FaUser, FaBriefcase } from 'react-icons/fa';
 import React from 'react'
 
 async function getFreelancer(id) {
-  const res = await fetch(`http://localhost:3344/users/${id}`, { cache: 'no-store' });
+  const res = await fetch(`${process.env.BASE_URL}/users/${id}`, { cache: 'no-store' });
   if (!res.ok) {
     throw new Error('Failed to fetch freelancer data');
   }

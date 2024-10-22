@@ -88,17 +88,19 @@ const RegisterForm = () => {
     setIsSubmitting(false);
   };
 
-  const handleGoogleSignUp = async () => {
-    try {
-      const result = await signIn('google', { callbackUrl: '/login' });
-      if (result?.error) {
-        console.error('Google sign-in error:', result.error);
-        setRegistrationMessage("حدث خطأ أثناء التسجيل باستخدام Google. يرجى المحاولة مرة أخرى.");
-      }
-    } catch (error) {
-      console.error('Google sign-in error:', error);
-      setRegistrationMessage("حدث خطأ أثناء التسجيل باستخدام Google. يرجى المحاولة مرة أخرى.");
-    }
+  const handleMicrosoftSignUp = () => {
+
+    Swal.fire({
+      title: ' مش شغااال',
+      text: 'بلاش فزلكة ملقتش غير مايكروسوفت؟',
+
+      imageUrl: "/balaash.gif",
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: "Custom image"
+    });
+    
+    // signIn('microsoft', { callbackUrl: '/' });
   };
 
 
@@ -110,7 +112,7 @@ const RegisterForm = () => {
           <h2 className="mb-4">إنشاء حساب جديد</h2>
           <div className="row mb-3">
             <div className="col-md-6">
-              <button onClick={handleGoogleSignUp} className="  w-100" style={{backgroundColor: "#dd4b39", color: "white",border: "none", height: "50px"}}>
+              <button onClick={() => signIn('google', { callbackUrl: '/' })} className="  w-100" style={{backgroundColor: "#dd4b39", color: "white",border: "none", height: "50px"}}>
                 {/* <img src="/google-icon.png" alt="Google" width={20} height={20} className="me-2" /> */}
                 <FaGoogle className="ms-2" />
               <span>
@@ -120,7 +122,7 @@ const RegisterForm = () => {
               </button>
             </div>
             <div className="col-md-6">
-              <button className="  w-100" style={{backgroundColor: "#0f4bac", color: "white",border: "none", height: "50px"}}>
+              <button onClick={handleMicrosoftSignUp} className="  w-100" style={{backgroundColor: "#0f4bac", color: "white",border: "none", height: "50px"}}>
                 
               <IoLogoWindows className="ms-2" />
               <span>

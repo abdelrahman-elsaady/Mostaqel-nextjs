@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import Link from 'next/link';
 import { LiaSlidersHSolid } from "react-icons/lia";
 import { FaPlusCircle } from "react-icons/fa";
-
+import axios from 'axios';
 
 async function fetchUserData(id) {
   try {
@@ -20,7 +20,12 @@ async function fetchUserData(id) {
     return null;
   }
 }
-
+async function fetchMessages(userId){
+  
+let messages =   await axios.get(`${process.env.BASE_URL}/conversations/user/${userId}`);
+ console.log(messages.data.conversations);
+return messages.data.conversations;
+}
 
 export default async function Home() {
 
@@ -30,12 +35,18 @@ export default async function Home() {
 
   let isLoggedIn = false;
   let user = null;
+          
+
+let messages = [];
+
+
 
   if (token) {
     isLoggedIn = true;
     let decoded = jwt.decode(token.value);
     if (decoded && decoded.id) {
       const userData = await fetchUserData(decoded.id);
+       messages = await fetchMessages(decoded.id);
       if (userData) {
         user = userData.data;
       }
@@ -90,8 +101,8 @@ export default async function Home() {
             <div className="col-md-6 text-center text-muted">
 
               <div>
-                <h3>الرصيد القابل للسحب</h3>
-                <h3>${user.withdrawableBalance}.00</h3>
+                <h3>  الرصيد المعلق   </h3>
+                <h3>${user.pendingBalance}.00</h3>
               </div>
 
             </div>
@@ -99,18 +110,18 @@ export default async function Home() {
           <div className="row pt-3">
             <div className="col-md-6 text-center ">
 
-              <div>
+              {/* <div>
                 <span>الرصيد المتاح</span>
                 <span> $ {user.availableBalance}.00</span>
-              </div>
+              </div> */}
 
             </div>
             <div className="col-md-6 text-center ">
 
-              <div>
+              {/* <div>
                 <span>الرصيد المعلق</span>
                 <span> $ {user.pendingBalance}.00</span>
-              </div>
+              </div> */}
 
             </div>
           </div>
@@ -130,11 +141,13 @@ export default async function Home() {
   <div className='row'>
 
   <div className="col-md-4 text-center pt-3 bg-white "  >
-          <div className="  text-muted">
+    <Link href='/messages' className='text-decoration-none text-muted'>
+          <div className="  text-muted mt-3">
+
                <h4 className='mb-3'>الرسائل</h4>
-               <h4>{user.messages.length}</h4>
+               <h4>{messages.length}</h4>
           </div>
-          
+          </Link>
              
 
         </div>

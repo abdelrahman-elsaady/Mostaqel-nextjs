@@ -27,7 +27,7 @@ export default function ConversationPage({searchParams}) {
 
   const fetchConversation = async () => {
     try {
-      const response = await fetch(`http://localhost:3344/conversations/${conversationId}`, {
+      const response = await fetch(`${process.env.BASE_URL}/conversations/${conversationId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -41,7 +41,7 @@ export default function ConversationPage({searchParams}) {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:3344/messages/${conversationId}`, {
+      const response = await fetch(`${process.env.BASE_URL}/messages/${conversationId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -56,7 +56,7 @@ export default function ConversationPage({searchParams}) {
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
       try {
-        const response = await fetch(`http://localhost:3344/messages`, {
+        const response = await fetch(`${process.env.BASE_URL}/messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

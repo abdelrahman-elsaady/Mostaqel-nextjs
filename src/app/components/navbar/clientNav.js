@@ -1,138 +1,78 @@
-'use client'
+// 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { io } from 'socket.io-client';
-import { FaEnvelope } from "react-icons/fa";
-import styles from "./navbar.module.css";
-import { useAppContext } from "../../context/AppContext";
-import Link from 'next/link';
-
-export default function ClientNav() {
-  const [unreadMessages, setUnreadMessages] = useState(0);
-  const [socket, setSocket] = useState(null);
-  const { isLoggedIn, userId, token } = useAppContext();
-
-  const initializeSocket = useCallback(() => {
-    if (!socket && isLoggedIn) {
-      const newSocket = io(process.env.BASE_URL);
-      setSocket(newSocket);
-
-      newSocket.on('newMessage', (message) => {
-        if (message.receiverId === userId) {
-          setUnreadMessages((prev) => prev + 1);
-        }
-      });
-
-      return () => {
-        newSocket.off('newMessage');
-        newSocket.close();
-      };
-    }
-  }, [isLoggedIn, socket, userId]);
-
-  useEffect(() => {
-    const cleanup = initializeSocket();
-    return () => {
-      if (cleanup) cleanup();
-    };
-  }, [initializeSocket]);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchUnreadMessagesCount();
-    }
-  }, [isLoggedIn]);
-
-  const fetchUnreadMessagesCount = async () => {
-    try {
-      const response = await fetch(`${process.env.BASE_URL}/messages/unread-count`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setUnreadMessages(data.count);
-      }
-    } catch (error) {
-      console.error('Error fetching unread messages count:', error);
-    }
-  };
-
-  const handleMessagesClick = () => {
-    setUnreadMessages(0);
-  };
-
-  return (
-    <li className={`nav-item ${styles.navItem}`}>
-      <Link className="nav-link text-white position-relative" href="/messages" onClick={handleMessagesClick}>
-        <FaEnvelope />
-        {unreadMessages > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {unreadMessages}
-          </span>
-        )}
-      </Link>
-    </li>
-  );
-}
-
-
-// 'use client'
-
-// import { useState, useEffect, useCallback } from 'react';
-// import { io } from 'socket.io-client';
+// import { useState, useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
 // import { FaEnvelope } from "react-icons/fa";
 // import styles from "./navbar.module.css";
-// import { useAppContext } from "../../context/AppContext";
-// import Link from 'next/link';
-// export default function ClientNav() {
-//   // ... existing code ...
-//   const [unreadMessages, setUnreadMessages] = useState(0);
-//   const [socket, setSocket] = useState(null);
 
-//   const { isLoggedIn } = useAppContext();
+// export default function ConversationModal({ userId }) {
+//   const [conversations, setConversations] = useState([]);
+//   const [unreadCount, setUnreadCount] = useState(0);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const router = useRouter();
 
-//   const initializeSocket = useCallback(() => {
-//     if (!socket && isLoggedIn) {
-//       const newSocket = io('http://localhost:3344');
-//       setSocket(newSocket);
-
-//       newSocket.on('newMessage', () => {
-//         setUnreadMessages((prev) => prev + 1);
+//   const fetchConversations = async () => {
+//     try {
+//       const response = await fetch(`${process.env.BASE_URL}/conversations/user/${userId}`, {
+//         headers: {
+//           'Authorization': `Bearer ${document.cookie.split('=')[1]}`
+//         }
 //       });
-
-//       return () => {
-//         newSocket.off('newMessage');
-//         newSocket.close();
-//       };
+//       if (response.ok) {
+//         const data = await response.json();
+//         console.log(data);
+//         setConversations(data);
+//         const unread = data.filter(conv => conv.hasUnreadMessages).length;
+//         setUnreadCount(unread);
+//       } else {
+//         console.error('Failed to fetch conversations');
+//       }
+//     } catch (error) {
+//       console.error('Error fetching conversations:', error);
 //     }
-//   }, [isLoggedIn, socket]);
-
-//   useEffect(() => {
-//     const cleanup = initializeSocket();
-//     return () => {
-//       if (cleanup) cleanup();
-//     };
-//   }, [initializeSocket]);
-
-//   const handleMessagesClick = () => {
-//     setUnreadMessages(0);
-//     // Navigate to messages page
 //   };
 
-//   // ... existing code ...
+//   const handleMessageClick = () => {
+//     fetchConversations();
+//     setIsModalOpen(true);
+//   };
+
+//   const handleConversationClick = (conversationId) => {
+//     router.push(`/chat/${conversationId}`);
+//     setIsModalOpen(false);
+//   };
 
 //   return (
-//     // ... existing JSX ...
-//     <li className={`nav-item ${styles.navItem}`}>
-//       <Link className="nav-link text-white position-relative" href="/messages" onClick={handleMessagesClick}>
+//     <>
+//       <button className="nav-link text-white" onClick={handleMessageClick}>
 //         <FaEnvelope />
-//         {unreadMessages > 0 && (
-//           <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-//             {unreadMessages}
-//           </span>
-//         )}
-//       </Link>
-//     </li>
-//     // ... existing JSX ...
+//         {unreadCount > 0 && <span className={styles.unreadBadge}>{unreadCount}</span>}
+//       </button>
+
+//       {isModalOpen && (
+//         <div className="modal show" style={{ display: 'block' }} tabIndex="-1">
+//           <div className="modal-dialog">
+//             <div className="modal-content">
+//               <div className="modal-header">
+//                 <h5 className="modal-title">المحادثات</h5>
+//                 <button type="button" className="btn-close" onClick={() => setIsModalOpen(false)}></button>
+//               </div>
+//               <div className="modal-body">
+//                 {conversations.map(conv => (
+//                   <div key={conv._id} className="conversation-item" onClick={() => handleConversationClick(conv._id)}>
+//                     <img src={conv.otherUser.profilePicture} alt={conv.otherUser.firstName} className="avatar" />
+//                     <div>
+//                       <h6>{conv.project.title}</h6>
+//                       <p>{conv.otherUser.firstName} {conv.otherUser.lastName}</p>
+//                     </div>
+//                     {conv.hasUnreadMessages && <span className="unread-indicator"></span>}
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </>
 //   );
 // }

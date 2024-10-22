@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { FaLock, FaLockOpen } from 'react-icons/fa';
+
 import { FaTag } from "react-icons/fa6";
 import { Rating } from '@mui/material';
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'universal-cookie';
 import Swal from 'sweetalert2';
 import { useAppContext } from '../../../context/AppContext';
-
+import { FaEnvelope } from 'react-icons/fa';
 
 function formatDateArabic(dateString) {
   const now = new Date();
@@ -32,7 +34,7 @@ function formatDateArabic(dateString) {
 }
 export default function ProjectDetails() {
 
-  const { getProjectById, isLoggedIn, userId, token } = useAppContext();
+  const { getProjectById, isLoggedIn } = useAppContext();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,7 +45,16 @@ export default function ProjectDetails() {
     proposal: '',
     receivables: ''
   });
+  const [isProjectOwner, setIsProjectOwner] = useState(false);
+
+  const [userId, setUserId] = useState(null);
+
+  // const [loading, setLoading] = useState(true);
+
+  const cookies = new Cookies();
+  const token = cookies.get('token');
   const router = useRouter();
+
 
 
 
@@ -52,8 +63,15 @@ export default function ProjectDetails() {
   const [proposals, setProposals] = useState([]);
 
 
+
   useEffect(() => {
-    const fetchProject = async () => {
+
+    if (token) {
+      let decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
+    }
+
+    let fetchProject = async () => {
       try {
         const projectData = await getProjectById(projectId);
         setProject(projectData);
@@ -64,6 +82,7 @@ export default function ProjectDetails() {
       }
     };
     fetchProject();
+
   }, [projectId]);
 
   const handleInputChange = (e) => {
@@ -76,7 +95,6 @@ export default function ProjectDetails() {
       }
       return updatedForm;
     });
-
 
   };
 
@@ -152,9 +170,9 @@ export default function ProjectDetails() {
   };
 
 
-  const handleStartConversation = async (freelancerId) => {
+  const handleStartConversation = async (freelancerId, proposalId, hasChat) => {
     try {
-      const response = await fetch(`http://localhost:3344/conversations`, {
+      const response = await fetch(`${process.env.BASE_URL}/conversations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -163,15 +181,52 @@ export default function ProjectDetails() {
         body: JSON.stringify({
           projectId: projectId,
           freelancerId: freelancerId,
+          proposalId: proposalId,
           clientId: project.client._id
         }),
       });
       if (response.ok) {
         const conversation = await response.json();
-        router.push(`/chat?conversationId=${conversation._id}`);
+        console.log(conversation);
+
+        if (conversation.message == 'Conversation already exists') {
+          router.push(`/chat/${conversation.conversation._id}`);
+        } else {
+          router.push(`/chat/${conversation._id}`);
+        }
+
       }
     } catch (error) {
       console.error('Error starting conversation:', error);
+    }
+  };
+  const handleStatusChange = async () => {
+    const newStatus = project.status === 'open' ? 'closed' : 'open';
+    try {
+      const response = await fetch(`${process.env.BASE_URL}/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        setProject(prevProject => ({ ...prevProject, status: newStatus }));
+        Swal.fire({
+          title: 'تم تحديث حالة المشروع',
+          icon: 'success'
+        });
+      } else {
+        throw new Error('Failed to update project status');
+      }
+    } catch (error) {
+      Swal.fire({
+        title: 'فشل تحديث حالة المشروع',
+        text: 'حاول مرة أخرى',
+        icon: 'error'
+      });
     }
   };
 
@@ -199,9 +254,22 @@ export default function ProjectDetails() {
 
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h4 className="mb-0">{project.title}</h4>
-          <Link href="/login" className="btn btn-primary">
-            سجل الان لتضيف مشروعك
-          </Link>
+          <div>
+            {userId == project.client._id && (
+              <button
+                className={`btn ${project.status === 'open' ? 'btn-danger' : 'btn-success'} me-2`}
+                onClick={handleStatusChange}
+              >
+                {project.status === 'open' ? <FaLock className="me-1" /> : <FaLockOpen className="me-1" />}
+                {project.status === 'open' ? 'إغلاق المشروع' : 'فتح المشروع'}
+              </button>
+            )}
+            {!userId && (
+              <Link href="/login" className="btn btn-primary">
+                سجل الان لتضيف مشروعك
+              </Link>
+            )}
+          </div>
         </div>
 
         <div className="row">
@@ -231,7 +299,12 @@ export default function ProjectDetails() {
             <div className="card mb-4">
               <div className="card-body">
                 <h5 className="card-title mb-4">أضف عرضك الآن</h5>
-                {isLoggedIn ? (
+
+                {project.status == 'closed' ? (
+                  <div className="alert alert-danger text-center">
+                    تم إغلاق المشروع. لا يمكنك تقديم عرض.
+                  </div>
+                ) : userId ? (
                   <form onSubmit={handleSubmitProposal}>
                     <div className="row mb-3">
                       <div className="col-md-4">
@@ -309,7 +382,7 @@ export default function ProjectDetails() {
                     {project.proposals.map((proposal, index) => (
                       <div key={index} className="proposal-item mb-3 pb-3 border-bottom">
                         <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div className="d-flex">
+                          <div className="d-flex flex-grow-1">
                             <img
                               src={proposal.freelancer.profilePicture || '/default-avatar.png'}
                               alt={proposal.freelancer.firstName}
@@ -324,32 +397,22 @@ export default function ProjectDetails() {
                                 </div>
                               </div>
                               <div className="d-flex text-muted small">
-                                <span className='ms-2'>
-
-                                  {proposal.freelancer.jobtitle}
-                                </span>
-
-                                <span>
-
-                                  {proposal.createdAt ? formatDateArabic(proposal.createdAt) : 'Unknown Date'}
-                                </span>
+                                <span className='ms-2'>{proposal.freelancer.jobtitle}</span>
+                                <span>{proposal.createdAt ? formatDateArabic(proposal.createdAt) : 'Unknown Date'}</span>
                               </div>
                             </div>
                           </div>
-
+                          {userId == project.client._id && (
+                            <button
+                              className="btn btn-outline-primary"
+                              onClick={() => handleStartConversation(proposal.freelancer._id, proposal._id)}
+                            >
+                              <FaEnvelope className="ms-1" />
+                              <span>بدء المحادثة</span>
+                            </button>
+                          )}
                         </div>
                         <p className="mb-1">{proposal.proposal}</p>
-
-                        {userId == project.client._id && (
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => handleStartConversation(proposal.freelancer._id)}
-                          >
-                            Start Conversation
-                          </button>
-                        )}
-
-
                       </div>
                     ))}
                   </div>

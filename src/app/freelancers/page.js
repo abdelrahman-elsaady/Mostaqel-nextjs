@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useAppContext } from './../context/AppContext';
 import Link from 'next/link';
 import { Rating } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
 
 export default function Freelancers() {
   const { freelancers, fetchFreelancers } = useAppContext();
@@ -10,6 +11,8 @@ export default function Freelancers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
 const [loading, setLoading] = useState(true);
+const [page, setPage] = useState(1);
+const [freelancersPerPage] = useState(8);
 
   useEffect(() => {
     fetchFreelancers();
@@ -24,8 +27,18 @@ const [loading, setLoading] = useState(true);
       return categoryMatch && searchMatch;
     });
     setFilteredFreelancers(filtered);
-    setLoading(false);
+    if(filteredFreelancers.length > 0){
+      setLoading(false);
+    }
+    setPage(1);
   }, [freelancers, selectedCategories, searchTerm]);
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const indexOfLastFreelancer = page * freelancersPerPage;
+  const indexOfFirstFreelancer = indexOfLastFreelancer - freelancersPerPage;
+  const currentFreelancers = filteredFreelancers.slice(indexOfFirstFreelancer, indexOfLastFreelancer);
 
   const handleCategoryChange = (category) => {
     setSelectedCategories(prev => 
@@ -101,86 +114,15 @@ const [loading, setLoading] = useState(true);
           ))}
         </div>
 
-            {/* skills */}
-            {/* <div className="mt-4">
-              <p>المسمي الوظيفي</p>
-              <input
-                type="text"
-                className="form-control"
-                style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-
-              />
-            </div>
-            <div className="mt-4">
-              <p>المهارات</p>
-              <input
-                type="text"
-                className="form-control"
-                style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-
-              />
-            </div> */}
-
-            {/* delivery */}
-            {/* <div className="mt-4">
-              <div>
-                <p>التقييم</p>
-                  <div className="rating">
-                    <i className="bi bi-star fs-1"></i>
-                    <i className="bi bi-star fs-1"></i>
-                    <i className="bi bi-star fs-1"></i>
-                    <i className="bi bi-star fs-1"></i>
-                    <i className="bi bi-star fs-1"></i>
-                  </div>
-                
-              </div>
-              <br />
-
-              <p>المستقلون </p>
-              <div className="form-check">
-                <label className="form-check-label" htmlFor="delivery1">
-                  هوية موثقة                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="delivery2"
-                />
-                <label className="form-check-label" htmlFor="delivery2">
-                  المتصلون الان
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="delivery3"
-                />
-                <label className="form-check-label" htmlFor="delivery3">
-                  أضافوا عروضا علي مشاريعي
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="delivery4"
-                />
-                <label className="form-check-label" htmlFor="delivery4">
-                  وظفتهم سابقا
-                </label>
-
-              </div>
-            </div> */}
+           
           </aside>
 
           {/* content */}
           <section className="col-lg-8 col-md-7" style={{ marginLeft: '50px' }}>
             <div className="list-group">
-            {filteredFreelancers.length > 0 ? ( 
+            {currentFreelancers.length > 0 ? ( 
               
-              filteredFreelancers.map((freelancer, index) => (
+              currentFreelancers.map((freelancer, index) => (
           <div className="proposals-list" key={freelancer._id}>
           <Link href={`/freelancers/${freelancer._id}`}  className="text-decoration-none">
 
@@ -228,6 +170,15 @@ const [loading, setLoading] = useState(true);
       <h4>  مفييييييييشششش</h4>
     )}
             </div>
+            <div className="d-flex justify-content-center mt-4">
+          <Pagination
+            count={Math.ceil(filteredFreelancers.length / freelancersPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            size="large"
+          />
+        </div>
           </section>
         </div>
       </div>

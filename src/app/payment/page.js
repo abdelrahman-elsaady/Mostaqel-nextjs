@@ -8,7 +8,8 @@ import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
-
+import WithdrawalForm from './WithdrawalForm';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -28,7 +29,7 @@ const CheckoutForm = ({ amount, onSuccess }) => {
             return;
         }
         
-
+          
         const { error, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card: elements.getElement(CardElement),
@@ -56,6 +57,7 @@ const CheckoutForm = ({ amount, onSuccess }) => {
     return (
         <form onSubmit={handleSubmit}>
         <div className="mb-3">
+ 
             <label htmlFor="card-element" className="form-label fw-bold">بيانات البطاقة</label>
             <CardElement
                 id="card-element"
@@ -94,6 +96,36 @@ export default function PaymentPage() {
     const [depositAmount, setDepositAmount] = useState('');
     const [showModal, setShowModal] = useState(false);
       const [userId, setUserId] = useState('');
+      const [withdrawalMethod, setWithdrawalMethod] = useState('bank'); // 'bank' or 'paypal'
+
+      const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+
+      const handleWithdrawalShow = () => setShowWithdrawalModal(true);
+      const handleWithdrawalClose = () => setShowWithdrawalModal(false);
+    
+
+
+
+      const handleWithdrawalSuccess = async (amount) => {
+        try {
+          const updatedWithdrawableBalance = user.totalBalance - parseFloat(amount);
+          const response = await updateProfile(userId, {
+            totalBalance: updatedWithdrawableBalance
+          });
+          if (response.message == 'User was edited successfully') {
+            // Update local state or refetch user data
+            setUser(prevUser => ({
+              ...prevUser,
+              totalBalance: updatedWithdrawableBalance
+            }));
+            handleWithdrawalClose();
+            // Show success message
+          }
+        } catch (error) {
+          console.error('Error processing withdrawal:', error);
+          // Show error message
+        }
+      };
     console.log("Stripe Promise:", stripePromise);
 
 
@@ -125,14 +157,7 @@ export default function PaymentPage() {
         fetchUser();
     }, [userId]);
     console.log(user);
-    // useEffect(() => {
-    //     // Initialize Bootstrap modal
-    //     const modal = new bootstrap.Modal(document.getElementById('depositModal'));
-    //     // Clean up function
-    //     return () => {
-    //         modal.dispose();
-    //     };
-    // }, []);
+
 
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
@@ -166,6 +191,32 @@ export default function PaymentPage() {
         }
     };
 
+    const handlePayPalWithdrawal = async (amount) => {
+        try {
+          const response = await axios.post(`${process.env.BASE_URL}/paypal/paypal-withdrawal`, {
+            userId,
+            amount,
+            email: user.email // Make sure you have the user's PayPal email
+          });
+          
+          if (response.data.success) {
+            const updatedTotalBalance = user.totalBalance - parseFloat(amount);
+            await updateProfile(userId, {
+              totalBalance: updatedTotalBalance
+            });
+            setUser(prevUser => ({
+              ...prevUser,
+              totalBalance: updatedTotalBalance
+            }));
+            handleWithdrawalClose();
+            // Show success message
+          }
+        } catch (error) {
+          console.error('Error processing PayPal withdrawal:', error);
+          // Show error message
+        }
+      };
+
     if (loading) {
         return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
             <div className="spinner-border text-primary" role="status">
@@ -176,12 +227,14 @@ export default function PaymentPage() {
 
     return (
         <div className="container-fluid py-5" style={{ backgroundColor: '#f5f5f5' }} dir='rtl'>
+
             <div className='d-flex justify-content-between align-items-center mb-4'>
-                <h1 className="text-end">رصيد الحساب</h1>
-                <div className="text-start">
-                    <button className="btn btn-success" onClick={handleShow}>شحن الرصيد</button>
-                </div>
-            </div>
+        <h1 className="text-end">رصيد الحساب</h1>
+        <div className="text-start">
+          <button className="btn btn-success me-2" style={{borderRadius: '0'}} onClick={handleShow}>شحن الرصيد</button>
+          <button className="btn btn-primary me-2" style={{borderRadius: '0'}} onClick={handleWithdrawalShow}>سحب الرصيد</button>
+        </div>
+      </div>
             <div className="card">
                 <div className="card-body">
                     <div className="row border-bottom py-4">
@@ -193,26 +246,27 @@ export default function PaymentPage() {
                         </div>
                         <div className="col-md-6 text-center text-muted">
                             <div>
-                                <h3>الرصيد القابل للسحب</h3>
-                                <h3>${user.withdrawableBalance || 0}.00</h3>
+                                <h3>الرصيد المعلق</h3>
+                                <h3>${user.pendingBalance || 0}.00</h3>
                             </div>
                         </div>
                     </div>
                     <div className="row pt-3">
                         <div className="col-md-6 text-center">
-                            <div>
+                            {/* <div>
                                 <span>الرصيد المتاح</span>
                                 <span> $ {user.availableBalance || 0}.00</span>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="col-md-6 text-center">
-                            <div>
+                            {/* <div>
                                 <span>الرصيد المعلق</span>
                                 <span> $ {user.pendingBalance || 0}.00</span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
+
             </div>
 
             {showModal && (
@@ -269,7 +323,71 @@ export default function PaymentPage() {
             </div>
         )}
         {showModal && <div className="modal-backdrop show"></div>}
-        </div>
+        {showWithdrawalModal && (
+        withdrawalMethod === 'paypal' ? (
+            <WithdrawalForm
+              userid={userId}
+              onClose={handleWithdrawalClose}
+              onSuccess={handleWithdrawalSuccess}
+              availableBalance={user.totalBalance}
+            />
+          ) : (
+            <div className="modal show d-block" tabIndex="-1">
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content shadow-lg border-0">
+                  <div className="modal-header d-flex justify-content-between align-items-center bg-primary text-white">
+                    <h5 className="modal-title text-end">سحب الرصيد عبر PayPal</h5>
+                    <div className='text-start'>
+                      <button type="button" className="text-start btn-close btn-close-white" onClick={handleWithdrawalClose}></button>
+                    </div>
+                  </div>
+                  <div className="modal-body p-4">
+                    <PayPalScriptProvider options={{ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}>
+                      <PayPalButtons
+
+                        createOrder={(data, actions) => {
+                          return actions.order.create({
+                            purchase_units: [
+                              {
+                                amount: {
+                                    value: user.totalBalance,
+                                },
+                              },
+                            ],
+                          });
+                        }}
+                        onApprove={(data, actions) => {
+                          return actions.order.capture().then((details) => {
+                            handlePayPalWithdrawal(user.totalBalance);
+                          });
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        )}
+        {showWithdrawalModal && <div className="modal-backdrop show"></div>}
+  
+      {/* Add buttons to choose withdrawal method */}
+      <div className="mb-3">
+        {/* <button 
+          className={`btn ${withdrawalMethod === 'bank' ? 'btn-primary' : 'btn-outline-primary'} me-2`}
+          onClick={() => setWithdrawalMethod('bank')}
+        >
+          سحب عبر التحويل البنكي
+        </button>
+        <button 
+          className={`btn ${withdrawalMethod === 'paypal' ? 'btn-primary' : 'btn-outline-primary'}`}
+          onClick={() => setWithdrawalMethod('paypal')}
+        >
+          سحب عبر PayPal
+        </button> */}
+      </div>
+
+    </div>
     );
 }
 

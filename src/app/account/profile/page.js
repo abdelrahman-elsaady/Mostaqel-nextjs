@@ -7,14 +7,21 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
-
+import { FaCamera } from "react-icons/fa";
 import axios from 'axios';
 import {countries} from 'countries-list';
 import { BsPencilSquare } from "react-icons/bs";
 import Swal from 'sweetalert2';
 import { FaBriefcase } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale, setDefaultLocale } from  "react-datepicker";
+import ar from 'date-fns/locale/ar-SA';
 
+// Register Arabic locale for the date picker
+registerLocale('ar', ar);
+setDefaultLocale('ar');
 const ProfileCompletion = () => {
   const {  isLoggedIn, getFreelancerById, updateProfile, fetchSkillsAndCategories, isProfileComplete ,setSingleFreelancer} = useAppContext();
   const router = useRouter();
@@ -31,7 +38,7 @@ const [userId, setUserId] = useState('');
     firstName: '',
     lastName: '',
     country: '',
-    language: '',
+    languages: '',
     gender: '',
     dateOfBirth: '',
     role: '',
@@ -69,13 +76,13 @@ const [userId, setUserId] = useState('');
             firstName: userData.firstName || '',
             lastName: userData.lastName || '',
             country: userData.country || '',
-            language: userData.language || '',
+            languages: userData.languages || '',
             gender: userData.gender || '',
             dateOfBirth: userData.dateOfBirth || '',
             role: userData.role || '',
             category: userData.category ? userData.category._id : '',
             bio: userData.bio || '',
-            jobTitle: userData.jobtitle || ''
+            jobTitle: userData.jobTitle || ''
           });
           console.log(userData);
           setSelectedSkills(userData.skills || []);
@@ -157,8 +164,9 @@ const [userId, setUserId] = useState('');
         text: `شكراً ${formData.firstName}`,
         timer: 1500
       }).then(() => {
-        router.push('/');
-      });
+        // router.push('/');
+        window.location.href = '/';
+      })
     }
  
     // console.log(response);
@@ -167,6 +175,9 @@ const [userId, setUserId] = useState('');
 
   const isFormComplete = () => {
     return Object.values(formData).every(value => value !== '') && selectedSkills.length > 0;
+  };
+  const handleDateChange = (date) => {
+    setFormData({ ...formData, dateOfBirth: date });
   };
 
 
@@ -186,27 +197,32 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
           <div className="card-body p-5">
             <h1 className="text-center mb-5 text-primary">الملف الشخصي</h1>
             <form onSubmit={handleSubmit}>
-              <div className="text-center mb-5">
-                <div className="position-relative d-inline-block">
-                  <img
-                    src={profilePicture || '/default-avatar.png'}
-                    alt="Profile Picture"
-                    width={150}
-                    height={150}
-                    className="rounded-circle border border-3 border-primary"
-                  />
-                  <label htmlFor="profile-picture" className="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle">
-                    <BsPencilSquare />
-                  </label>
-                  <input
-                    type="file"
-                    id="profile-picture"
-                    className="d-none"
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                  />
-                </div>
-              </div>
+            <div className="text-center mb-5">
+                    <div className="position-relative d-inline-block">
+                      <label htmlFor="profile-picture" className="cursor-pointer">
+                        <div className="profile-picture-container">
+                          <img
+                            src={profilePicture || '/default-avatar.png'}
+                            alt="Profile Picture"
+                            width={150}
+                            height={150}
+                            className="rounded-circle border border-3 border-primary"
+                          />
+                          <div className="profile-picture-overlay">
+                            <FaCamera size={24} className='text-primary' />
+                            <span className="mt-2 me-2">تغيير الصورة الشخصية</span>
+                          </div>
+                        </div>
+                      </label>
+                      <input
+                        type="file"
+                        id="profile-picture"
+                        className="d-none"
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                      />
+                    </div>
+                  </div>
 
               
               <div className="mb-5">
@@ -310,8 +326,8 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
                   <label className="form-label fw-bold">اللغة</label>
                   <select
                     className="form-select form-select-lg"
-                    name="language"
-                    value={formData.language}
+                    name="languages"
+                    defaultValue={formData.languages}
                     onChange={handleInputChange}
                     required
                   >
@@ -328,7 +344,7 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
                   <select
                     className="form-select form-select-lg"
                     name="gender"
-                    value={formData.gender}
+                    defaultValue={formData.gender}
                     onChange={handleInputChange}
                     required
                   >
@@ -338,17 +354,21 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
                   </select>
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold">تاريخ الميلاد</label>
-                  <input
-                    type="date"
-                    className="form-control form-control-lg"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
+          <label className="form-label fw-bold">تاريخ الميلاد</label>
+          <DatePicker
+            selected={formData.dateOfBirth ? new Date(formData.dateOfBirth) : null}
+            onChange={handleDateChange}
+            dateFormat="dd/MM/yyyy"
+            className="form-control form-control-lg"
+            placeholderText="اختر تاريخ الميلاد"
+            showYearDropdown
+            scrollableYearDropdown
+            yearDropdownItemNumber={100}
+            required
+          />
+        </div>
+      </div>
+
 
               <div className="mb-4">
   <label className="form-label fw-bold" >اختر مهاراتك</label>

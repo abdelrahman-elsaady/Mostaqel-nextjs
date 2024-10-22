@@ -271,12 +271,23 @@ const  AddProject = () => {
     </div>
     </div> : 
 
-     <div className=" text-center col-md-8  ">
-      
-        <p>سجل الان لإضافة مشروع جديد <Link href="/login">
-        <button className="btn btn-primary">Log in</button>
-        </Link></p>
-      </div>
+<div className="col-md-8 d-flex flex-column justify-content-center align-items-center py-5">
+<div className="card shadow-lg border-0">
+  <div className="card-body text-center p-5">
+    <img 
+      src="/righthere-ezgif.com-resize.gif" 
+      alt="righthere" 
+      className="img-fluid mb-4 rounded"
+      style={{ maxWidth: '300px' }}
+    />
+    <h2 className="mb-3">أضف مشروعك الجديد</h2>
+    <p className="lead mb-4">سجل الآن لتتمكن من إضافة مشروع جديد وبدء رحلتك معنا</p>
+    <Link href="/login" className="btn btn-primary btn-lg">
+      تسجيل الدخول
+    </Link>
+  </div>
+</div>
+</div>
     } 
 
     <div className="col-md-4  pe-4">
