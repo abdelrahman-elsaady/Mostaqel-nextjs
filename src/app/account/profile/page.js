@@ -246,7 +246,7 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
         htmlFor="freelancer"
       >
         <FaUser className="me-2" />
-        مقدم خدمة
+         مستقل
       </label>
     </div>
     <div className="or-divider pt-3">
