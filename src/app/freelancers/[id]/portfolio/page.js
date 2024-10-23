@@ -35,7 +35,13 @@ export default async function Portfolio({params}) {
                 </div>
 
             ) : (
-                <div>لا يوجد اعمال بعد</div>
+                
+      <div className="card mb-4">
+        <div className="card-body">
+          <p>    لسه مفييش </p>
+        </div>
+      </div>
+    
             )}
         </div>
     )

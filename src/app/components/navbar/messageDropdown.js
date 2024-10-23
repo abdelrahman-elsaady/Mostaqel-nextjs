@@ -7,7 +7,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaEnvelope ,FaBell} from "react-icons/fa";
 import Link from 'next/link';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import styles from "./navbar.module.css";
 import { useRouter } from 'next/navigation'
 
@@ -17,7 +17,7 @@ export default function MessageDropdown({ userId }) {
   const [messageUnreadCount, setMessageUnreadCount] = useState(0);
   const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
-  const socketRef = useRef(null);
+  // const socketRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter()
@@ -27,21 +27,21 @@ export default function MessageDropdown({ userId }) {
     document.addEventListener('mousedown', handleClickOutside);
   
     // Set up Socket.IO connection
-    socketRef.current = io(`${process.env.BASE_URL}`);
-    socketRef.current.on('connect', () => {
-      console.log('Connected to Socket.IO server');
-      socketRef.current.emit('userConnected', userId);
-    });
+    // socketRef.current = io(`${process.env.BASE_URL}`);
+    // socketRef.current.on('connect', () => {
+    //   console.log('Connected to Socket.IO server');
+    //   socketRef.current.emit('userConnected', userId);
+    // });
   
-    socketRef.current.on('messageNotification', handleNewNotification);
-    socketRef.current.on('moneyReceived', handleMoneyReceived);
+    // socketRef.current.on('messageNotification', handleNewNotification);
+    // socketRef.current.on('moneyReceived', handleMoneyReceived);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-      socketRef.current.off('moneyReceived', handleMoneyReceived);
+      // document.removeEventListener('mousedown', handleClickOutside);
+      // if (socketRef.current) {
+      //   socketRef.current.disconnect();
+      // }
+      // socketRef.current.off('moneyReceived', handleMoneyReceived);
 
     };
   }, [userId]);

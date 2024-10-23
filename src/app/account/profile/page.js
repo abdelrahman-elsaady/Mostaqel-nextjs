@@ -44,7 +44,7 @@ const [userId, setUserId] = useState('');
     role: '',
     specialization: '',
     bio: '',
-    jobTitle: ''
+    jobtitle: ''
   });
 
   // useEffect(() => {
@@ -82,7 +82,7 @@ const [userId, setUserId] = useState('');
             role: userData.role || '',
             category: userData.category ? userData.category._id : '',
             bio: userData.bio || '',
-            jobTitle: userData.jobTitle || ''
+            jobtitle: userData.jobtitle || ''
           });
           console.log(userData);
           setSelectedSkills(userData.skills || []);
@@ -431,8 +431,8 @@ if (isLoading) return <div className="d-flex justify-content-center align-items-
                   type="text"
                   className="form-control form-control-lg"
                   placeholder="مثال: مصمم جرافيك"
-                  name="jobTitle"
-                  value={formData.jobTitle}
+                  name="jobtitle"
+                  value={formData.jobtitle}
                   onChange={handleInputChange}
                   required
                 />

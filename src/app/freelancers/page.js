@@ -141,19 +141,21 @@ const [freelancersPerPage] = useState(8);
                     <div className="star-rating" dir="ltr">
                     {/* <Rating name="read-only " value={freelancer.averageRating} readOnly /> */}
                    
-                    <Rating  name="half-rating-read" value={freelancer.averageRating} precision={0.5} readOnly />
 
                     </div>
                   </div>
                   <div className="d-flex text-muted small">
-                    <span className='ms-2'>
+                   <span className='me-2'>
+                    <Rating  name="half-rating-read" value={freelancer.averageRating} precision={0.5} readOnly />
+                   </span>
+                    <span className='me-2'>
 
                     {freelancer.jobtitle}
-                    </span>
-                    
-                    <span>
 
-                    {freelancer.projectCompletionRate} %
+                    </span>
+                    <span className='ms-2'>
+
+                    {/* {freelancer.projectCompletionRate} % */}
                     </span>
                     </div>
                 </div>

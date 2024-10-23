@@ -61,28 +61,19 @@ export default async function FreelancerLayout({ children, params }) {
             </ul>
           </div>
           
-          {/* Add the three links */}
-          {/* {token && (
-            <div className="mt-3">
-              <Link href={`/freelancers/${id}/add-work`} className="btn btn-primary me-2">
-                اضف عمل
-              </Link>
-              <Link href={`/freelancers/${id}/edit-profile`} className="btn btn-secondary">
-                تعديل الملف الشخصي
-              </Link>
-            </div>
-          )}ص */}
+
+
           <div className="mt-3  ">
             <ul className="nav nav-tabs ">
-              <li className="nav-item">
-                <Link href={`/freelancers/${id}`} className={`nav-link active ${styless.medhat}`}  >الملف الشخصي</Link>
-              </li>
-              <li className="nav-item">
-                <Link href={`/freelancers/${id}/reviews`} className="nav-link active"  >التقييمات</Link>
-              </li>
-              <li className="nav-item">
-                <Link href={`/freelancers/${id}/portfolio`} className="nav-link active"  >معرض الأعمال</Link>
-              </li>
+<li className="nav-item">
+    <Link href={`/freelancers/${id}`} className={`nav-link ${styless.navLink}`}>الملف الشخصي</Link>
+  </li>
+  <li className="nav-item">
+    <Link href={`/freelancers/${id}/reviews`} className={`nav-link ${styless.navLink}`}>التقييمات</Link>
+  </li>
+  <li className="nav-item">
+    <Link href={`/freelancers/${id}/portfolio`} className={`nav-link ${styless.navLink}`}>معرض الأعمال</Link>
+  </li>
             {token && (
               <li className="nav-item position-absolute start-0 ">
               {/* <div className="mt-3 position-absolute start-0 "> */}

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
 import Swal from 'sweetalert2';
@@ -19,7 +19,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [userId, setUserId] = useState(null);
-  const socketRef = useRef();
+  // const socketRef = useRef();
   const messagesEndRef = useRef(null);
   const [clientId, setClientId] = useState(null);
   const [projectStatus, setProjectStatus] = useState('open');
@@ -56,19 +56,18 @@ export default function ChatPage() {
     fetchConversation();
     checkExistingReview();
 
-    // Set up Socket.IO connection
-    socketRef.current = io(`${process.env.BASE_URL}`);
-    socketRef.current.on('connect', () => {
-      console.log('Connected to Socket.IO server');
-      socketRef.current.emit('joinConversation', conversationId);
-    });
-    socketRef.current.on('newMessage', handleNewMessage);
+    // socketRef.current = io(`${process.env.BASE_URL}`);
+    // socketRef.current.on('connect', () => {
+    //   console.log('Connected to Socket.IO server');
+    //   socketRef.current.emit('joinConversation', conversationId);
+    // });
+    // socketRef.current.on('newMessage', handleNewMessage);
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
-    };
+    // return () => {
+    //   if (socketRef.current) {
+    //     socketRef.current.disconnect();
+    //   }
+    // };
 
 
   }, [conversationId, clientId]);
@@ -200,7 +199,7 @@ export default function ChatPage() {
 
       if (response.ok) {
         const sentMessage = await response.json();
-        socketRef.current.emit('newMessage', sentMessage);
+        // socketRef.current.emit('newMessage', sentMessage);
         setNewMessage('');
         setTimeout(scrollToBottom, 0);
       } else {
@@ -250,12 +249,12 @@ export default function ChatPage() {
             'تم التحويل!',
             'تم تحويل المبلغ بنجاح.',
             'success'
-          );
-          socketRef.current.emit('sendMoney', {
-            senderId: userId,
-            receiverId: conversation.freelancerId._id,
-            amount: conversation.proposalId.amount
-          });
+          )
+          // socketRef.current.emit('sendMoney', {
+          //   senderId: userId,
+          //   receiverId: conversation.freelancerId._id,
+          //   amount: conversation.proposalId.amount
+          // });
         } else {
           throw new Error('Failed to transfer money');
         }

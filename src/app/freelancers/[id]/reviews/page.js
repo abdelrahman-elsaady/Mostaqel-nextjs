@@ -19,7 +19,13 @@ export default async function Reviews({params}) {
   return (
 
 <>
+
+
+
+{/* <div className='row'== */}
 <div className="row" >
+
+
   {reviews.reviews.length > 0 ? (
     <div className="col-lg-8">
           <div className="card mb-4">
@@ -135,7 +141,43 @@ export default async function Reviews({params}) {
       </div>
     </div>
   )}
+
+           <div className="col-lg-4">
+            <div className="card mb-4">
+              <div className="card-header">
+                <h5 className="card-title text-muted "> احصائيات </h5>
+              </div>
+
+              <ul className="p-0 list-group list-group-flush">
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>التقييم</span>
+                  <Rating  name="half-rating-read" value={reviews.freelancer.averageRating} precision={0.5} readOnly />
+
+                  {/* <strong>{project.status || 'مفتوح'}</strong> */}
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>تاريخ التسجيل</span>
+                  <strong>{new Date(reviews.freelancer.createdAt).toLocaleDateString('ar-EG')}</strong>
+                </li>
+                <li className="list-group-item d-flex justify-content-between">
+                  <span>الدولة</span>
+
+                  <strong>{reviews.freelancer.country}</strong>
+
+                </li>
+                
+              </ul>
+            </div>
+            </div>
+
+
+
+
+
+
+
 </div>
+
 
 
      
