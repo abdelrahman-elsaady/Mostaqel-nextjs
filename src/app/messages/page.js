@@ -21,13 +21,16 @@ const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
-    setToken(cookies.get('token'));
+
+    let token = cookies.get('token');
+
+    setToken(token);
  
     if(token){  
       const decoded = jwtDecode(token);
       setUserId(decoded.id);
-    
-
+    }
+          console.log(userId);
     const fetchConversations = async () => {
       try {
 
@@ -45,7 +48,7 @@ const [loading, setLoading] = useState(true);
       }
     };
     fetchConversations();
-    }
+    
   }, [userId]);
 
 
@@ -92,10 +95,10 @@ const [loading, setLoading] = useState(true);
                         </div>
                       </div>
                       <div className="text-muted small">
-                        {new Date(conversation.lastMessage.createdAt).toLocaleString()}
+                        {/* {new Date(conversation.lastMessage.createdAt).toLocaleString()} */}
                       </div>
                     </div>
-                    <p className="mb-1">{conversation.lastMessage.content}</p>
+                    <p className="mb-1">{conversation.projectId.description}</p>
                   </div>
                   </Link>
               ))

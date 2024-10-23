@@ -55,8 +55,11 @@ const decoded = jwt.decode(token.value);
 
     const userData = await fetchUserData(decoded.id);
     // revalidatePath('/')
+    if(userData){
     if (userData.data.skills.length == 0) {
      redirect('/account/profile')
+      }
+      
     }
 }
 
