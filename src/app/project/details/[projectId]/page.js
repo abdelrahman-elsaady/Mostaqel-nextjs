@@ -87,16 +87,24 @@ export default function ProjectDetails() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProposalForm(prev => {
-      const updatedForm = { ...prev, [name]: value };
+    if (name === 'deliveryTime') {
+      setProposalForm(prev => {
+        const updatedForm = { ...prev, [name]: Math.max(1, parseInt(value)) };
+        updatedForm.receivables = calculateEarnings();
+        return updatedForm;
+      });
+    } else {
+      setProposalForm(prev => {
+        const updatedForm = { ...prev, [name]: value };
       // Update receivables when amount changes
       if (name === 'amount') {
-        updatedForm.receivables = calculateEarnings();
-      }
-      return updatedForm;
-    });
+          updatedForm.receivables = calculateEarnings();
+        }
+        return updatedForm;
+      });
 
   };
+}
 
   const calculateEarnings = () => {
     const price = parseFloat(proposalForm.amount);
@@ -318,6 +326,7 @@ export default function ProjectDetails() {
                             name="deliveryTime"
                             value={proposalForm.deliveryTime}
                             onChange={handleInputChange}
+                            min="1"
                             required
                           />
                           <span className="input-group-text">أيام</span>
@@ -334,6 +343,7 @@ export default function ProjectDetails() {
                             value={proposalForm.amount}
                             onChange={handleInputChange}
                             required
+                            min="1"
                           />
                           <span className="input-group-text">$</span>
                         </div>

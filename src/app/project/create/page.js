@@ -65,9 +65,33 @@ const  AddProject = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "min" || name === "max") {
-      setFormData({ ...formData, budget: { ...formData.budget, [name]: value } });
+      let numValue = parseInt(value) || 0;
+      if (name === "min") {
+        numValue = Math.max(5, numValue);
+        // Ensure max is at least 10 and greater than min
+        if (formData.budget.max < Math.max(10, numValue + 1)) {
+          setFormData(prev => ({
+            ...prev,
+            budget: {
+              ...prev.budget,
+              min: numValue,
+              max: Math.max(10, numValue + 1)
+            }
+          }));
+          return;
+        }
+      } else if (name === "max") {
+        numValue = Math.max(10, numValue, formData.budget.min + 1);
+      }else{
+        numValue = Math.max(1, numValue);
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        budget: { ...prev.budget, [name]: numValue }
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -186,7 +210,7 @@ const  AddProject = () => {
           ></textarea>
         </div>
         <div className="mb-3">
-          <label htmlFor="deliveryTime" className="form-label">مدة التسليم (أيام)</label>
+          <label htmlFor="deliveryTime" className="form-label" >مدة التسليم (أيام) <small>  اقل مدة 1 يوم</small></label>
           <input
             type="number"
             className="form-control"
@@ -195,30 +219,36 @@ const  AddProject = () => {
             value={formData.deliveryTime}
             onChange={handleInputChange}
             required
+            min="1"
           />
+        {/* <small>  اقل مدة 1 يوم</small> */}
         </div>
         <div className="mb-3">
           <label className="form-label">الميزانية</label>
+          {/* <p></p> */}
           <div className="input-group">
-            <input
-              type="number"
-              className="form-control"
-              placeholder="أقل مبلغ"
-              name="min"
-              value={formData.budget.min}
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="number"
-              className="form-control"
-              placeholder=" أقصى مبلغ"
-              name="max"
-              value={formData.budget.max}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
+          <input
+      type="number"
+      className="form-control"
+      placeholder="أقل مبلغ"
+      name="min"
+      value={formData.budget.min}
+      onChange={handleInputChange}
+      min="5"
+      required
+    />
+    <input
+      type="number"
+      className="form-control"
+      placeholder=" أقصى مبلغ"
+      name="max"
+      value={formData.budget.max}
+      onChange={handleInputChange}
+      min="10"
+      required
+    />
+  </div>
+  <small>  اقل مبلغ 5 $ بلاش نتانة</small>
         </div>
         <div className="mb-3">
           <label htmlFor="category" className="form-label">الفئة</label>
