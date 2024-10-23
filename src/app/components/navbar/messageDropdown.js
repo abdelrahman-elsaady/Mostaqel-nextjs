@@ -10,6 +10,7 @@ import Link from 'next/link';
 // import { io } from 'socket.io-client';
 import styles from "./navbar.module.css";
 import { useRouter } from 'next/navigation'
+import Pusher from 'pusher-js';
 
 export default function MessageDropdown({ userId }) {
   const [messages, setMessages] = useState([]);
@@ -19,6 +20,8 @@ export default function MessageDropdown({ userId }) {
   const dropdownRef = useRef(null);
   // const socketRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
+  const [pusher, setPusher] = useState(null);
+
   const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter()
 
@@ -32,10 +35,20 @@ export default function MessageDropdown({ userId }) {
     //   console.log('Connected to Socket.IO server');
     //   socketRef.current.emit('userConnected', userId);
     // });
-  
+    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    });
+    setPusher(pusherInstance);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (pusherInstance) {
+        pusherInstance.disconnect();
+      }
+    };
     // socketRef.current.on('messageNotification', handleNewNotification);
     // socketRef.current.on('moneyReceived', handleMoneyReceived);
-
+    handleNewNotification()
     return () => {
       // document.removeEventListener('mousedown', handleClickOutside);
       // if (socketRef.current) {
@@ -45,6 +58,20 @@ export default function MessageDropdown({ userId }) {
 
     };
   }, [userId]);
+  useEffect(() => {
+    if (pusher && userId) {
+      const channel = pusher.subscribe(`user-${userId}`);
+      channel.bind('message-notification', handleNewNotification);
+      channel.bind('money-received', handleMoneyReceived);
+
+      return () => {
+        channel.unbind('message-notification', handleNewNotification);
+        channel.unbind('money-received', handleMoneyReceived);
+        pusher.unsubscribe(`user-${userId}`);
+      };
+    }
+  }, [pusher, userId]);
+
   const handleNewNotification = (notification) => {
     console.log('Received new notification:', notification);
     setMessages(prevMessages => {

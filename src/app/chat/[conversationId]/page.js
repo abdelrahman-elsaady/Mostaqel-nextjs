@@ -8,6 +8,8 @@ import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
 import Swal from 'sweetalert2';
 import { Rating } from '@mui/material';
+import Pusher from 'pusher-js';
+
 // import { io } from 'socket.io-client';  const styles = require('./ChatMessage.module.css'); 
 // const styles = require('./ChatMessage.module.css'); 
 import styles from '../ChatMessage.module.css';
@@ -19,6 +21,8 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [userId, setUserId] = useState(null);
+  const [pusher, setPusher] = useState(null);
+
   // const socketRef = useRef();
   const messagesEndRef = useRef(null);
   const [clientId, setClientId] = useState(null);
@@ -56,6 +60,17 @@ export default function ChatPage() {
     fetchConversation();
     checkExistingReview();
 
+    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    });
+    setPusher(pusherInstance);
+
+    return () => {
+      if (pusherInstance) {
+        pusherInstance.disconnect();
+      }
+    };
+
     // socketRef.current = io(`${process.env.BASE_URL}`);
     // socketRef.current.on('connect', () => {
     //   console.log('Connected to Socket.IO server');
@@ -72,6 +87,17 @@ export default function ChatPage() {
 
   }, [conversationId, clientId]);
 
+  useEffect(() => {
+    if (pusher && conversationId) {
+      const channel = pusher.subscribe(`conversation-${conversationId}`);
+      channel.bind('new-message', handleNewMessage);
+
+      return () => {
+        channel.unbind('new-message', handleNewMessage);
+        pusher.unsubscribe(`conversation-${conversationId}`);
+      };
+    }
+  }, [pusher, conversationId]);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -179,8 +205,6 @@ export default function ChatPage() {
       }
       return prevMessages;
     });
-
-
   };
 
   const sendMessage = async (e) => {
@@ -198,8 +222,6 @@ export default function ChatPage() {
       });
 
       if (response.ok) {
-        const sentMessage = await response.json();
-        // socketRef.current.emit('newMessage', sentMessage);
         setNewMessage('');
         setTimeout(scrollToBottom, 0);
       } else {
