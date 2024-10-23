@@ -10,13 +10,16 @@ export default function Freelancers() {
   const [filteredFreelancers, setFilteredFreelancers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
-const [loading, setLoading] = useState(true);
-const [page, setPage] = useState(1);
-const [freelancersPerPage] = useState(8);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [freelancersPerPage] = useState(8);
 
   useEffect(() => {
-    fetchFreelancers();
-    // setLoading(false);
+    const loadFreelancers = async () => {
+      await fetchFreelancers();
+      setLoading(false);
+    };
+    loadFreelancers();
   }, []);
 
   useEffect(() => {
@@ -27,11 +30,13 @@ const [freelancersPerPage] = useState(8);
       return categoryMatch && searchMatch;
     });
     setFilteredFreelancers(filtered);
-    if(filteredFreelancers.length > 0){
-      setLoading(false);
-    }
     setPage(1);
   }, [freelancers, selectedCategories, searchTerm]);
+
+
+
+
+
   const handlePageChange = (event, value) => {
     setPage(value);
   };
@@ -145,7 +150,7 @@ const [freelancersPerPage] = useState(8);
                     </div>
                   </div>
                   <div className="d-flex text-muted small">
-                   <span className='me-2'>
+                   <span className='me-2' dir="ltr">
                     <Rating  name="half-rating-read" value={freelancer.averageRating} precision={0.5} readOnly />
                    </span>
                     <span className='me-2'>

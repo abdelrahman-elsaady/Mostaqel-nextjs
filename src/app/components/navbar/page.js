@@ -236,7 +236,7 @@ console.log(isLoggedIn);
                           className="offcanvas-title"
                           id="offcanvasWithBothOptionsLabel"
                         >
-                          Backdroped with scrolling
+                          
                         </h5>
                         <button
                           type="button"

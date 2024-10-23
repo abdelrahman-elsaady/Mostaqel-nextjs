@@ -151,7 +151,9 @@ export default async function Reviews({params}) {
               <ul className="p-0 list-group list-group-flush">
                 <li className="list-group-item d-flex justify-content-between">
                   <span>التقييم</span>
+                  <span className='me-2' dir="ltr"> 
                   <Rating  name="half-rating-read" value={reviews.freelancer.averageRating} precision={0.5} readOnly />
+                  </span>
 
                   {/* <strong>{project.status || 'مفتوح'}</strong> */}
                 </li>

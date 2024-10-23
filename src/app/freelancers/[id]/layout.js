@@ -56,7 +56,7 @@ export default async function FreelancerLayout({ children, params }) {
               </li>
               <li className="list-inline-item">
                 <FaBriefcase className="ms-2" />
-                {freelancer.jobTitle}
+                {freelancer.jobtitle}
               </li>
             </ul>
           </div>

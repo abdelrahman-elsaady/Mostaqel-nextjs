@@ -119,6 +119,11 @@ export default function UserProposals() {
 
               <section className="col-lg-8 col-md-7" style={{ marginLeft: '30px' }}>
                 <div className="list-group">
+                  {/* {filteredProposals.length === 0 && (
+                    <p>لا توجد عروض بعد</p>
+                  )} */}
+                     
+                
                   {filteredProposals.length > 0 ? (
                     filteredProposals.map((proposal) => (
                       <div key={proposal._id} className="list-group-item list-group-item-action p-4">
@@ -145,9 +150,11 @@ export default function UserProposals() {
                       </div>
                     ))
                   ) : (
-                    <p>لا توجد عروض مطابقة للبحث</p>
+                    <p>لا توجد عروض  </p>
                   )}
+                  
                 </div>
+
               </section>
             </div>
           </div>
