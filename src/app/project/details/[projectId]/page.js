@@ -143,6 +143,21 @@ export default function ProjectDetails() {
         imageHeight: 200,
         imageAlt: "Custom image"
       });
+
+      return;
+    }
+
+    const hasExistingProposal = project.proposals.some(proposal => proposal.freelancer._id == userId);
+    if (hasExistingProposal) {
+      Swal.fire({
+        title: 'بلاش غباوة',
+        text: 'ان مش قدمت قبل كدة هي شغلانة؟',
+
+        imageUrl: "/slap.gif",
+        imageWidth: 400,
+        imageHeight: 200,
+        imageAlt: "Custom image"
+      });
       return;
     }
 
