@@ -39,7 +39,7 @@ export const { handlers:{GET,POST}, auth, signIn, signOut } = NextAuth({
           }
 
           const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
-          cookies().set('token', token)
+          cookies().set('token', token, { path: '/', maxAge: 30 * 24 * 60 * 60 * 1000 })
 
           user.redirectUrl = response.data.message == 'Email already exists' ? '/' : '/account/profile';
           console.log(user.redirectUrl)

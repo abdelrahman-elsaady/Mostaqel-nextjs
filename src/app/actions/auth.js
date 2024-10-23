@@ -26,7 +26,7 @@ export async function loginUser(formData) {
     if (data && data.token) {
       let id = getIdFromToken(data.token)
     //   localStorage.setItem('token', data.token);
-      cookies().set('token', data.token)
+      cookies().set('token', data.token, { path: '/', maxAge: 30 * 24 * 60 * 60 * 1000 })
 
       return { success: true, id }
       
