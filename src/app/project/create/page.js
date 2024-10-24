@@ -248,7 +248,7 @@ const  AddProject = () => {
       required
     />
   </div>
-  <small>  اقل مبلغ 5 $ بلاش نتانة</small>
+  <small>  اقل مبلغ 5 $  </small>
         </div>
         <div className="mb-3">
           <label htmlFor="category" className="form-label">الفئة</label>
