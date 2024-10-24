@@ -186,3 +186,4 @@ export default async function Reviews({params}) {
 </>
   )
 }
+export const revalidate = 1;

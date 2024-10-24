@@ -101,3 +101,6 @@ export default async function FreelancerLayout({ children, params }) {
     </div>
   );
 }
+
+
+export const revalidate = 1;

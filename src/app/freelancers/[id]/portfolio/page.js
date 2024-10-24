@@ -46,3 +46,5 @@ export default async function Portfolio({params}) {
         </div>
     )
 }
+
+export const revalidate = 1;

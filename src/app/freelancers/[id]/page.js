@@ -9,7 +9,7 @@ export default async function FreelancerProfile({params}) {
   const freelancerData  = await getFreelancer(params.id);
   const freelancer = freelancerData.data;   
   // console.log(freelancer.skills[0].name);
- 
+//  console.log(freelancer);
 
   return (
 <>
