@@ -314,12 +314,23 @@ console.log(isLoggedIn);
                           )}
                         </ul>
                       </div>
+                      
+
+
+                      
                     </div>
                   </div>
                 {/* </button> */}
               </li>
             </ul>
+
+
+
           </div>
+
+
+
+
         </div>
       </div>
 
@@ -346,26 +357,68 @@ console.log(isLoggedIn);
             </Link>
           </li>
           <li className="nav-item">
-            <Link href="/projects" className={`nav-link text-center ${styles.bottomNavLink}`}>
+            <Link href="/project" className={`nav-link text-center ${styles.bottomNavLink}`}>
               <FaCubes className={styles.bottomNavIcon} />
               <div>المشاريع</div>
             </Link>
           </li>
-          <li className="nav-item">
-            <button 
-              className={`nav-link text-center ${styles.bottomNavLink}`} 
-              data-bs-toggle="modal" 
-              data-bs-target="#accountModal"
-            >
-              <FaUser className={styles.bottomNavIcon} />
-              <div>حسابي</div>
-            </button>
-          </li>
-        </ul>
-        </div>
+
+
+
+
+          <li className="nav-item dropup">
+            
+  <button 
+    className={`nav-link text-center ${styles.bottomNavLink} dropdown-toggle`}
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    data-bs-auto-close="outside"
+  >
+    <FaUser className={styles.bottomNavIcon} />
+    <div>حسابي</div>
+  </button>
+  <ul className="dropdown-menu ">
+    <li  className="" >
+      <Link 
+        href="/login" 
+        className="dropdown-ite text-decoration-none text-dark"
+        // data-bs-toggle="dropdown"
+      >
+        <FaSignInAlt className="me-2" />
+        تسجيل دخول
+      </Link>
+    </li>
+    <li>
+      <Link 
+        href="/register" 
+        className="dropdown-item text-decoration-none text-dark"
+        // data-bs-toggle="dropdown"
+      >
+        <FaUserPlus className="me-2" />
+        حساب جديد
+      </Link>
+    </li>
+    <li  data-bs-toggle="">
+      <Link 
+        href="/project/create" 
+        className="dropdown-item text-decoration-none text-dark"
+        
+      >
+        <FaPlus className="me-2" />
+        أضف مشروع
+      </Link>
+    </li>
+  </ul>
+</li>
+</ul>
+</div>
+        
+
+
+
 
 {/* Account Modal */}
-<div className="modal fade" id="accountModal" tabIndex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+{/* <div className="modal fade" id="accountModal" tabIndex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
   <div className="modal-dialog modal-fullscreen">
     <div className="modal-content">
       <div className="modal-header">
@@ -375,28 +428,35 @@ console.log(isLoggedIn);
       <div className="modal-body">
         <ul className="list-group list-group-flush">
           <li className="list-group-item">
-            <Link href="/login" className="text-decoration-none text-dark">
+            <Link href="/login" className="text-decoration-none text-dark" data-bs-dismiss="modal">
               <FaSignInAlt className="me-2" />
               تسجيل دخول
             </Link>
           </li>
           <li className="list-group-item">
-            <Link href="/register" className="text-decoration-none text-dark">
+            <Link href="/register" className="text-decoration-none text-dark" data-bs-dismiss="modal">
               <FaUserPlus className="me-2" />
               حساب جديد
             </Link>
           </li>
           <li className="list-group-item">
-            <Link href="/project/create" className="text-decoration-none text-dark">
+            <Link href="/project/create" className="text-decoration-none text-dark" data-bs-dismiss="modal">
               <FaPlus className="me-2" />
               أضف مشروع
             </Link>
           </li>
         </ul>
-        </div>
-          </div>
-        </div>
+
+        
       </div>
+    </div>
+  </div>
+
+
+      </div> */}
+
+
+
 
     </>
   );
