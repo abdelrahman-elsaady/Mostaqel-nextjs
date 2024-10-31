@@ -61,7 +61,7 @@ let messages = [];
           <h4 className='fw-bold my-5'>لوحة التحكم</h4>
     <div className='row mb-3'>
  
-       <div className="col-md-4 text-center pt-3 bg-white "  >
+       <div className="col-md-4 me-3 mb-3 text-center pt-3 bg-white "  >
           <div className="d-flex justify-content-center position-relative">
             <img
               src={user.profilePicture || '/Default-user.png'}
@@ -140,7 +140,7 @@ let messages = [];
 
   <div className='row'>
 
-  <div className="col-md-4 text-center pt-3 bg-white "  >
+  <div className="col-md-4 me-3 mb-3 text-center pt-3 bg-white "  >
     <Link href='/messages' className='text-decoration-none text-muted'>
           <div className="  text-muted mt-3">
 

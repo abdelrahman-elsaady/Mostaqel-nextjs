@@ -10,8 +10,6 @@ import Swal from 'sweetalert2';
 import { Rating } from '@mui/material';
 import Pusher from 'pusher-js';
 
-// import { io } from 'socket.io-client';  const styles = require('./ChatMessage.module.css'); 
-// const styles = require('./ChatMessage.module.css'); 
 import styles from '../ChatMessage.module.css';
 
 // import './sssss.css';
@@ -21,6 +19,8 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [userId, setUserId] = useState(null);
+
+  
   const [pusher, setPusher] = useState(null);
 
   // const socketRef = useRef();
@@ -63,6 +63,7 @@ export default function ChatPage() {
     const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
     });
+
     setPusher(pusherInstance);
 
     return () => {
@@ -618,9 +619,6 @@ export default function ChatPage() {
 
 
 
-
-
-
         <div className="col-md-8" dir='rtl'>
           <div className="card">
             <div className="card-body">
@@ -678,5 +676,10 @@ export default function ChatPage() {
     </div>
   );
 }
+
+
+
+
+
 
 

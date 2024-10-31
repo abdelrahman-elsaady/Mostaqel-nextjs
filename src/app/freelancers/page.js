@@ -4,6 +4,7 @@ import { useAppContext } from './../context/AppContext';
 import Link from 'next/link';
 import { Rating } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
+import { IoFilterSharp } from "react-icons/io5";
 
 export default function Freelancers() {
   const { freelancers, fetchFreelancers } = useAppContext();
@@ -13,6 +14,7 @@ export default function Freelancers() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [freelancersPerPage] = useState(8);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const loadFreelancers = async () => {
@@ -52,6 +54,9 @@ export default function Freelancers() {
         : [...prev, category]
     );
   };
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -76,19 +81,92 @@ export default function Freelancers() {
         <p style={{ display: "block", marginRight: "100px" }}> الرئيسية</p>
       </div> */}
 
+    
+    
+    
       <div className="container-fluid" style={{ direction: "rtl",backgroundColor: "#f0f0f0" }} >
-        <div >
-          <nav className="navbar navbar-light ">
-            <a className="navbar-brand pe-3" style={{ marginRight: "75px" }} href="#">
-              <h3>ابحث عن مستقلين</h3>
-            </a>
 
-          </nav>
+
+  <div className="d-flex justify-content-between">
+
+        <div >
+        
+        <nav className="navbar navbar-light ">
+          <a className="navbar-brand pe-3" style={{ marginRight: "75px" }} href="#">
+            <h3>جميع المستقلين</h3>
+          </a>
+
+        </nav>
+      </div>
+      <div className="d-md-none  m-3">
+          <button 
+            className="btn btn-primary"
+            type="button"
+            data-bs-toggle="offcanvas" 
+            data-bs-target="#filterOffcanvas"
+            aria-controls="filterOffcanvas"
+          >
+          <IoFilterSharp />
+          </button>
         </div>
+</div>
+        {/* Add Offcanvas */}
+        <div 
+          className="offcanvas offcanvas-start" 
+          tabIndex="-1" 
+          id="filterOffcanvas" 
+          aria-labelledby="filterOffcanvasLabel"
+          style={{ direction: "rtl" }}
+        >
+          <div className="offcanvas-header">
+            {/* <h5 className="offcanvas-title" id="filterOffcanvasLabel">الفلاتر</h5> */}
+            <button 
+              type="button" 
+              className="btn btn-primary" 
+              data-bs-dismiss="offcanvas" 
+              aria-label="Close"
+            > عرض النتائج</button>
+          </div>
+          <div className="offcanvas-body">
+          <div className="mb-3">
+              <label htmlFor="search" className="form-label">بحث</label>
+              <input
+                type="text"
+                id="search"
+                className="form-control"
+                style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+            </div>
+
+            <div>
+              <p className="mb-3">التخصص</p>
+              {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+                <div className="form-check" key={index}>
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={`category${index + 1}`}
+                    checked={selectedCategories.includes(category)}
+                    onChange={() => handleCategoryChange(category)}
+                  />
+                  <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                    {category}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+      
+
+
 
         <div className="row mt-4">
           {/* sidebar */}
-          <aside className="col-lg-3 col-md-2 pe-5" style={{ marginRight: '40px' }}>
+     <aside className="col-lg-3 col-md-2 pe-5 d-none d-md-block" style={{ marginRight: '40px' }}>
         <div className="mb-3">
           <label htmlFor="search" className="form-label">بحث</label>
           <input

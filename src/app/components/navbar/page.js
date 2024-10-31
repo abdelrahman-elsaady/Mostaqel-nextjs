@@ -1,14 +1,26 @@
 // 'use client'
-import { FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell, FaEnvelope, FaHome, FaUser } from "react-icons/fa";
+
+
+
+
+import { FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell,
+  FaEnvelope, FaHome, FaUser, FaDollarSign, FaCog } from "react-icons/fa";
+
 import Link from "next/link";
+
+
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'; 
 import { FaBriefcase, FaRegHandBackFist } from "react-icons/fa6";
 import { GiTicket } from "react-icons/gi";
+
+
 import { useAppContext } from "../../context/AppContext";
 import styles from "./navbar.module.css";
 import UserDropdown from "./userDropdown";
 import { FaSignOutAlt } from "react-icons/fa";
+
+
 import ClientNav from "./messageDropdown";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -34,6 +46,7 @@ export default async function Navbar() {
   // const { singleFreelancer, isLoggedIn ,} = useAppContext();
 
   const cookieStore = cookies();
+
   // console.log(singleFreelancer);
 
 
@@ -67,6 +80,9 @@ console.log(isLoggedIn);
     redirect('/');
 
   };
+
+
+
 
   return (
     <>
@@ -153,6 +169,7 @@ console.log(isLoggedIn);
 
           ): (
             <>
+            
             </>
           )}
 
@@ -184,7 +201,10 @@ console.log(isLoggedIn);
                   <FaUsers className="ms-1 mt-1" />
                 </Link>
               </li>
+
+
 )}
+
 
               <li className={`nav-item ${styles.navItem}`} >
                 <Link className="nav-link text-white d-flex" href="/project/create">
@@ -192,7 +212,7 @@ console.log(isLoggedIn);
                   <FaPlus className="ms-1 mt-1" />
                 </Link>
               </li>
-              <li className="pt-2">
+             <li className="pt-2">
               <Link  href="/"  >
                 <img
                   className={`logo max-height ${styles.logo}`}
@@ -377,28 +397,42 @@ console.log(isLoggedIn);
     <FaUser className={styles.bottomNavIcon} />
     <div>حسابي</div>
   </button>
+   
+
+
+
   <ul className="dropdown-menu ">
-    <li  className="" >
-      <Link 
-        href="/login" 
-        className="dropdown-ite text-decoration-none text-dark"
-        // data-bs-toggle="dropdown"
-      >
-        <FaSignInAlt className="me-2" />
-        تسجيل دخول
-      </Link>
-    </li>
-    <li>
-      <Link 
-        href="/register" 
-        className="dropdown-item text-decoration-none text-dark"
-        // data-bs-toggle="dropdown"
-      >
-        <FaUserPlus className="me-2" />
-        حساب جديد
-      </Link>
-    </li>
-    <li  data-bs-toggle="">
+    {(isLoggedIn && user.role== "freelancer") && (
+      <>
+      <li>
+        <Link 
+          href={`/freelancers/${user._id}/portfolio`} 
+          className="dropdown-item text-decoration-none text-dark"
+        >
+          <FaBriefcase className="me-2" />
+          اعمالي
+        </Link>
+      </li>
+      </>
+    ) }
+    {(isLoggedIn && user.role== "client") && (
+      <>
+      <li>
+        <Link 
+          href="/myProjects" 
+          className="dropdown-item text-decoration-none text-dark"
+        >
+          <FaBriefcase className="me-2" />
+          مشاريعي
+        </Link>
+      </li>
+      </>
+    )}
+
+
+
+
+<li  data-bs-toggle="">
       <Link 
         href="/project/create" 
         className="dropdown-item text-decoration-none text-dark"
@@ -408,6 +442,56 @@ console.log(isLoggedIn);
         أضف مشروع
       </Link>
     </li>
+
+  {!isLoggedIn ? ( 
+      <>
+        <li className="">
+          <Link 
+            href="/login" 
+            className="dropdown-item text-decoration-none text-dark"
+          >
+            <FaSignInAlt className="me-2" />
+            تسجيل دخول
+          </Link>
+        </li>
+        <li>
+          <Link 
+            href="/register" 
+            className="dropdown-item text-decoration-none text-dark"
+          >
+            <FaUserPlus className="me-2" />
+            حساب جديد
+          </Link>
+        </li>
+      </>
+    ) : (
+      <>
+     <li>
+            <Link href="/account/profile" className={`dropdown-item ${styles.dropdownItem}`}>
+              <FaCog className={styles.dropdownIcon} />
+              الإعدادات
+            </Link>
+          </li>
+          
+          <li style={{hover: {backgroundColor: "#5794ce"}}}>
+            <Link href="/payment" className={`dropdown-item ${styles.dropdownItem}`}>
+              <FaDollarSign className={styles.dropdownIcon} />
+              الرصيد
+            </Link>
+          </li>
+      <li>
+
+        <form action={logout}>
+          <button className="dropdown-item text-decoration-none text-dark">
+            <FaSignOutAlt className="me-2" />
+            تسجيل الخروج               
+          </button>            
+        </form>       
+      </li>              
+      </>            
+    )}                   
+
+                                                   
   </ul>
 </li>
 </ul>

@@ -71,6 +71,8 @@ export default function ProjectDetails() {
       setUserId(decodedToken.id);
     }
 
+    
+
     let fetchProject = async () => {
       try {
         const projectData = await getProjectById(projectId);
@@ -113,6 +115,7 @@ export default function ProjectDetails() {
   
 
   };
+      
 
 
 
