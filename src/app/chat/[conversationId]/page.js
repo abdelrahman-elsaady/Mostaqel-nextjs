@@ -80,11 +80,11 @@ export default function ChatPage() {
   
       // Subscribe to user-specific channel for notifications
       const userChannel = pusher.subscribe(`user-${userId}`);
-      userChannel.bind('message-notification', handleNotification);
+      // userChannel.bind('message-notification', handleNotification);
   
       return () => {
         conversationChannel.unbind('new-message', handleNewMessage);
-        userChannel.unbind('message-notification', handleNotification);
+        // userChannel.unbind('message-notification', handleNotification);
         pusher.unsubscribe(`conversation-${conversationId}`);
         pusher.unsubscribe(`user-${userId}`);
       };
