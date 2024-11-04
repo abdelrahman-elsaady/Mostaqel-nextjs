@@ -402,7 +402,7 @@ export default function ChatPage() {
       console.error('Error submitting review:', error);
       Swal.fire(
         'خطأ!',
-        'حدث خطأ أثناء إرسال التقييم.',
+        'حدث خطأ أثناء إرسال ��تقييم.',
         'error'
       );
     }
