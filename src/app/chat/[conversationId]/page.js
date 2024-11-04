@@ -45,8 +45,6 @@ export default function ChatPage() {
   const messagesContainerRef = useRef(null);
 
   useEffect(() => {
-
-
     if (conversation) {
       setProjectStatus(conversation.projectId.status);
     }
@@ -56,52 +54,42 @@ export default function ChatPage() {
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.id);
     }
-
+  
     fetchConversation();
     checkExistingReview();
-
+  
+    // Initialize Pusher
     const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
     });
-
+  
     setPusher(pusherInstance);
-
+  
     return () => {
       if (pusherInstance) {
         pusherInstance.disconnect();
       }
     };
-
-    // socketRef.current = io(`${process.env.BASE_URL}`);
-    // socketRef.current.on('connect', () => {
-    //   console.log('Connected to Socket.IO server');
-    //   socketRef.current.emit('joinConversation', conversationId);
-    // });
-    // socketRef.current.on('newMessage', handleNewMessage);
-
-    // return () => {
-    //   if (socketRef.current) {
-    //     socketRef.current.disconnect();
-    //   }
-    // };
-
-
   }, [conversationId, clientId]);
 
   useEffect(() => {
-    if (pusher && conversationId) {
-      const channel = pusher.subscribe(`conversation-${conversationId}`);
-      channel.bind('new-message', handleNewMessage);
-
+    if (pusher && conversationId && userId) {
+      // Subscribe to conversation channel
+      const conversationChannel = pusher.subscribe(`conversation-${conversationId}`);
+      conversationChannel.bind('new-message', handleNewMessage);
+  
+      // Subscribe to user-specific channel for notifications
+      const userChannel = pusher.subscribe(`user-${userId}`);
+      userChannel.bind('message-notification', handleNotification);
+  
       return () => {
-        channel.unbind('new-message', handleNewMessage);
+        conversationChannel.unbind('new-message', handleNewMessage);
+        userChannel.unbind('message-notification', handleNotification);
         pusher.unsubscribe(`conversation-${conversationId}`);
+        pusher.unsubscribe(`user-${userId}`);
       };
     }
-  }, [pusher, conversationId]);
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  }, [pusher, conversationId, userId]);
 
   useEffect(() => {
     if (messages.length > 0 && userId) {
@@ -194,19 +182,16 @@ export default function ChatPage() {
   };
 
   const handleNewMessage = (message) => {
-    setMessages((prevMessages) => {
-      const messageExists = prevMessages.some(msg => msg._id === message._id);
-      if (!messageExists) {
-        const newMessages = [...prevMessages, {
-          ...message,
-          senderId: { _id: message.senderId }
-        }];
-        setTimeout(scrollToBottom, 0);
-        return newMessages;
-      }
-      return prevMessages;
-    });
-  };
+  setMessages((prevMessages) => {
+    const messageExists = prevMessages.some(msg => msg._id === message._id);
+    if (!messageExists) {
+      const newMessages = [...prevMessages, message];
+      setTimeout(scrollToBottom, 0);
+      return newMessages;
+    }
+    return prevMessages;
+  });
+};
 
   const sendMessage = async (e) => {
     e.preventDefault();
