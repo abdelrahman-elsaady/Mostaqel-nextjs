@@ -187,25 +187,30 @@ export default function ChatPage() {
   };
 
   const handleNewMessage = (message) => {
-    console.log("Received new message:", message);
+    console.log("Current messages:", messages);
+    console.log("Incoming message:", message);
+    console.log("Current user ID:", userId);
+    
     setMessages((prevMessages) => {
-      // Check if message already exists
-      const messageExists = prevMessages.some(msg => msg._id === message._id);
+      const messageExists = prevMessages.some(msg => {
+        console.log("Comparing:", msg._id, message._id);
+        return msg._id === message._id;
+      });
+      
+      console.log("Message exists?", messageExists);
+      
       if (!messageExists) {
-        // Ensure message has the correct structure
         const formattedMessage = {
           ...message,
           senderId: {
             _id: message.senderId
           }
         };
+        console.log("Adding new message:", formattedMessage);
         return [...prevMessages, formattedMessage];
       }
       return prevMessages;
     });
-    
-    // Scroll to bottom after message is added
-    setTimeout(scrollToBottom, 100);
   };
 
   const sendMessage = async (e) => {
@@ -227,21 +232,9 @@ export default function ChatPage() {
       });
 
       if (response.ok) {
-        // Clear input field immediately
+        // Only clear input field
         setNewMessage('');
-        
-        // Add message to local state immediately for better UX
-        const tempMessage = {
-          _id: Date.now().toString(), // temporary ID
-          content: newMessage,
-          senderId: { _id: userId },
-          createdAt: new Date().toISOString(),
-          readBy: [userId]
-        };
-        setMessages(prev => [...prev, tempMessage]);
-        
-        // Scroll to bottom
-        setTimeout(scrollToBottom, 100);
+        // Don't update messages state here - wait for Pusher event
       } else {
         console.error('Failed to send message');
       }
@@ -402,7 +395,7 @@ export default function ChatPage() {
       console.error('Error submitting review:', error);
       Swal.fire(
         'خطأ!',
-        'حدث خطأ أثناء إرسال ��تقييم.',
+        'حدث خطأ أثناء إرسال تقييم.',
         'error'
       );
     }
