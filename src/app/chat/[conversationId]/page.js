@@ -111,15 +111,12 @@ export default function ChatPage() {
   }, [ably, conversationId, userId]);
 
   useEffect(() => {
-    if (messages.length > 0 && userId) {
-      const unreadMessageIds = messages
-        .filter(msg => !msg.readBy.includes(userId))
-        .map(msg => msg._id);
-      if (unreadMessageIds.length > 0) {
-        markMessagesAsRead(unreadMessageIds);
-      }
-    }
-  }, [messages, userId]);
+    const scrollTimeout = setTimeout(() => {
+      scrollToBottom();
+    }, 100); // Small delay to ensure content is rendered
+
+    return () => clearTimeout(scrollTimeout);
+  }, [messages]);
 
   const checkExistingReview = async () => {
     try {
@@ -201,17 +198,8 @@ export default function ChatPage() {
   };
 
   const handleNewMessage = (message) => {
-    console.log("Current messages:", messages);
-    console.log("Incoming message:", message);
-    console.log("Current user ID:", userId);
-    
     setMessages((prevMessages) => {
-      const messageExists = prevMessages.some(msg => {
-        console.log("Comparing:", msg._id, message._id);
-        return msg._id === message._id;
-      });
-      
-      console.log("Message exists?", messageExists);
+      const messageExists = prevMessages.some(msg => msg._id === message._id);
       
       if (!messageExists) {
         const formattedMessage = {
@@ -220,8 +208,10 @@ export default function ChatPage() {
             _id: message.senderId
           }
         };
-        console.log("Adding new message:", formattedMessage);
-        return [...prevMessages, formattedMessage];
+        const newMessages = [...prevMessages, formattedMessage];
+        // Trigger scroll after adding new message
+        setTimeout(scrollToBottom, 100);
+        return newMessages;
       }
       return prevMessages;
     });
@@ -229,7 +219,11 @@ export default function ChatPage() {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (newMessage.trim() === '') return;
+    const messageContent = newMessage.trim();
+    if (messageContent === '') return;
+
+    // Clear input immediately for better UX
+    setNewMessage('');
 
     try {
       const response = await fetch(`${process.env.BASE_URL}/messages`, {
@@ -239,26 +233,33 @@ export default function ChatPage() {
           'Authorization': `Bearer ${new Cookies().get('token')}`,
         },
         body: JSON.stringify({
-          content: newMessage,
+          content: messageContent,
           conversationId: conversationId,
           senderId: userId
         }),
       });
 
-      if (response.ok) {
-        setNewMessage('');
-        scrollToBottom();
-      } else {
+      if (!response.ok) {
         console.error('Failed to send message');
+        // Optionally restore the message if sending failed
+        setNewMessage(messageContent);
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      // Optionally restore the message if sending failed
+      setNewMessage(messageContent);
     }
   };
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      const scrollHeight = messagesContainerRef.current.scrollHeight;
+      const height = messagesContainerRef.current.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      messagesContainerRef.current.scrollTo({
+        top: maxScrollTop,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -500,7 +501,7 @@ export default function ChatPage() {
           </div>
           <div className="card">
             <div className="card-body" dir='rtl'>
-              <h5 className="card-title mb-3">صا��ب العرض</h5>
+              <h5 className="card-title mb-3">صاب العرض</h5>
               <div className="d-flex align-items-center mb-3 ms-3">
                 <img
                   src={freelancerId.profilePicture || '/default-avatar.png'}
@@ -652,7 +653,7 @@ export default function ChatPage() {
               ) : (
                 <>
                   
-                  <div ref={messagesContainerRef} className={`${styles.chatMessages} chat-messages`} style={{ height: '400px', overflowY: 'auto', padding: '10px' }}>
+                  <div ref={messagesContainerRef} className={`${styles.chatMessages} chat-messages`} style={{ height: '400px', overflowY: 'auto', padding: '10px', scrollBehavior: 'smooth' }}>
                     {messages.map((message, index) => (
                      <div key={index} className={`${styles.message} ${message.senderId._id === userId ? styles.sent : styles.received}`}>
 
