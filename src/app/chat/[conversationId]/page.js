@@ -208,8 +208,10 @@ export default function ChatPage() {
 
   const handleNewMessage = (message) => {
     setMessages((prevMessages) => {
+      // Check if message already exists to prevent duplicates
       const messageExists = prevMessages.some(msg => msg._id === message._id);
       if (!messageExists) {
+        // Create a properly structured message object
         const newMessage = {
           ...message,
           senderId: message.senderId || { _id: message.senderId },
@@ -240,8 +242,12 @@ export default function ChatPage() {
       });
 
       if (response.ok) {
-        setNewMessage(''); // Clear input after sending
-        // No need to manually add message as it will come through Pusher
+        // Clear the input immediately
+        setNewMessage('');
+        
+        // Add the message to the local state immediately
+        const sentMessage = await response.json();
+        handleNewMessage(sentMessage);
       } else {
         console.error('Failed to send message');
       }
