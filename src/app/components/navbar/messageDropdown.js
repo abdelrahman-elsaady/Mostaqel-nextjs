@@ -6,7 +6,7 @@ import Link from 'next/link';
 // import { io } from 'socket.io-client';
 import styles from "./navbar.module.css";
 import { useRouter } from 'next/navigation'
-import Pusher from 'pusher-js';
+import * as Ably from 'ably';
 
 
 export default function MessageDropdown({ userId }) {
@@ -17,7 +17,7 @@ export default function MessageDropdown({ userId }) {
   const dropdownRef = useRef(null);
   // const socketRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
-  const [pusher, setPusher] = useState(null);
+  const [ably, setAbly] = useState(null);
 
   const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter()
@@ -26,47 +26,33 @@ export default function MessageDropdown({ userId }) {
     fetchMessages();
     document.addEventListener('mousedown', handleClickOutside);
   
-    // Set up Socket.IO connection
-    // socketRef.current = io(`${process.env.BASE_URL}`);
-    // socketRef.current.on('connect', () => {
-    //   console.log('Connected to Socket.IO server');
-    //   socketRef.current.emit('userConnected', userId);
-    // });
-    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    // Initialize Ably
+    const ablyInstance = new Ably.Realtime({
+      key: process.env.NEXT_PUBLIC_ABLY_API_KEY
     });
-    setPusher(pusherInstance);
+    setAbly(ablyInstance);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      if (pusherInstance) {
-        pusherInstance.disconnect();
+      if (ablyInstance) {
+        ablyInstance.close();
       }
     };
-    // socketRef.current.on('messageNotification', handleNewNotification);
-    // socketRef.current.on('moneyReceived', handleMoneyReceived);
-    handleNewNotification()
-    return () => {
-      // document.removeEventListener('mousedown', handleClickOutside);
-      // if (socketRef.current) {
-      //   socketRef.current.disconnect();
-      // }
-      // socketRef.current.off('moneyReceived', handleMoneyReceived);
-
-    };
   }, []);
+
   useEffect(() => {
-    if (pusher && userId) {
-      const channel = pusher.subscribe(`user-${userId}`);
+    if (ably && userId) {
+      // Subscribe to user-specific channel
+      const channel = ably.channels.get(`user-${userId}`);
       
-      channel.bind('message-notification', (notification) => {
-        console.log('Received notification:', notification);
+      // Handle message notifications
+      channel.subscribe('message-notification', (message) => {
+        console.log('Received message notification:', message.data);
         
-        // Update messages and unread count
         setMessages(prevMessages => {
-          const exists = prevMessages.some(msg => msg._id === notification._id);
+          const exists = prevMessages.some(msg => msg._id === message.data._id);
           if (!exists) {
-            const updatedMessages = [notification, ...prevMessages].slice(0, 5);
+            const updatedMessages = [message.data, ...prevMessages].slice(0, 5);
             setMessageUnreadCount(prev => prev + 1);
             return updatedMessages;
           }
@@ -74,24 +60,27 @@ export default function MessageDropdown({ userId }) {
         });
       });
 
+      // Handle money transfer notifications
+      channel.subscribe('money-received', (message) => {
+        console.log('Received money transfer notification:', message.data);
+        
+        setNotifications(prev => [{
+          type: 'money',
+          senderId: message.data.senderId,
+          senderName: message.data.senderName,
+          senderAvatar: message.data.senderAvatar,
+          amount: message.data.amount,
+          timestamp: new Date()
+        }, ...prev]);
+        setNotificationUnreadCount(prev => prev + 1);
+      });
+
       return () => {
-        channel.unbind('message-notification');
-        pusher.unsubscribe(`user-${userId}`);
+        channel.unsubscribe('message-notification');
+        channel.unsubscribe('money-received');
       };
     }
-  }, [pusher, userId]);
-
-  const handleMoneyReceived = (data) => {
-    setNotifications(prev => [{
-      type: 'money',
-      senderId: data.senderId,
-      senderName: data.senderName,
-      senderAvatar: data.senderAvatar,
-      amount: data.amount,
-      timestamp: new Date()
-    }, ...prev]);
-    setNotificationUnreadCount(prev => prev + 1);
-  };
+  }, [ably, userId]);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
