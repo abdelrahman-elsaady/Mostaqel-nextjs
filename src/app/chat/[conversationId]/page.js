@@ -90,21 +90,42 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (pusher && conversationId) {
+      console.log('Subscribing to chat channel:', `conversation-${conversationId}`);
       const channel = pusher.subscribe(`conversation-${conversationId}`);
       
-      channel.bind('new-message', (message) => {
-        console.log('Received new message:', message);
+      channel.bind('new-message', (newMessage) => {
+        console.log('Received new chat message:', newMessage);
         
-        setMessages((prevMessages) => {
-          const messageExists = prevMessages.some(msg => msg._id === message._id);
+        setMessages(prevMessages => {
+          // Check if message already exists to prevent duplicates
+          const messageExists = prevMessages.some(msg => msg._id === newMessage._id);
           if (!messageExists) {
-            return [...prevMessages, message];
+            // Important: Ensure the message object structure matches your existing messages
+            const formattedMessage = {
+              ...newMessage,
+              senderId: {
+                _id: newMessage.senderId._id,
+                firstName: newMessage.senderId.firstName,
+                profilePicture: newMessage.senderId.profilePicture
+              }
+            };
+            return [...prevMessages, formattedMessage];
           }
           return prevMessages;
         });
       });
 
+      // Debug: Log connection status
+      pusher.connection.bind('connected', () => {
+        console.log('Connected to Pusher');
+      });
+
+      pusher.connection.bind('error', (err) => {
+        console.error('Pusher connection error:', err);
+      });
+
       return () => {
+        console.log('Unsubscribing from chat channel');
         channel.unbind('new-message');
         pusher.unsubscribe(`conversation-${conversationId}`);
       };
@@ -236,8 +257,8 @@ export default function ChatPage() {
 
       if (response.ok) {
         setNewMessage('');
-        const newMessageData = await response.json();
-        handleNewMessage(newMessageData);
+        // Note: We don't need to manually update messages here
+        // as Pusher will handle the real-time update
       } else {
         console.error('Failed to send message');
       }
