@@ -45,48 +45,52 @@ export default function ChatPage() {
   const messagesContainerRef = useRef(null);
 
   useEffect(() => {
+    const initializePusher = async () => {
+      try {
+        const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+          cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+        });
+        setPusher(pusherInstance);
 
+        // Subscribe to the conversation channel
+        const channel = pusherInstance.subscribe(`conversation-${conversationId}`);
+        
+        channel.bind('new-message', (data) => {
+          console.log('Received message through Pusher:', data);
+          setMessages(prevMessages => {
+            const messageExists = prevMessages.some(msg => msg._id === data._id);
+            if (!messageExists) {
+              return [...prevMessages, data];
+            }
+            return prevMessages;
+          });
+        });
 
-    if (conversation) {
-      setProjectStatus(conversation.projectId.status);
-    }
-    const cookies = new Cookies();
-    const token = cookies.get('token');
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      setUserId(decodedToken.id);
-    }
+        // Debug logs
+        pusherInstance.connection.bind('connected', () => {
+          console.log('Connected to Pusher successfully');
+        });
 
-    fetchConversation();
-    checkExistingReview();
+        pusherInstance.connection.bind('error', (err) => {
+          console.error('Pusher connection error:', err);
+        });
 
-    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-    });
-
-    setPusher(pusherInstance);
-
-    return () => {
-      if (pusherInstance) {
-        pusherInstance.disconnect();
+      } catch (error) {
+        console.error('Error initializing Pusher:', error);
       }
     };
 
-    // socketRef.current = io(`${process.env.BASE_URL}`);
-    // socketRef.current.on('connect', () => {
-    //   console.log('Connected to Socket.IO server');
-    //   socketRef.current.emit('joinConversation', conversationId);
-    // });
-    // socketRef.current.on('newMessage', handleNewMessage);
+    initializePusher();
+    fetchConversation();
+    checkExistingReview();
 
-    // return () => {
-    //   if (socketRef.current) {
-    //     socketRef.current.disconnect();
-    //   }
-    // };
-
-
-  }, [conversationId, clientId]);
+    return () => {
+      if (pusher) {
+        pusher.unsubscribe(`conversation-${conversationId}`);
+        pusher.disconnect();
+      }
+    };
+  }, [conversationId]);
 
   useEffect(() => {
     if (pusher && conversationId) {
@@ -248,17 +252,17 @@ export default function ChatPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${new Cookies().get('token')}`,
         },
-        body: JSON.stringify({ 
-          content: newMessage, 
-          conversationId: conversationId, 
-          senderId: userId 
+        body: JSON.stringify({
+          content: newMessage,
+          conversationId: conversationId,
+          senderId: userId
         }),
       });
 
       if (response.ok) {
+        const sentMessage = await response.json();
+        console.log('Message sent successfully:', sentMessage);
         setNewMessage('');
-        // Note: We don't need to manually update messages here
-        // as Pusher will handle the real-time update
       } else {
         console.error('Failed to send message');
       }
