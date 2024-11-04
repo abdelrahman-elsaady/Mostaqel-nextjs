@@ -55,7 +55,7 @@ export default function MessageDropdown({ userId }) {
             const exists = prevMessages.some(msg => msg._id === message.data._id);
             if (!exists) {
               // Add new message to the beginning of the array
-              const updatedMessages = [message.data, ...prevMessages].slice(0, 5);
+              const updatedMessages = [message.data, ...prevMessages].slice(0, 1);
               setMessageUnreadCount(prev => prev + 1);
               return updatedMessages;
             }
