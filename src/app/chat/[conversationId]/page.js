@@ -246,9 +246,8 @@ export default function ChatPage() {
       });
 
       if (response.ok) {
-        // Only clear input field
         setNewMessage('');
-        // Don't update messages state here - wait for Ably event
+        scrollToBottom();
       } else {
         console.error('Failed to send message');
       }
@@ -501,7 +500,7 @@ export default function ChatPage() {
           </div>
           <div className="card">
             <div className="card-body" dir='rtl'>
-              <h5 className="card-title mb-3">صاحب العرض</h5>
+              <h5 className="card-title mb-3">صا��ب العرض</h5>
               <div className="d-flex align-items-center mb-3 ms-3">
                 <img
                   src={freelancerId.profilePicture || '/default-avatar.png'}
