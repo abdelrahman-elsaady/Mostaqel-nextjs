@@ -91,10 +91,23 @@ export default function ChatPage() {
   useEffect(() => {
     if (pusher && conversationId) {
       const channel = pusher.subscribe(`conversation-${conversationId}`);
-      channel.bind('new-message', handleNewMessage);
+      
+      // Listen for new messages in the conversation
+      channel.bind('new-message', (message) => {
+        setMessages((prevMessages) => {
+          // Check if message already exists to prevent duplicates
+          const messageExists = prevMessages.some(msg => msg._id === message._id);
+          if (!messageExists) {
+            return [...prevMessages, message];
+          }
+          return prevMessages;
+        });
+        // Scroll to bottom when new message arrives
+        scrollToBottom();
+      });
 
       return () => {
-        channel.unbind('new-message', handleNewMessage);
+        channel.unbind('new-message');
         pusher.unsubscribe(`conversation-${conversationId}`);
       };
     }
@@ -197,12 +210,12 @@ export default function ChatPage() {
     setMessages((prevMessages) => {
       const messageExists = prevMessages.some(msg => msg._id === message._id);
       if (!messageExists) {
-        const newMessages = [...prevMessages, {
+        const newMessage = {
           ...message,
-          senderId: { _id: message.senderId }
-        }];
-        setTimeout(scrollToBottom, 0);
-        return newMessages;
+          senderId: message.senderId || { _id: message.senderId },
+          createdAt: message.createdAt || new Date().toISOString()
+        };
+        return [...prevMessages, newMessage];
       }
       return prevMessages;
     });
@@ -219,12 +232,16 @@ export default function ChatPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${new Cookies().get('token')}`,
         },
-        body: JSON.stringify({ content: newMessage, conversationId: conversationId, senderId: userId }),
+        body: JSON.stringify({ 
+          content: newMessage, 
+          conversationId: conversationId, 
+          senderId: userId 
+        }),
       });
 
       if (response.ok) {
-        setNewMessage('');
-        setTimeout(scrollToBottom, 0);
+        setNewMessage(''); // Clear input after sending
+        // No need to manually add message as it will come through Pusher
       } else {
         console.error('Failed to send message');
       }

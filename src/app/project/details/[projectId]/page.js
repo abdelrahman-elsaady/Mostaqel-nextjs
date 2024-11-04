@@ -111,7 +111,7 @@ export default function ProjectDetails() {
   const calculateEarnings = () => {
     const price = parseFloat(proposalForm.amount);
     // setProposalForm(prev => ({ ...prev, receivables: price ? (price * 0.8).toFixed(2) : '0.00' }));
-    return price ? (price * 1.1).toFixed(2) : '0.00';
+    return price ? (price * 0.85).toFixed(2) : '0.00';
   
 
   };
@@ -367,7 +367,7 @@ export default function ProjectDetails() {
                         </div>
                       </div>
                       <div className="col-md-4">
-                        <p className='mb-2 small text-muted' >مستحقاتك (عرض لفترة محدودة زيادة 10%)</p>
+                        <p className='mb-2 small text-muted' >مستحقاتك </p>
                         <div className="input-group">
                           <input
                             type="number"
@@ -444,7 +444,10 @@ export default function ProjectDetails() {
                             </button>
                           )}
                         </div>
-                        <p className="mb-1">{proposal.proposal}</p>
+                        <p className="mb-1">
+                          {proposal.proposal?.slice(0, 50)}
+                          {proposal.proposal?.length > 50 ? '...' : ''}
+                        </p>
                       </div>
                     ))}
                   </div>

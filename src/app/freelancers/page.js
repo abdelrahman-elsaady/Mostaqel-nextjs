@@ -245,8 +245,11 @@ export default function Freelancers() {
               </div>
         
             </div>
-            <p className="mb-1">{freelancer.bio}</p>
-          </div>
+            <p className="mb-1">
+              {freelancer.bio?.slice(0, 150)}
+              {freelancer.bio?.length > 150 ? '...' : ''}
+            </p>       
+           </div>
           </Link>
 
           </div>

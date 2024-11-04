@@ -1,7 +1,3 @@
-
-
-
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -11,6 +7,7 @@ import Link from 'next/link';
 import styles from "./navbar.module.css";
 import { useRouter } from 'next/navigation'
 import Pusher from 'pusher-js';
+
 
 export default function MessageDropdown({ userId }) {
   const [messages, setMessages] = useState([]);
@@ -57,28 +54,62 @@ export default function MessageDropdown({ userId }) {
       // socketRef.current.off('moneyReceived', handleMoneyReceived);
 
     };
-  }, [userId]);
+  }, []);
   useEffect(() => {
     if (pusher && userId) {
+      console.log('Subscribing to channel:', `user-${userId}`);
       const channel = pusher.subscribe(`user-${userId}`);
-      channel.bind('message-notification', handleNewNotification);
+      
+      channel.bind('message-notification', (notification) => {
+        console.log('Received message notification:', notification);
+        if (notification) {
+          setMessages(prevMessages => {
+            // Check if notification already exists
+            const exists = prevMessages.some(msg => msg._id === notification._id);
+            if (!exists) {
+              // Add new message to the beginning of the array
+              const updatedMessages = [notification, ...prevMessages].slice(0, 5);
+              setMessageUnreadCount(prev => prev + 1);
+              return updatedMessages;
+            }
+            return prevMessages;
+          });
+        }
+      });
+      
       channel.bind('money-received', handleMoneyReceived);
 
       return () => {
-        channel.unbind('message-notification', handleNewNotification);
-        channel.unbind('money-received', handleMoneyReceived);
+        console.log('Unsubscribing from channel:', `user-${userId}`);
+        channel.unbind('message-notification');
+        channel.unbind('money-received');
         pusher.unsubscribe(`user-${userId}`);
       };
     }
   }, [pusher, userId]);
 
-  const handleNewNotification = (notification) => {
-    console.log('Received new notification:', notification);
-    setMessages(prevMessages => {
-      const updatedMessages = [notification, ...prevMessages].slice(0, 5);
-      return updatedMessages;
-    });
-    setMessageUnreadCount(prev => prev + 1);
+  const handleMoneyReceived = (data) => {
+    setNotifications(prev => [{
+      type: 'money',
+      senderId: data.senderId,
+      senderName: data.senderName,
+      senderAvatar: data.senderAvatar,
+      amount: data.amount,
+      timestamp: new Date()
+    }, ...prev]);
+    setNotificationUnreadCount(prev => prev + 1);
+  };
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    if (!showNotifications) {
+      setNotificationUnreadCount(0);
+    }
+  };
+  const handleMessageClick = (e, conversationId) => {
+    e.preventDefault();
+    setIsOpen(false);
+    router.push(`/chat/${conversationId}`);
   };
 
   const fetchMessages = async () => {
@@ -91,14 +122,14 @@ export default function MessageDropdown({ userId }) {
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
-        setUnreadCount(data.filter(msg => !msg.readBy.includes(userId)).length);
+        // Set initial unread count
+        const unreadCount = data.filter(msg => !msg.readBy.includes(userId)).length;
+        setMessageUnreadCount(unreadCount);
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
   };
-
-
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -113,7 +144,6 @@ export default function MessageDropdown({ userId }) {
       markMessagesAsRead();
     }
   };
-
 
   const markMessagesAsRead = async () => {
     try {
@@ -144,31 +174,6 @@ export default function MessageDropdown({ userId }) {
     } catch (error) {
       console.error('Error marking messages as read:', error);
     }
-  };
-
-
-  const handleMoneyReceived = (data) => {
-    setNotifications(prev => [{
-      type: 'money',
-      senderId: data.senderId,
-      senderName: data.senderName,
-      senderAvatar: data.senderAvatar,
-      amount: data.amount,
-      timestamp: new Date()
-    }, ...prev]);
-    setNotificationUnreadCount(prev => prev + 1);
-  };
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    if (!showNotifications) {
-      setNotificationUnreadCount(0);
-    }
-  };
-  const handleMessageClick = (e, conversationId) => {
-    e.preventDefault();
-    setIsOpen(false);
-    router.push(`/chat/${conversationId}`);
   };
 
   return (

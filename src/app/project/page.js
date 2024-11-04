@@ -262,7 +262,10 @@ export default function Projects() {
                       </small>
 
                     </div>
-                    <p className="mb-1">{project.description}</p>
+                    <p className="mb-1">
+                      {project.description?.slice(0, 150)}
+                      {project.description?.length > 150 ? '...' : ''}
+                    </p>
 
                   </Link>
                   ))
