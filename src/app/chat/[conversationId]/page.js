@@ -44,6 +44,11 @@ export default function ChatPage() {
   const [role, setRole] = useState("");
   const messagesContainerRef = useRef(null);
 
+  const pusherConfig = {
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    forceTLS: true
+  };
+
   useEffect(() => {
     if (conversation) {
       setProjectStatus(conversation.projectId.status);
@@ -59,9 +64,7 @@ export default function ChatPage() {
     checkExistingReview();
   
     // Initialize Pusher
-    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-    });
+    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, pusherConfig);
   
     setPusher(pusherInstance);
   
@@ -74,19 +77,21 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (pusher && conversationId && userId) {
+      console.log('Subscribing to Pusher channels...');
+      
       // Subscribe to conversation channel
-      const conversationChannel = pusher.subscribe(`conversation-${conversationId}`);
-      conversationChannel.bind('new-message', handleNewMessage);
-  
-      // Subscribe to user-specific channel for notifications
-      const userChannel = pusher.subscribe(`user-${userId}`);
-      // userChannel.bind('message-notification', handleNotification);
-  
+      const channel = pusher.subscribe(`conversation-${conversationId}`);
+      
+      // Bind to new message event
+      channel.bind('new-message', (data) => {
+        console.log('Received message from Pusher:', data);
+        handleNewMessage(data);
+      });
+
       return () => {
-        conversationChannel.unbind('new-message', handleNewMessage);
-        // userChannel.unbind('message-notification', handleNotification);
+        console.log('Unsubscribing from Pusher...');
+        channel.unbind('new-message');
         pusher.unsubscribe(`conversation-${conversationId}`);
-        pusher.unsubscribe(`user-${userId}`);
       };
     }
   }, [pusher, conversationId, userId]);
@@ -182,16 +187,26 @@ export default function ChatPage() {
   };
 
   const handleNewMessage = (message) => {
-  setMessages((prevMessages) => {
-    const messageExists = prevMessages.some(msg => msg._id === message._id);
-    if (!messageExists) {
-      const newMessages = [...prevMessages, message];
-      setTimeout(scrollToBottom, 0);
-      return newMessages;
-    }
-    return prevMessages;
-  });
-};
+    console.log("Received new message:", message);
+    setMessages((prevMessages) => {
+      // Check if message already exists
+      const messageExists = prevMessages.some(msg => msg._id === message._id);
+      if (!messageExists) {
+        // Ensure message has the correct structure
+        const formattedMessage = {
+          ...message,
+          senderId: {
+            _id: message.senderId
+          }
+        };
+        return [...prevMessages, formattedMessage];
+      }
+      return prevMessages;
+    });
+    
+    // Scroll to bottom after message is added
+    setTimeout(scrollToBottom, 100);
+  };
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -204,12 +219,29 @@ export default function ChatPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${new Cookies().get('token')}`,
         },
-        body: JSON.stringify({ content: newMessage, conversationId: conversationId, senderId: userId }),
+        body: JSON.stringify({
+          content: newMessage,
+          conversationId: conversationId,
+          senderId: userId
+        }),
       });
 
       if (response.ok) {
+        // Clear input field immediately
         setNewMessage('');
-        setTimeout(scrollToBottom, 0);
+        
+        // Add message to local state immediately for better UX
+        const tempMessage = {
+          _id: Date.now().toString(), // temporary ID
+          content: newMessage,
+          senderId: { _id: userId },
+          createdAt: new Date().toISOString(),
+          readBy: [userId]
+        };
+        setMessages(prev => [...prev, tempMessage]);
+        
+        // Scroll to bottom
+        setTimeout(scrollToBottom, 100);
       } else {
         console.error('Failed to send message');
       }
