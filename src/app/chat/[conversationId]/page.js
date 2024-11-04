@@ -91,10 +91,21 @@ export default function ChatPage() {
   useEffect(() => {
     if (pusher && conversationId) {
       const channel = pusher.subscribe(`conversation-${conversationId}`);
-      channel.bind('new-message', handleNewMessage);
+      
+      channel.bind('new-message', (message) => {
+        console.log('Received new message:', message);
+        
+        setMessages((prevMessages) => {
+          const messageExists = prevMessages.some(msg => msg._id === message._id);
+          if (!messageExists) {
+            return [...prevMessages, message];
+          }
+          return prevMessages;
+        });
+      });
 
       return () => {
-        channel.unbind('new-message', handleNewMessage);
+        channel.unbind('new-message');
         pusher.unsubscribe(`conversation-${conversationId}`);
       };
     }
@@ -234,10 +245,6 @@ export default function ChatPage() {
       console.error('Error sending message:', error);
     }
   };
-
-
-
-
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {

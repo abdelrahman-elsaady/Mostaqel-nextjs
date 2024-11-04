@@ -57,32 +57,25 @@ export default function MessageDropdown({ userId }) {
   }, []);
   useEffect(() => {
     if (pusher && userId) {
-      console.log('Subscribing to channel:', `user-${userId}`);
       const channel = pusher.subscribe(`user-${userId}`);
       
       channel.bind('message-notification', (notification) => {
-        console.log('Received message notification:', notification);
-        if (notification) {
-          setMessages(prevMessages => {
-            // Check if notification already exists
-            const exists = prevMessages.some(msg => msg._id === notification._id);
-            if (!exists) {
-              // Add new message to the beginning of the array
-              const updatedMessages = [notification, ...prevMessages].slice(0, 5);
-              setMessageUnreadCount(prev => prev + 1);
-              return updatedMessages;
-            }
-            return prevMessages;
-          });
-        }
+        console.log('Received notification:', notification);
+        
+        // Update messages and unread count
+        setMessages(prevMessages => {
+          const exists = prevMessages.some(msg => msg._id === notification._id);
+          if (!exists) {
+            const updatedMessages = [notification, ...prevMessages].slice(0, 5);
+            setMessageUnreadCount(prev => prev + 1);
+            return updatedMessages;
+          }
+          return prevMessages;
+        });
       });
-      
-      channel.bind('money-received', handleMoneyReceived);
 
       return () => {
-        console.log('Unsubscribing from channel:', `user-${userId}`);
         channel.unbind('message-notification');
-        channel.unbind('money-received');
         pusher.unsubscribe(`user-${userId}`);
       };
     }
