@@ -91,23 +91,10 @@ export default function ChatPage() {
   useEffect(() => {
     if (pusher && conversationId) {
       const channel = pusher.subscribe(`conversation-${conversationId}`);
-      
-      // Listen for new messages in the conversation
-      channel.bind('new-message', (message) => {
-        setMessages((prevMessages) => {
-          // Check if message already exists to prevent duplicates
-          const messageExists = prevMessages.some(msg => msg._id === message._id);
-          if (!messageExists) {
-            return [...prevMessages, message];
-          }
-          return prevMessages;
-        });
-        // Scroll to bottom when new message arrives
-        scrollToBottom();
-      });
+      channel.bind('new-message', handleNewMessage);
 
       return () => {
-        channel.unbind('new-message');
+        channel.unbind('new-message', handleNewMessage);
         pusher.unsubscribe(`conversation-${conversationId}`);
       };
     }
@@ -208,16 +195,11 @@ export default function ChatPage() {
 
   const handleNewMessage = (message) => {
     setMessages((prevMessages) => {
-      // Check if message already exists to prevent duplicates
       const messageExists = prevMessages.some(msg => msg._id === message._id);
       if (!messageExists) {
-        // Create a properly structured message object
-        const newMessage = {
-          ...message,
-          senderId: message.senderId || { _id: message.senderId },
-          createdAt: message.createdAt || new Date().toISOString()
-        };
-        return [...prevMessages, newMessage];
+        const newMessages = [...prevMessages, message];
+        setTimeout(scrollToBottom, 0);
+        return newMessages;
       }
       return prevMessages;
     });
@@ -242,12 +224,9 @@ export default function ChatPage() {
       });
 
       if (response.ok) {
-        // Clear the input immediately
         setNewMessage('');
-        
-        // Add the message to the local state immediately
-        const sentMessage = await response.json();
-        handleNewMessage(sentMessage);
+        const newMessageData = await response.json();
+        handleNewMessage(newMessageData);
       } else {
         console.error('Failed to send message');
       }
@@ -255,6 +234,10 @@ export default function ChatPage() {
       console.error('Error sending message:', error);
     }
   };
+
+
+
+
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
