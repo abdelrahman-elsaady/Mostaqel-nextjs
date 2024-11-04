@@ -8,7 +8,7 @@ import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
 import Swal from 'sweetalert2';
 import { Rating } from '@mui/material';
-import Pusher from 'pusher-js';
+import * as Ably from 'ably';
 
 import styles from '../ChatMessage.module.css';
 
@@ -21,7 +21,7 @@ export default function ChatPage() {
   const [userId, setUserId] = useState(null);
 
   
-  const [pusher, setPusher] = useState(null);
+  const [ably, setAbly] = useState(null);
 
   // const socketRef = useRef();
   const messagesEndRef = useRef(null);
@@ -63,38 +63,52 @@ export default function ChatPage() {
     fetchConversation();
     checkExistingReview();
   
-    // Initialize Pusher
-    const pusherInstance = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, pusherConfig);
-  
-    setPusher(pusherInstance);
-  
+    // Initialize Ably
+    const ably = new Ably.Realtime({
+      key: process.env.NEXT_PUBLIC_ABLY_API_KEY,
+      clientId: userId // if you have userId available
+    });
+
+    setAbly(ably);
+
     return () => {
-      if (pusherInstance) {
-        pusherInstance.disconnect();
+      if (ably) {
+        ably.close();
       }
     };
   }, [conversationId, clientId]);
 
+  // Subscribe to conversation updates
   useEffect(() => {
-    if (pusher && conversationId && userId) {
-      console.log('Subscribing to Pusher channels...');
+    if (ably && conversationId && userId) {
+      console.log('Subscribing to Ably channels...');
       
       // Subscribe to conversation channel
-      const channel = pusher.subscribe(`conversation-${conversationId}`);
+      const conversationChannel = ably.channels.get(`conversation-${conversationId}`);
       
-      // Bind to new message event
-      channel.bind('new-message', (data) => {
-        console.log('Received message from Pusher:', data);
-        handleNewMessage(data);
+      const messageHandler = (message) => {
+        console.log('Received message from Ably:', message.data);
+        handleNewMessage(message.data);
+      };
+
+      conversationChannel.subscribe('new-message', messageHandler);
+
+      // Subscribe to user notifications
+      const userChannel = ably.channels.get(`user-${userId}`);
+      userChannel.subscribe('message-notification', (message) => {
+        console.log('Received notification:', message.data);
+        // Handle notification if needed
       });
 
       return () => {
-        console.log('Unsubscribing from Pusher...');
-        channel.unbind('new-message');
-        pusher.unsubscribe(`conversation-${conversationId}`);
+        console.log('Unsubscribing from Ably...');
+        conversationChannel.unsubscribe('new-message', messageHandler);
+        userChannel.unsubscribe();
+        conversationChannel.detach();
+        userChannel.detach();
       };
     }
-  }, [pusher, conversationId, userId]);
+  }, [ably, conversationId, userId]);
 
   useEffect(() => {
     if (messages.length > 0 && userId) {
@@ -234,7 +248,7 @@ export default function ChatPage() {
       if (response.ok) {
         // Only clear input field
         setNewMessage('');
-        // Don't update messages state here - wait for Pusher event
+        // Don't update messages state here - wait for Ably event
       } else {
         console.error('Failed to send message');
       }
