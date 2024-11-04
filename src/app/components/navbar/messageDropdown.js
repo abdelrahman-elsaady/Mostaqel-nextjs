@@ -45,21 +45,51 @@ export default function MessageDropdown({ userId }) {
       // Subscribe to user-specific channel
       const channel = ably.channels.get(`user-${userId}`);
       
-      // Handle message notifications
-      channel.subscribe('message-notification', (message) => {
-        console.log('Received message notification:', message.data);
-        
-        setMessages(prevMessages => {
-          const exists = prevMessages.some(msg => msg._id === message.data._id);
-          if (!exists) {
-            const updatedMessages = [message.data, ...prevMessages].slice(0, 5);
-            setMessageUnreadCount(prev => prev + 1);
-            return updatedMessages;
-          }
-          return prevMessages;
-        });
+      // Handle message notifications with proper error handling and logging
+      const handleMessageNotification = (message) => {
+        try {
+          console.log('Received message notification:', message.data);
+          
+          setMessages(prevMessages => {
+            // Ensure we're not adding duplicate messages
+            const exists = prevMessages.some(msg => msg._id === message.data._id);
+            if (!exists) {
+              // Add new message to the beginning of the array
+              const updatedMessages = [message.data, ...prevMessages].slice(0, 5);
+              setMessageUnreadCount(prev => prev + 1);
+              return updatedMessages;
+            }
+            return prevMessages;
+          });
+        } catch (error) {
+          console.error('Error handling message notification:', error);
+        }
+      };
+
+      // Subscribe to message notifications
+      channel.subscribe('message-notification', handleMessageNotification);
+
+      // Debug logging
+      channel.on('attached', () => {
+        console.log(`Successfully attached to channel user-${userId}`);
       });
 
+      channel.on('error', (error) => {
+        console.error('Ably channel error:', error);
+      });
+
+      return () => {
+        console.log(`Cleaning up subscription for user-${userId}`);
+        channel.unsubscribe('message-notification');
+      };
+    }
+  }, [ably, userId]);
+
+  useEffect(() => {
+    if (ably && userId) {
+      // Subscribe to user-specific channel
+      const channel = ably.channels.get(`user-${userId}`);
+      
       // Handle money transfer notifications
       channel.subscribe('money-received', (message) => {
         console.log('Received money transfer notification:', message.data);
@@ -76,7 +106,6 @@ export default function MessageDropdown({ userId }) {
       });
 
       return () => {
-        channel.unsubscribe('message-notification');
         channel.unsubscribe('money-received');
       };
     }
