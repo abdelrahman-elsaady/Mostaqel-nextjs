@@ -8,6 +8,14 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.customInput:focus {
+  box-shadow: none;
+  border-color: #ced4da; 
+}
+.customInput:focus, .customCheckbox:focus {
+  outline: 1px solid #ced4da;
+}
+
 .logo img {
   max-width: 100px;
 }

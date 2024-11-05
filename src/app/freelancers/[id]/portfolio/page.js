@@ -1,6 +1,11 @@
 import React from 'react'
 import axios from 'axios';
 
+export const metadata = {
+  title: 'مستقل - معرض الأعمال',
+  description: 'View freelancer portfolio on Mostaqel',
+};
+
 export default async function Portfolio({params}) {
     let portfolio = [];
 

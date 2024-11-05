@@ -1,10 +1,14 @@
-
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken';
 import Link from 'next/link';
 import { LiaSlidersHSolid } from "react-icons/lia";
 import { FaPlusCircle } from "react-icons/fa";
 import axios from 'axios';
+
+export const metadata = {
+  title: 'مستقل - لوحة التحكم',
+  description: 'Dashboard for Mostaqel users',
+};
 
 async function fetchUserData(id) {
   try {

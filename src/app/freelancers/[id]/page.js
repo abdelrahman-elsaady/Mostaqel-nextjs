@@ -4,6 +4,12 @@ import React from 'react'
 import { getFreelancer } from './layout';
 import { FaTag } from "react-icons/fa6";
 import Rating from '@mui/material/Rating';
+
+export const metadata = {
+  title: 'مستقل - الملف الشخصي',
+  description: 'View freelancer profile on Mostaqel',
+};
+
 export default async function FreelancerProfile({params}) {
 
   const freelancerData  = await getFreelancer(params.id);
@@ -33,7 +39,7 @@ export default async function FreelancerProfile({params}) {
               </div>
               <div className='d-flex flex-wrap mt-3'>
                 {freelancer.skills.length > 0 ? freelancer.skills.map((skill, index) => (
-                  <span key={index} className="badge bg-primary mx-2 my-3"><FaTag />{skill.name}</span>
+                  <span key={index} className="badge m-1 p-2" style={{borderRadius : '0', backgroundColor : '#2386c8'}}> <FaTag /> {skill.name}</span>
                 )): <p className='text-center'>لا توجد مهارات</p>} 
               </div>
             </div>

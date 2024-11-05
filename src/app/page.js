@@ -44,6 +44,11 @@ async function fetchUserData(id) {
 
 
 
+export const metadata = {
+  title: 'مستقل - الرئيسية',
+  description: 'Home page for Mostaqel',
+};
+
 
 export  default async function Home() {
 
@@ -268,7 +273,7 @@ const decoded = jwt.decode(token.value);
 
         <div className="my-5 py-5 ">
           <div className=" text-center mb-5">
-            <h3 className="text-primary">
+            <h3 style={{color: '#2386c8'}}>
               اعثر على مستقلين محترفين في كافة المجالات
             </h3>
             <p>غطي احتياجاتك من المهارات في جميع التخصصات</p>

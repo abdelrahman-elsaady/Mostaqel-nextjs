@@ -185,7 +185,7 @@ export default function Freelancers() {
             <div>
               <p className="mb-3">التخصص</p>
               {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
-                <div className="form-check" key={index}>
+                <div className="form-check py-2" key={index}>
                   <input
                     type="checkbox"
                     className="form-check-input"
@@ -219,7 +219,7 @@ export default function Freelancers() {
                               src={freelancer.profilePicture || '/default-avatar.png'}
                               alt={freelancer.firstName}
                               className="rounded-circle me-2"
-                              style={{ width: '48px', height: '48px' }}
+                              style={{ width: '64px', height: '64px' }}
                             />
                             <div>
                               <div className="d-flex align-items-center">

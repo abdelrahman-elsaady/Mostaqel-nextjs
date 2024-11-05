@@ -164,7 +164,11 @@ export default function Projects() {
               <div>
                 <p className="mb-3"> التصنيف </p>
                 {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
-                  <div className="form-check" key={index}>
+                  <div 
+                    className="form-check py-2" 
+                    key={index}
+                  >
+                  
                     <input
                       type="checkbox"
                       className="form-check-input"
@@ -172,7 +176,10 @@ export default function Projects() {
                       checked={selectedCategories.includes(category)}
                       onChange={() => handleCategoryChange(category)}
                     />
-                    <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                    <label 
+                      className="form-check-label me-2" 
+                      htmlFor={`category${index + 1}`}
+                    >
                       {category}
                     </label>
                   </div>
@@ -200,8 +207,11 @@ export default function Projects() {
 
               <div>
                 <h5 className="mb-3">التصنيف</h5>
-                {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارا متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
-                  <div className="form-check" key={index}>
+                {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+                  <div 
+                    className="form-check  py-2" 
+                    key={index}
+                  >
                     <input
                       type="checkbox"
                       className="form-check-input"
@@ -209,7 +219,10 @@ export default function Projects() {
                       checked={selectedCategories.includes(category)}
                       onChange={() => handleCategoryChange(category)}
                     />
-                    <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                    <label 
+                      className="form-check-label me-2" 
+                      htmlFor={`category${index + 1}`}
+                    >
                       {category}
                     </label>
                   </div>

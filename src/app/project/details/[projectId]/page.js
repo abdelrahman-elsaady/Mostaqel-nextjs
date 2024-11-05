@@ -292,7 +292,7 @@ export default function ProjectDetails() {
               </button>
             )}
             {!userId && (
-              <Link href="/login" className="btn btn-primary">
+              <Link href="/login" className="btn " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
                 سجل الان لتضيف مشروعك
               </Link>
             )}
@@ -317,7 +317,7 @@ export default function ProjectDetails() {
                 </div>
                 <div className='d-flex flex-wrap mt-3'>
                   {project.skills && project.skills.map((skill, index) => (
-                    <span key={index} className="badge bg-primary mx-2 my-3"><FaTag />{skill.name}</span>
+                    <span key={index} className="badge p-2 m-1" style={{borderRadius : '0',backgroundColor : '#2386c8' }} >  <FaTag /> {skill.name}</span>
                   ))}
                 </div>
               </div>
@@ -398,7 +398,7 @@ export default function ProjectDetails() {
                   </form>
                 ) : (
                   <div className="text-center">
-                    <Link href="/login" className="btn btn-primary btn-lg">
+                    <Link href="/login" className="btn " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
                       سجل الآن لتقدم عرضك
                     </Link>
                   </div>

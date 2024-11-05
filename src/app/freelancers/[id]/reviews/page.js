@@ -3,6 +3,11 @@ import React from 'react'
 // import { getFreelancer } from './layout';
 // import { FaTag } from "react-icons/fa6";
 import { Rating } from '@mui/material';
+ 
+export const metadata = {
+  title: 'مستقل - التقييمات',
+  description: 'View freelancer reviews on Mostaqel',
+};
 
 export default async function Reviews({params}) {
 

@@ -110,11 +110,14 @@ const RegisterForm = () => {
       <div className="row">
         <div className="col-md-7">
           <h2 className="mb-4">إنشاء حساب جديد</h2>
+
           <div className="row mb-3">
+
             <div className="col-md-6">
+
               <button onClick={() => signIn('google', { callbackUrl: '/' })} className="  w-100" style={{backgroundColor: "#dd4b39", color: "white",border: "none", height: "50px"}}>
                 {/* <img src="/google-icon.png" alt="Google" width={20} height={20} className="me-2" /> */}
-                <FaGoogle className="ms-2" />
+                <FaGoogle className="ms-2" style={{fontSize: '28px'}} />
               <span>
                 التسجيل باستخدام Google
               </span>
@@ -122,9 +125,9 @@ const RegisterForm = () => {
               </button>
             </div>
             <div className="col-md-6">
-              <button onClick={handleMicrosoftSignUp} className="  w-100" style={{backgroundColor: "#0f4bac", color: "white",border: "none", height: "50px"}}>
+              <button onClick={handleMicrosoftSignUp } className="  w-100" style={{backgroundColor: "#0f4bac", color: "white",border: "none", height: "50px"}}>
                 
-              <IoLogoWindows className="ms-2" />
+              <IoLogoWindows className="ms-2" style={{fontSize: '28px'}} />
               <span>
                 باستخدام مايكروسوفت
               </span>

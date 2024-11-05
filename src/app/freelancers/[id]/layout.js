@@ -77,10 +77,11 @@ export default async function FreelancerLayout({ children, params }) {
             {token && (
               <li className="nav-item position-absolute start-0 ">
               {/* <div className="mt-3 position-absolute start-0 "> */}
-                <Link href={`/portifolio/create`} className="btn btn-primary ms-2"style={{borderRadius:'0px'}}>
+                <Link href={`/portifolio/create`} className="btn ms-1 " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
                   اضف عمل
                 </Link>
-                <Link href={`/account/profile`} className="btn btn-primary " style={{borderRadius:'0px'}}>
+
+                  <Link href={`/account/profile`} className="btn " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
                   تعديل الملف الشخصي
                 </Link>
               {/* </div> */}

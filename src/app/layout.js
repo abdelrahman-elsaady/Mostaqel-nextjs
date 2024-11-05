@@ -16,10 +16,10 @@ const NotoKufiArabic = Noto_Kufi_Arabic({
     
 
 export const metadata = {
-  title: "Mostaqel clone",
+  title: "مستقل",
   description: "Mostaqel clone mearn stack iti final project",
   icons: {
-    icon: '/clown-with-hat.svg',
+    icon: '/logo.png',
   },
 };
 
