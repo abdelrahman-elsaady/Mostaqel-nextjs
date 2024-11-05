@@ -87,7 +87,7 @@ console.log(isLoggedIn);
   return (
     <>
       <div className={`container-fluid  d-none d-md-block ${styles.bodyy}`  }>
-        <div className=  {`navvvvv g-0   bg-primary row ${styles.navvvvv}`}>
+        <div className=  {`navvvvv g-0    row ${styles.navvvvv}`} style={{backgroundColor: '#2386c8'}}>
           <div className="col-6  ">
             <ul className="navbar-nav mr-auto flex-row ">
             {!isLoggedIn ? (
@@ -234,18 +234,19 @@ console.log(isLoggedIn);
                     
                   <div className="mt-2 ">
                     <button
-                      className="btn btn-primary"
+                      className="btn"
                       type="button"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvasWithBothOptions"
                       aria-controls="offcanvasWithBothOptions"
+                      style={{border: 'none'}}
                     >
-                      <FaBars className=" text-light bg-primary h3  " />
+                      <FaBars className=" text-light  h3  " />
                     </button>
 
                     <div
                       className={`offcanvas offcanvas-end w-25 ${styles.offcanvas} `}
-                      style={{ marginTop: 65 }}
+                      style={{ marginTop: 55 }}
                       data-bs-scroll="true"
                       tabIndex="-1"
                       id="offcanvasWithBothOptions"

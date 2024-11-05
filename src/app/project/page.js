@@ -1,5 +1,3 @@
-
-
 'use client';
 import { MdPerson2 } from "react-icons/md";
 import { BiAlarm } from "react-icons/bi";
@@ -10,6 +8,7 @@ import { IoFilterSharp } from "react-icons/io5";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from "next/link";
+import { IoLockClosedOutline, IoLockOpenOutline } from "react-icons/io5";
 // import Cookies from 'universal-cookie';
 
 function formatDateArabic(dateString) {
@@ -37,8 +36,8 @@ export default function Projects() {
   // const [error, setError] = useState(null);
   // const [isLoading, setIsLoading] = useState(true);
   // console.log(cookies.get('token'));
-  
-  const { projects, fetchProjects, isLoggedIn ,token} = useAppContext();
+
+  const { projects, fetchProjects, isLoggedIn, token } = useAppContext();
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -53,14 +52,14 @@ export default function Projects() {
 
   useEffect(() => {
     const filtered = projects.filter(project => {
-      const categoryMatch = selectedCategories.length === 0 || 
+      const categoryMatch = selectedCategories.length === 0 ||
         (project.category ? selectedCategories.includes(project.category.name) : false);
       const searchMatch = project.title.toLowerCase().includes(searchTerm.toLowerCase());
       return categoryMatch && searchMatch;
     });
     setFilteredProjects(filtered);
     setCurrentPage(0); // Reset to first page when filters change
-    if(filtered.length > 0){
+    if (filtered.length > 0) {
       setLoading(false);
     }
   }, [projects, selectedCategories, searchTerm]);
@@ -75,9 +74,9 @@ export default function Projects() {
 
 
   const handleCategoryChange = (category) => {
-    setSelectedCategories(prev => 
-      prev.includes(category) 
-        ? prev.filter(c => c !== category) 
+    setSelectedCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
         : [...prev, category]
     );
   };
@@ -89,141 +88,133 @@ export default function Projects() {
 
 
 
-  if (loading) return  <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-  <div className="spinner-border text-primary" role="status">
-    <span className="visually-hidden">جاري التحميل...</span>
-  </div>
-</div>;
+  if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+    <div className="spinner-border text-primary" role="status">
+      <span className="visually-hidden">جاري التحميل...</span>
+    </div>
+  </div>;
 
 
   return (
 
     <>
 
-      <div dir="rtl" style={{backgroundColor:"#f0f0f0"}}>
+      <div dir="rtl" style={{ backgroundColor: "#f0f0f0" ,paddingBottom : '80px'}}>
 
         <div style={{ paddingTop: "20px" }}>
           <p style={{ display: "block" }}> الرئيسية / المشاريع</p>
         </div>
 
         <div className="container-fluid" style={{ direction: "rtl" }}>
-          <div >
-            <nav className="navbar navbar-light ">
-              <a className="navbar-brand pe-3" href="#">
-                 
-              </a>
 
-           
-            </nav>
-          </div>
 
           <div className="d-flex justify-content-between">
 
-<div >
+            <div >
 
-<nav className="navbar navbar-light ">
-  <a className="navbar-brand pe-3" style={{ marginRight: "75px" }} href="#">
-    <h3>جميع المشاريع</h3>
-  </a>
+              <nav className="navbar navbar-light ">
+                <a className="navbar-brand pe-3" style={{ marginRight: "75px" }} href="#">
+                  <h3>جميع المشاريع</h3>
+                </a>
 
-</nav>
-</div>
-<div className="d-md-none  m-3">
-  <button 
-    className="btn btn-primary"
-    type="button"
-    data-bs-toggle="offcanvas" 
-    data-bs-target="#filterOffcanvas"
-    aria-controls="filterOffcanvas"
-  >
-  <IoFilterSharp />
-  </button>
-</div>
-</div>
-{/* Add Offcanvas */}
-<div 
-  className="offcanvas offcanvas-start" 
-  tabIndex="-1" 
-  id="filterOffcanvas" 
-  aria-labelledby="filterOffcanvasLabel"
-  style={{ direction: "rtl" }}
->
-  <div className="offcanvas-header">
-    {/* <h5 className="offcanvas-title" id="filterOffcanvasLabel">الفلاتر</h5> */}
-    <button 
-      type="button" 
-      className="btn btn-primary" 
-      data-bs-dismiss="offcanvas" 
-      aria-label="Close"
-    > عرض النتائج</button>
-  </div>
-  <div className="offcanvas-body">
-  <div className="mb-3">
-      <label htmlFor="search" className="form-label">بحث</label>
-      <input
-        type="text"
-        id="search"
-        className="form-control"
-        style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
-    </div>
+              </nav>
+            </div>
+            <div className="d-md-none  m-3">
+              <button
+                className="btn btn-primary"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#filterOffcanvas"
+                aria-controls="filterOffcanvas"
+              >
+                <IoFilterSharp />
+              </button>
+            </div>
+          </div>
+          {/* Add Offcanvas */}
+          <div
+            className="offcanvas offcanvas-start"
+            tabIndex="-1"
+            id="filterOffcanvas"
+            aria-labelledby="filterOffcanvasLabel"
+            style={{ direction: "rtl" }}
+          >
+            <div className="offcanvas-header">
+              {/* <h5 className="offcanvas-title" id="filterOffcanvasLabel">الفلاتر</h5> */}
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              > عرض النتائج</button>
+            </div>
+            <div className="offcanvas-body">
+              <div className="mb-3">
+                <label htmlFor="search" className="form-label">بحث</label>
+                <input
+                  type="text"
+                  id="search"
+                  className="form-control"
+                  style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+              </div>
 
-    <div>
-      <p className="mb-3"> التصنيف </p>
-      {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
-        <div className="form-check" key={index}>
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id={`category${index + 1}`}
-            checked={selectedCategories.includes(category)}
-            onChange={() => handleCategoryChange(category)}
-          />
-          <label className="form-check-label" htmlFor={`category${index + 1}`}>
-            {category}
-          </label>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
+              <div>
+                <p className="mb-3"> التصنيف </p>
+                {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+                  <div className="form-check" key={index}>
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id={`category${index + 1}`}
+                      checked={selectedCategories.includes(category)}
+                      onChange={() => handleCategoryChange(category)}
+                    />
+                    <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                      {category}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
 
 
           <div className="row mt-4">
             {/* sidebar */}
             <aside className="col-lg-3 col-md-2 pe-5 d-none d-md-block" >
-        <div className="mb-3">
-          <label htmlFor="search" className="form-label">بحث</label>
-          <input
-            type="text"
-            id="search"
-            className="form-control"
-            style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
+              <div className="mb-3">
+                <label htmlFor="search" className="form-label">بحث</label>
+                <input
+                  type="text"
+                  id="search"
+                  className="form-control"
+                  style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+              </div>
 
-        <div>
-          <h5 className="mb-3">التصنيف</h5>
-          {['البرمجة وتطوير الويب'  ,'التصميم والوسائط المتعددة','الكتابة والترجمة','التسويق الرقمي','البيانات والتحليل','مهارات متخصصة','الصوت والفيديو','إدارة الأعمال'].map((category, index) => (
-            <div className="form-check" key={index}>
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id={`category${index + 1}`}
-                checked={selectedCategories.includes(category)}
-                onChange={() => handleCategoryChange(category)}
-              />
-              <label className="form-check-label" htmlFor={`category${index + 1}`}>
-                {category}
-              </label>
-            </div>
-          ))}
-        </div>
+              <div>
+                <h5 className="mb-3">التصنيف</h5>
+                {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارا متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+                  <div className="form-check" key={index}>
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id={`category${index + 1}`}
+                      checked={selectedCategories.includes(category)}
+                      onChange={() => handleCategoryChange(category)}
+                    />
+                    <label className="form-check-label" htmlFor={`category${index + 1}`}>
+                      {category}
+                    </label>
+                  </div>
+                ))}
+              </div>
 
 
 
@@ -236,62 +227,75 @@ export default function Projects() {
                   currentPageProjects.map((project) => (
                     <Link href={`/project/details/${project._id}`} key={project._id} className="list-group-item list-group-item-action p-4">
 
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <Link className="mb-1" href={`/project/details/${project._id}`} style={{ textDecoration: 'none', color: "#2386c8" }}>{project.title}</Link>
-                      {/* <button className="btn btn-sm btn-info" style={{ backgroundColor: "#2386c8", border: 'none', borderRadius: '0px' }}>
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <Link className="mb-1" href={`/project/details/${project._id}`} style={{ textDecoration: 'none', color: "#2386c8" }}>{project.title}</Link>
+                        {/* <button className="btn btn-sm btn-info" style={{ backgroundColor: "#2386c8", border: 'none', borderRadius: '0px' }}>
                         <i className="bi bi-plus" style={{ color: '#fff', fontSize: 'bold' }}></i>
                       </button> */}
-                        <h5 className='btn btn-sm btn-primary '> {project.status == 'closed' ? 'مغلق' : 'مفتوح'}</h5>
-                    </div>
+                        <div className="project-status-badge">
+                          {project.status === 'closed' ? (
+                            <span style={closedStyles}>
+                              <IoLockClosedOutline style={iconStyles} />
+                              مغلق
+                            </span>
+                          ) : (
+                            <span style={openStyles}>
+                              <IoLockOpenOutline style={iconStyles} />
+                              مفتوح 
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
 
-                    <div className="mb-3" style={{fontSize:12 }}>
+                      <div className="mb-3" style={{ fontSize: 12 }}>
 
-                      <small className="">
-                        <MdPerson2 />
-                        {project.client.firstName}
-                      </small>
+                        <small className="">
+                          <MdPerson2 />
+                          {project.client.firstName}
+                        </small>
 
-                      <small className="pe-3">
-                        <BiAlarm />
-                      {project.createdAt ? formatDateArabic(project.createdAt) : 'Unknown Date'}
-                      </small >
+                        <small className="pe-3">
+                          <BiAlarm />
+                          {project.createdAt ? formatDateArabic(project.createdAt) : 'Unknown Date'}
+                        </small >
 
-                      <small className="pe-3">
-                        <MdOutlineLocalActivity />
-                        {project.proposals.length > 0 ? `${project.proposals.length} عرض` : 'أضف أول عرض'}
-                      </small>
+                        <small className="pe-3">
+                          <MdOutlineLocalActivity />
+                          {project.proposals.length > 0 ? `${project.proposals.length} عرض` : 'أضف أول عرض'}
+                        </small>
 
-                    </div>
-                    <p className="mb-1">
-                      {project.description?.slice(0, 150)}
-                      {project.description?.length > 150 ? '...' : ''}
-                    </p>
+                      </div>
+                      <p className="mb-1">
+                        {project.description?.slice(0, 150)}
+                        {project.description?.length > 150 ? '...' : ''}
+                      </p>
 
-                  </Link>
+                    </Link>
                   ))
                 ) : (
                   <p>المشروع اللي بتدور عليه مش موجود ينجم</p>
                 )}
               </div>
               <ReactPaginate
-          previousLabel={'السابق'}
-          nextLabel={'التالي'}
-          breakLabel={'...'}
-          pageCount={pageCount}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
-          containerClassName={'pagination justify-content-center mt-4'}
-          pageClassName={'page-item'}
-          pageLinkClassName={'page-link'}
-          previousClassName={'page-item'}
-          previousLinkClassName={'page-link'}
-          nextClassName={'page-item'}
-          nextLinkClassName={'page-link'}
-          breakClassName={'page-item'}
-          breakLinkClassName={'page-link'}
-          activeClassName={'active'}
-        />
+                previousLabel={'السابق'}
+                nextLabel={'التالي'}
+                breakLabel={'...'}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={'pagination justify-content-center mt-4'}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+                previousClassName={'page-item'}
+                previousLinkClassName={'page-link'}
+                nextClassName={'page-item'}
+                nextLinkClassName={'page-link'}
+                breakClassName={'page-item'}
+                breakLinkClassName={'page-link'}
+                activeClassName={'active'}
+              />
             </section>
           </div>
         </div>
@@ -299,3 +303,30 @@ export default function Projects() {
     </>
   );
 }
+
+const baseStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  padding: '6px 12px',
+  fontSize: '0.9rem',
+  fontWeight: '500',
+};
+
+const openStyles = {
+  ...baseStyles,
+  backgroundColor: '#2e7d32',
+  color: '#ffffff',
+  border: 'none',
+};
+
+const closedStyles = {
+  ...baseStyles,
+  backgroundColor: '#6c757d',
+  color: '#ffffff',
+  border: 'none',
+};
+
+const iconStyles = {
+  fontSize: '1.1rem',
+};

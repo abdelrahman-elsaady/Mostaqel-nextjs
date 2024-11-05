@@ -24,7 +24,7 @@ import { redirect } from 'next/navigation'
 import Div3Rues from "./components/reusableComponents/div-3-home";
 import Div5Rues from "./components/reusableComponents/div-5-home";
 import Div6Rues from "./components/reusableComponents/div-6-home";
-
+import FaqAccordion from "./components/reusableComponents/accordion-home";
 
 
 async function fetchUserData(id) {
@@ -88,7 +88,7 @@ const decoded = jwt.decode(token.value);
                     style={{focus: "box-shadow: none" , borderRadius: "0"}}
                   />
                   <Link href="/project/create" style={{textDecoration: "none"}}>
-                  <button  className=" gamal  btn btn-primary  position-absolute start-0 py-3 mt-2 ms-2  " style={{borderRadius: "0"}}>
+                  <button  className=" gamal  btn btn-primary  position-absolute start-0 py-3 mt-2 ms-2  " style={{borderRadius: "0" ,backgroundColor: '#2386c8'}}>
                     
                     ابدأ مشروعك الان
                   </button>
@@ -108,48 +108,66 @@ const decoded = jwt.decode(token.value);
 
         <div className="mt-5">
           <div className="text-center mb-5">
-            <h1 className="text-primary"> هل لديك عمل تريد إنجازه</h1>
+            <h1 className="" style={{color: '#2386c8'}}> هل لديك عمل تريد إنجازه</h1>
           </div>
 
           <div className="row">
             <div className="col-md-6   ">
+              <div className="d-flex ">
+              <h5 className=" ms-3">
+                  <FaCheckCircle  style={{color: '#2386c8'}}/>
+            </h5>
               <div className=" mb-4">
-                <h6 className="mb-3">
-                  <FaCheckCircle className="d-inline ml-3" />
-                  أضف مشروع{" "}
-                </h6>
+                <h5 className="mb-3 text-muted">
+                  
+                  <span>
+                  أضف مشروع
+                  </span>
+                </h5>
 
-                <p className=" ms-5">
+                <p className=" ms-5 text-muted small">
                   أضف تفاصيل المشروع الذي تحتاج إنجازه والمهارات المطلوبة واحصل
                   على عروض المستقلين المتخصصين في دقائق.
                 </p>
               </div>
+              </div>
+         
+              <div className="d-flex ">
+              <h5 className=" ms-3">
+                  <FaCheckCircle  style={{color: '#2386c8'}}/>
+            </h5>
+               
               <div className=" mb-4">
-                <h6 className="mb-3">
-                  <FaCheckCircle className="d-inline ml-3" />
-                  اختر المستقل المناسب{" "}
-                </h6>
+                <h5 className="mb-3 text-muted">
+                  
+                  اختر المستقل المناسب
+                </h5>
 
-                <p className=" ms-5">
+                <p className=" ms-5 text-muted small">
                   أضف تفاصيل المشروع الذي تحتاج إنجازه والمهارات المطلوبة واحصل
                   على عروض المستقلين المتخصصين في دقائق.
                 </p>
               </div>
+              </div>
+              <div className="d-flex ">
+              <h5 className=" ms-3">
+                  <FaCheckCircle  style={{color: '#2386c8'}}/>
+                  </h5>
               <div className=" mb-4">
-                <h6 className="mb-3">
-                  <FaCheckCircle className="d-inline ml-3" />
-                  استلم المشروع{" "}
-                </h6>
+                <h5 className="mb-3 text-muted">
+                  استلم المشروع
+                </h5>
 
-                <p className=" ms-5">
+                <p className=" ps-5 text-muted small">
                   أضف تفاصيل المشروع الذي تحتاج إنجازه والمهارات المطلوبة واحصل
                   على عروض المستقلين المتخصصين في دقائق.
                 </p>
+              </div>
               </div>
             </div>
 
             <div className="col-md-6 mb-5  ">
-              <iframe src=" https://www.youtube.com/embed/YcMK-xubwPo"></iframe>
+              <iframe src=" https://www.youtube.com/embed/seO4l0shva0"></iframe>
             </div>
           </div>
         </div>
@@ -197,48 +215,48 @@ const decoded = jwt.decode(token.value);
         {/*.............. الديفاية الرابعة */}
 
         <div className="my-5 py-5 ">
-          <div className="text-center text-primary mb-5">
-            <h3>كيف نضمن حقوقك وجودة أعمالك</h3>
+          <div className="text-center mb-5">
+                <h1 style={{color: '#2386c8'}}>كيف نضمن حقوقك وجودة أعمالك</h1>
           </div>
 
           <div className="row">
             <div className="col-md-4 col-sm-6 mb-5">
-              <h4 className="mb-4">مستقلون محترفون</h4>
-              <p>
+              <h4 className="mb-4 text-muted">مستقلون محترفون</h4>
+              <p className="text-muted small">
                 العمل مع مستقلين خبراء في كافة المجالات التي تبحث عنها ببيانات
                 شخصية وهويات موثقة.
               </p>
             </div>
 
             <div className="col-md-4 col-sm-6 mb-5">
-              <h4 className="mb-4">ملفات شخصية متكاملة</h4>
-              <p>
+              <h4 className="mb-4 text-muted">ملفات شخصية متكاملة</h4>
+              <p className="text-muted small">
                 ملفات شخصية للمستقلين تعرض أعمالهم وتقييماتهم السابقة ونبذة عن
                 أهم خبراتهم ومهاراتهم.
               </p>
             </div>
 
             <div className="col-md-4 col-sm-6 mb-5">
-              <h4 className="mb-4">تواصل مسبق</h4>
-              <p>
+              <h4 className="mb-4 text-muted">تواصل مسبق</h4>
+              <p className="text-muted small">
                 تواصل مع المستقلين عبر المحادثات لتفاوض وتوضيح الاتفاق قبل
                 التوظيف.
               </p>
             </div>
 
             <div className="col-md-4 col-sm-6 mb-5">
-              <h4 className="mb-4">دعم ومساعدة</h4>
-              <p>فريقنا متاح لمساعدتك على مدار الساعة بجميع مراحل المشروع.</p>
+              <h4 className="mb-4 text-muted">دعم ومساعدة</h4>
+              <p className="text-muted small">فريقنا متاح لمساعدتك على مدار الساعة بجميع مراحل المشروع.</p>
             </div>
 
             <div className="col-md-4 col-sm-6 mb-5">
-              <h4 className="mb-4">ضمان الحقوق</h4>
-              <p>استعادة قيمة المشروع كاملة إن لم تستلم العمل المتفق عليه.</p>
+              <h4 className="mb-4 text-muted">ضمان الحقوق</h4>
+              <p className="text-muted small">استعادة قيمة المشروع كاملة إن لم تستلم العمل المتفق عليه.</p>
             </div>
 
             <div className="col-md-4 col-sm-6 mb-5">
-              <h4 className="mb-4">حفظ حقوقك المالية</h4>
-              <p>
+              <h4 className="mb-4 text-muted">حفظ حقوقك المالية</h4>
+              <p className="text-muted small">
                 بقاء قيمة الصفقة في رصيد حسابك بموقع مستقل إلى أن تستلم المشروع
                 بنفسك.
               </p>
@@ -302,7 +320,17 @@ const decoded = jwt.decode(token.value);
 
         {/* الديفايييية الساتتتهههههه */}
 
+
+
+
+
         <div className="my-5 py-5 ">
+
+            <div className="text-center mb-5">
+              <h2 style={{color: '#2386c8'}}>أراء عملائنا من جميع أنحاء العالم</h2>
+            </div>
+
+
           <div className="row">
             <Div6Rues
               img="/rehab.png"
@@ -318,15 +346,15 @@ const decoded = jwt.decode(token.value);
             />
             <Div6Rues
               img="/mahmoud.png"
-              job="مدير موقع مستقل"
+              job="  مؤسس مستر مندوب" 
               details="علاقتي بمستقل متعلقة بصورة رئيسة بزيادة الإنتاجية، فإذا أحسنت استخدام مستقل وتوظيف المستقلين ستتفاجئ بارتفاع حجم الإنتاجية في شركتك، لأنك ستكتشف أنك لا تملك يدين فقط بل أيادٍ كثيرة تنجز أعمالك، فالقيمة التي أضافها لي مستقل هي إنجاز مهام أكثر في وقت أقل."
               name="محمود يوسف "
             />
             <Div6Rues
-              img="/tony.jpg"
-              job="    زعيم عصابة"
+              img="/anaa.jpg"
+              job="     أهلا وسهلا"
               details="علاقتي بمستقل متعلقة بصورة رئيسة بزيادة الإنتاجية، فإذا أحسنت استخدام مستقل وتوظيف المستقلين ستتفاجئ بارتفاع حجم الإنتاجية في شركتك، لأنك ستكتشف أنك لا تملك يدين فقط بل أيادٍ كثيرة تنجز أعمالك، فالقيمة التي أضافها لي مستقل هي إنجاز مهام أكثر في وقت أقل."
-              name="   توني سوبرانو "
+              name="   عبدالرحمن محمد"
             />
           </div>
         </div>
@@ -334,8 +362,10 @@ const decoded = jwt.decode(token.value);
 
             {/* الديفاااية السابعةةةةةةة */}
             
-            <div className="" >
-            {/* <Accordion/> */}
+
+
+            <div className=" mb-5 pb-5 " >
+            <FaqAccordion/>
             </div>
 
  

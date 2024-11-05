@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className={`container-fluid bg-light pt-4 ${styles.foooter}`} dir="rtl">
+      <footer className={`container-fluid bg-light mt-5 pt-5 ${styles.foooter}`} dir="rtl">
       {/* <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Enable both scrolling & backdrop</button>
 
 <div  class="offcanvas offcanvas-end w-25 " data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">

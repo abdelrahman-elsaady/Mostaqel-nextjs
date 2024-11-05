@@ -173,7 +173,7 @@ const  AddProject = () => {
 
 
     <>
-<div style={{backgroundColor : '#f0f0f0'}}>
+<div className="pb-5" style={{backgroundColor : '#f0f0f0'}}>
     <div className="container-fluid" dir="rtl" style={{backgroundColor : '#f0f0f0'}}>
 
       <div className="row pt-5" > 
@@ -302,7 +302,7 @@ const  AddProject = () => {
     </div> : 
 
 <div className="col-md-8 d-flex flex-column justify-content-center align-items-center py-5">
-<div className="card shadow-lg border-0">
+<div className=" border-0">
   <div className="card-body text-center p-5">
     <img 
       src="/righthere-ezgif.com-resize.gif" 
@@ -312,7 +312,7 @@ const  AddProject = () => {
     />
     <h2 className="mb-3">أضف مشروعك الجديد</h2>
     <p className="lead mb-4">سجل الآن لتتمكن من إضافة مشروع جديد وبدء رحلتك معنا</p>
-    <Link href="/login" className="btn btn-primary btn-lg">
+    <Link href="/login" className="btn  btn-lg" style={{backgroundColor : '#2386c8' , color : '#fff', borderRadius : '0px'}}>
       تسجيل الدخول
     </Link>
   </div>
