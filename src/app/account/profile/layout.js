@@ -3,6 +3,7 @@ export const metadata = {
   description: 'Edit your profile on Mostaqel',
 };
 
+
 export default function ProfileLayout({ children }) {
   return children;
 } 
