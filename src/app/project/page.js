@@ -207,7 +207,7 @@ export default function Projects() {
 
               <div>
                 <h5 className="mb-3">التصنيف</h5>
-                {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+                {['البرمجة وتطوير الويب', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت واليديو', 'إدارة الأعمال'].map((category, index) => (
                   <div 
                     className="form-check  py-2" 
                     key={index}
@@ -247,13 +247,27 @@ export default function Projects() {
                       </button> */}
                         <div className="project-status-badge">
                           {project.status === 'closed' ? (
-                            <span style={closedStyles}>
-                              <IoLockClosedOutline style={iconStyles} />
+                            <span style={{
+                              ...closedStyles,
+                              padding: '4px 8px',
+                              fontSize: '0.75rem',
+                            }}>
+                              <IoLockClosedOutline style={{
+                                fontSize: '0.85rem',
+                                marginRight: '4px'
+                              }} />
                               مغلق
                             </span>
                           ) : (
-                            <span style={openStyles}>
-                              <IoLockOpenOutline style={iconStyles} />
+                            <span style={{
+                              ...openStyles,
+                              padding: '4px 8px',
+                              fontSize: '0.75rem',
+                            }}>
+                              <IoLockOpenOutline style={{
+                                fontSize: '0.85rem',
+                                marginRight: '4px'
+                              }} />
                               مفتوح 
                             </span>
                           )}
@@ -320,9 +334,8 @@ export default function Projects() {
 const baseStyles = {
   display: 'flex',
   alignItems: 'center',
-  gap: '6px',
-  padding: '6px 12px',
-  fontSize: '0.9rem',
+  gap: '4px',
+  // borderRadius: '4px',
   fontWeight: '500',
 };
 
