@@ -84,9 +84,9 @@ const decoded = jwt.decode(token.value);
                 أنجز مشاريعك بسهولة وأمان عبر أكبر منصة عمل حر بالعالم العربي
               </h6>
               <div>
-                <form className="  d-flex position-relative">
+                <form className="  d-flex position-relative ">
                   <input
-                    className="form-control p-4 "
+                    className="form-control p-4 d-none d-md-block"
                     type="text"
                     placeholder=" ادخل عنوان المشروع المراد تنفيذه..  "
                     required
