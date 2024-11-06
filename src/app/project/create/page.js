@@ -215,7 +215,7 @@ const  AddProject = () => {
     <div className="col-md-8">
     <div className="container ">
       <h1 className="mb-4">اضافة مشروع جديد</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mb-4">
         <div className="mb-3">
           <label htmlFor="title" className="form-label">عنوان المشروع</label>
           <input
