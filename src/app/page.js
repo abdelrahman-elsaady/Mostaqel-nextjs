@@ -88,7 +88,7 @@ const decoded = jwt.decode(token.value);
                   <input
                     className="form-control p-4 "
                     type="text"
-                    placeholder=" ادخل عنوان المشروع الذي تريد تنفيذه..  "
+                    placeholder=" ادخل عنوان المشروع المراد تنفيذه..  "
                     required
                     style={{focus: "box-shadow: none" , borderRadius: "0"}}
                   />
