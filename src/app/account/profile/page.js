@@ -416,68 +416,78 @@ const ProfileCompletion = () => {
 
 
                   <div className="mb-5">
-                    <label className="form-label fw-bold fs-5 mb-3">  اختر نوع الحساب</label>
+                    <label className="form-label fw-bold fs-5 mb-3">اختر نوع الحساب</label>
 
-                    <div className="d-flex justify-content-center gap-4">
+                    <div className="row justify-content-center">
+                      <div className="col-12 col-md-10 col-lg-8">
+                        {/* Flex container that stacks on mobile */}
+                        <div className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+                          
+                          {/* Freelancer Option */}
+                          <div className="form-check form-check-inline w-100 w-md-auto">
+                            <input
+                              className="form-check-input visually-hidden"
+                              type="radio"
+                              name="role"
+                              id="freelancer"
+                              value="freelancer"
+                              checked={formData.role === 'freelancer'}
+                              onChange={handleInputChange}
+                              required
+                            />
+                            <label
+                              className={`form-check-label border border-primary text-center rounded-1 w-100 ${
+                                formData.role === 'freelancer' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
+                              }`}
+                              htmlFor="freelancer"
+                              style={{ padding: '25px', minWidth: '200px' }}
+                            >
+                              <p className="m-0 text-center fs-1">
+                                <SiFreelancer className="me-2 fs-1" />
+                              </p>
+                              <p className="m-0 text-center fs-4">مستقل</p>
+                            </label>
+                          </div>
 
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input visually-hidden"
-                          type="radio"
-                          name="role"
-                          id="freelancer"
-                          value="freelancer"
-                          checked={formData.role === 'freelancer'}
-                          onChange={handleInputChange}
-                          required
-                        />
-                        <label
+                          {/* OR Divider */}
+                          <div className="or-divider d-none d-md-block pt-3">
+                            <span className="bg-white px-3 fw-bold fs-5">أو</span>
+                          </div>
+                          {/* Mobile OR Divider */}
+                          <div className="or-divider d-md-none py-2">
+                            <span className="bg-white px-3 fw-bold fs-5">أو</span>
+                          </div>
 
-                          className={`form-check-label border border-primary text-center rounded-1 ${formData.role === 'freelancer' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
-                            }`}
-                          htmlFor="freelancer"
-                          style={{ padding: '25px 50px' }}
-                        >
-                          <p className="m-0 text-center fs-1"> <SiFreelancer className="me-2 fs-1" />
+                          {/* Client Option */}
+                          <div className="form-check form-check-inline w-100 w-md-auto">
+                            <input
+                              className="form-check-input visually-hidden"
+                              type="radio"
+                              name="role"
+                              id="client"
+                              value="client"
+                              checked={formData.role === 'client'}
+                              onChange={handleInputChange}
+                              required
+                            />
+                            <label
+                              className={`form-check-label border border-primary text-center rounded-1 w-100 ${
+                                formData.role === 'client' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
+                              }`}
+                              htmlFor="client"
+                              style={{ padding: '25px', minWidth: '200px' }}
+                            >
+                              <p className="m-0 text-center fs-1">
+                                <FaBriefcase className="me-2 fs-1" />
+                              </p>
+                              <p className="m-0 text-center fs-4">صاحب عمل</p>
+                            </label>
+                          </div>
+                        </div>
 
-                          </p>
-                          <p className="m-0 text-center fs-4">
-                            مستقل
-                          </p>
-                        </label>
-                      </div>
-                      <div className="or-divider pt-3">
-                        <span className="bg-white px-3 fw-bold fs-5">أو</span>
-                      </div>
-
-
-
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input visually-hidden"
-                          type="radio"
-                          name="role"
-                          id="client"
-                          value="client"
-                          checked={formData.role === 'client'}
-                          onChange={handleInputChange}
-                          required
-                        />
-                        <label
-                          className={`form-check-label border border-primary text-center rounded-1 ${formData.role === 'client' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
-                            }`}
-                          htmlFor="client"
-                          style={{ padding: '25px 50px' }}
-                        >
-                          <p className="m-0 text-center fs-1"> <FaBriefcase className="me-2 fs-1" />
-
-                          </p>
-                          <p className="m-0 text-center fs-4">
-                            صاحب عمل
-                          </p>
-                        </label>
+                        {/* Error Message */}
                         {errors.role && (
-                          <div className="invalid-feedback d-block">{errors.role}</div>
+                          <div className="text-danger text-center mt-2">{errors.role}</div>
                         )}
                       </div>
                     </div>
