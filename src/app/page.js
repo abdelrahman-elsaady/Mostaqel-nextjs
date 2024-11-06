@@ -84,19 +84,32 @@ const decoded = jwt.decode(token.value);
                 أنجز مشاريعك بسهولة وأمان عبر أكبر منصة عمل حر بالعالم العربي
               </h6>
               <div>
-                <form className="  d-flex position-relative ">
+                <form className="d-flex position-relative justify-content-center">
                   <input
                     className="form-control p-4 d-none d-md-block"
                     type="text"
                     placeholder=" ادخل عنوان المشروع المراد تنفيذه..  "
                     required
-                    style={{focus: "box-shadow: none" , borderRadius: "0"}}
+                    style={{focus: "box-shadow: none", borderRadius: "0"}}
                   />
-                  <Link href="/project/create" style={{textDecoration: "none"}}>
-                  <button  className=" gamal  btn btn-primary  position-absolute start-0 py-3 mt-2 ms-2  " style={{borderRadius: "0" ,backgroundColor: '#2386c8'}}>
-                    
-                    ابدأ مشروعك الان
-                  </button>
+                  <Link 
+                    href="/project/create" 
+                    style={{textDecoration: "none"}}
+                    className="d-block w-auto"
+                  >
+                    <button  
+                      className="btn btn-primary py-3 px-4 position-absolute start-0 mt-2 ms-2 d-none d-md-block" 
+                      style={{borderRadius: "0", backgroundColor: '#2386c8'}}
+                    >
+                      ابدأ مشروعك الان
+                    </button>
+                    {/* Mobile button */}
+                    <button  
+                      className="btn btn-primary py-3 px-4 d-md-none" 
+                      style={{borderRadius: "0", backgroundColor: '#2386c8'}}
+                    >
+                      ابدأ مشروعك الان
+                    </button>
                   </Link>
                 </form>
               </div>
@@ -140,7 +153,7 @@ const decoded = jwt.decode(token.value);
               <div className="d-flex ">
               <h5 className=" ms-3">
                   <FaCheckCircle  style={{color: '#2386c8'}}/>
-            </h5>
+                </h5>
                
               <div className=" mb-4">
                 <h5 className="mb-3 text-muted">
@@ -323,7 +336,7 @@ const decoded = jwt.decode(token.value);
           </div>
         </div>
 
-        {/* الديفايييية الساتتتهههههه */}
+        {/* الديفايييية الساتتتههههه */}
 
 
 
@@ -365,7 +378,7 @@ const decoded = jwt.decode(token.value);
         </div>
 
 
-            {/* الديفاااية السابعةةةةةةة */}
+            {/* الديفاااية السابعةةةةةة */}
             
 
 
