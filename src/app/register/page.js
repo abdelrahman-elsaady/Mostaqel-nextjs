@@ -116,7 +116,7 @@ const RegisterForm = () => {
 
           <div className="row mb-3">
 
-            <div className="col-md-6">
+            <div className="col-md-6 mb-2">
 
               <button onClick={() => signIn('google', { callbackUrl: '/' })} className="  w-100" style={{backgroundColor: "#dd4b39", color: "white",border: "none", height: "50px"}}>
                 {/* <img src="/google-icon.png" alt="Google" width={20} height={20} className="me-2" /> */}
