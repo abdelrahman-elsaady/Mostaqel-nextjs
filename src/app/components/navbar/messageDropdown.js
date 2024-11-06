@@ -189,7 +189,7 @@ export default function MessageDropdown({ userId }) {
 
   return (
     <>
-   <li className={`nav-item ${styles.navItem}`}>
+   <li className={`nav-item ${styles.navItem} mt-1` }>
         <div className="dropdown" ref={dropdownRef}>
           <button 
             className={`btn btn-link nav-link dropdown-toggle ${styles.noArrow}`}
@@ -233,7 +233,7 @@ export default function MessageDropdown({ userId }) {
     </div>
     </li>
 
-    <li className={`nav-item ${styles.navItem}`}>
+    <li className={`nav-item ${styles.navItem} mt-1`}>
         <div className="dropdown" >
           <button 
             className={`btn btn-link nav-link dropdown-toggle ${styles.noArrow}`}

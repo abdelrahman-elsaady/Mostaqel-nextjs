@@ -98,7 +98,7 @@ const [loading, setLoading] = useState(true);
                         {/* {new Date(conversation.lastMessage.createdAt).toLocaleString()} */}
                       </div>
                     </div>
-                    <p className="mb-1">{conversation.projectId.description}</p>
+                    <p className="mb-1">{conversation.lastMessage.content}</p>
                   </div>
                   </Link>
               ))

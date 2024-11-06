@@ -118,24 +118,8 @@ console.log(isLoggedIn);
               <>
 
               <UserDropdown user={user} />
-                  {/* <li className={`nav-item ${styles.navItem}`}>
-                    <Link className="nav-link text-white" href="/profile">
-                      <img
-                        src={user.profilePicture || 'https://th.bing.com/th/id/OIP.yYH0Z8hoEboWVtgM6i0xeQHaEK?rs=1&pid=ImgDetMain'}
-                        alt="Profile"
-                        className={styles.userAvatar}
-                      />
-                    </Link>
-                  </li> */}
-                 {/* <li className={`nav-item ${styles.navItem}`}>
-                    <Link className="nav-link text-white" href="/notifications">
-                      <FaBell />
-                    </Link>
-                  </li> */}
-                  
-                    {/* <Link className="nav-link text-white" href="/messages"> */}
-                      {/* <FaEnvelope /> */}
-                  <ClientNav userId={user._id} />
+                 
+              <ClientNav userId={user._id} />
                     {/* </Link> */}
                   
 
