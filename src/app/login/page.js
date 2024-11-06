@@ -77,7 +77,7 @@ export default function Login() {
 
                 <div className="row mb-3">
 
-                  <div className="col-md-6">
+                  <div className="col-md-6 mb-2">
 
                     <button onClick={() => signIn('google', { callbackUrl: '/' })} className="  w-100" style={{ backgroundColor: "#dd4b39", color: "white", border: "none", height: "50px" }}>
                       {/* <img src="/google-icon.png" alt="Google" width={20} height={20} className="me-2" /> */}
@@ -88,7 +88,7 @@ export default function Login() {
 
                     </button>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-6 mb-2">
                     <button onClick={handleMicrosoftSignIn} className="  w-100" style={{ backgroundColor: "#0f4bac", color: "white", border: "none", height: "50px" }}>
 
                       <IoLogoWindows className="ms-2" style={{fontSize: '28px'}} />

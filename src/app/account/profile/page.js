@@ -17,10 +17,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 import ar from 'date-fns/locale/ar-SA';
 import { addYears, differenceInYears } from 'date-fns'; // Add this import
+import styles from './styles.module.css';
+// import { FaUserCircle } from "react-icons/fa";
+import { SiFreelancer } from "react-icons/si";
 
 // Register Arabic locale for the date picker
 registerLocale('ar', ar);
 setDefaultLocale('ar');
+
+
+
 const ProfileCompletion = () => {
 
 
@@ -62,6 +68,10 @@ const ProfileCompletion = () => {
     lastName: '',
     bio: '',
     jobtitle: '',
+    country: '',
+    languages: '',
+    gender: '',
+    role: '',
     dateOfBirth: '',
     profilePicture: ''
   });
@@ -113,7 +123,13 @@ const ProfileCompletion = () => {
           error = 'يجب أن يكون عمرك 15 عاماً على الأقل';
         }
         break;
+      case 'role':
+        if (value == '') {
+          error = 'يجب أن تختار نوع الحساب';
+        }
+        break;
     }
+
     return error;
   };
 
@@ -245,36 +261,71 @@ const ProfileCompletion = () => {
       reader.readAsDataURL(file);
     }
   };
-  const handleSubmit = async (e) => {
+
+
+
+  const onSubmit = (e) => {
     e.preventDefault();
+    console.log("Form submitted");
+    console.log(formData);
 
-    // Validate all fields
-    let newErrors = {};
-    Object.keys(formData).forEach(key => {
-      const error = validateField(key, formData[key]);
-      if (error) newErrors[key] = error;
-    });
+    // Reset errors
+    const newErrors = {};
+    let isValid = true;
 
-    // Check if there are any errors
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    // Basic validation
+    if (!formData.firstName?.trim()) {
+      newErrors.firstName = 'الاسم الأول مطلوب';
+      isValid = false;
+    }
+    if (!formData.lastName?.trim()) {
+      newErrors.lastName = 'اسم العائلة مطلوب';
+      isValid = false;
+    }
+    if (!formData.country) {
+      newErrors.country = 'الدولة مطلوبة';
+      isValid = false;
+    }
+    if (!formData.languages) {
+      newErrors.languages = 'اللغة مطلوبة';
+      isValid = false;
+    }
+    if (!formData.gender) {
+      newErrors.gender = 'الجنس مطلوب';
+      isValid = false;
+    }
+    if (!formData.role) {
+      newErrors.role = 'نوع الحساب مطلوب';
+      isValid = false;
+    }
+
+    // Update the errors state
+    setErrors(newErrors);
+    console.log("Errors:", newErrors);
+
+    // Show alert if there are errors
+    if (!isValid) {
       Swal.fire({
         icon: 'error',
         title: 'خطأ في البيانات',
-        text: 'يرجى التحقق من صحة جميع البيانات المدخلة',
+        text: 'يرجى إكمال جميع الحقول المطلوبة'
       });
       return;
     }
 
-    // Continue with form submission
-    const formDataToSend = new FormData();
-    Object.keys(formData).forEach(key => formDataToSend.append(key, formData[key]));
-    formDataToSend.append('skills', JSON.stringify(selectedSkills.map(skill => skill._id)));
-    if (profilePicture) {
-      formDataToSend.append('profilePicture', profilePicture);
-    }
+    // If valid, proceed with form submission
+    handleFormSubmission();
+  };
 
+  const handleFormSubmission = async () => {
     try {
+      const formDataToSend = new FormData();
+      Object.keys(formData).forEach(key => formDataToSend.append(key, formData[key]));
+      formDataToSend.append('skills', JSON.stringify(selectedSkills.map(skill => skill._id)));
+      if (profilePicture) {
+        formDataToSend.append('profilePicture', profilePicture);
+      }
+
       const response = await updateProfile(userId, formDataToSend);
       if (response.message === 'User was edited successfully') {
         Swal.fire({
@@ -288,17 +339,18 @@ const ProfileCompletion = () => {
         });
       }
     } catch (error) {
+      console.error("Submission error:", error);
       Swal.fire({
         icon: 'error',
         title: 'خطأ',
-        text: 'حدث خطأ أثناء حفظ البيانات',
+        text: 'حدث خطأ أثناء حفظ البيانات'
       });
     }
   };
 
 
   // console.log(response);
-  
+
   // router.push('/');
 
 
@@ -327,8 +379,8 @@ const ProfileCompletion = () => {
           <div className="col-lg-8">
             <div className="card shadow-lg">
               <div className="card-body p-5">
-                <h1 className="text-center mb-5 text-primary">الملف الشخصي</h1>
-                <form onSubmit={handleSubmit}>
+                <h1 className="text-center mb-5 text-primary " style={{ color: '#2386c8' }} >الملف الشخصي</h1>
+                <form onSubmit={onSubmit}>
                   <div className="text-center mb-5">
                     <div className="position-relative d-inline-block">
                       <label htmlFor="profile-picture" className="cursor-pointer">
@@ -341,7 +393,7 @@ const ProfileCompletion = () => {
                             className="rounded-circle border border-3 border-primary "
                           />
                           <div className="profile-picture-overlay">
-                            <FaCamera size={24} className='text-primary' />
+                            <FaCamera size={24} className='' style={{ color: '#2386c8' }} />
                             <span className="mt-2 me-2">تغيير الصورة الشخصية</span>
                           </div>
                         </div>
@@ -365,7 +417,9 @@ const ProfileCompletion = () => {
 
                   <div className="mb-5">
                     <label className="form-label fw-bold fs-5 mb-3">  اختر نوع الحساب</label>
+
                     <div className="d-flex justify-content-center gap-4">
+
                       <div className="form-check form-check-inline">
                         <input
                           className="form-check-input visually-hidden"
@@ -378,17 +432,25 @@ const ProfileCompletion = () => {
                           required
                         />
                         <label
-                          className={`form-check-label btn btn-lg px-4 py-3 ${formData.role === 'freelancer' ? 'btn-primary' : 'btn-outline-primary'
+
+                          className={`form-check-label border border-primary text-center rounded-1 ${formData.role === 'freelancer' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
                             }`}
                           htmlFor="freelancer"
+                          style={{ padding: '25px 50px' }}
                         >
-                          <FaUser className="me-2" />
-                          مستقل
+                          <p className="m-0 text-center fs-1"> <SiFreelancer className="me-2 fs-1" />
+
+                          </p>
+                          <p className="m-0 text-center fs-4">
+                            مستقل
+                          </p>
                         </label>
                       </div>
                       <div className="or-divider pt-3">
                         <span className="bg-white px-3 fw-bold fs-5">أو</span>
                       </div>
+
+
 
                       <div className="form-check form-check-inline">
                         <input
@@ -402,13 +464,21 @@ const ProfileCompletion = () => {
                           required
                         />
                         <label
-                          className={`form-check-label btn btn-lg px-4 py-3 ${formData.role === 'client' ? 'btn-primary' : 'btn-outline-primary'
+                          className={`form-check-label border border-primary text-center rounded-1 ${formData.role === 'client' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
                             }`}
                           htmlFor="client"
+                          style={{ padding: '25px 50px' }}
                         >
-                          <FaBriefcase className="me-2" />
-                          صاحب عمل
+                          <p className="m-0 text-center fs-1"> <FaBriefcase className="me-2 fs-1" />
+
+                          </p>
+                          <p className="m-0 text-center fs-4">
+                            صاحب عمل
+                          </p>
                         </label>
+                        {errors.role && (
+                          <div className="invalid-feedback d-block">{errors.role}</div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -423,13 +493,15 @@ const ProfileCompletion = () => {
                         className={`form-control form-control-lg ${errors.firstName ? 'is-invalid' : ''}`}
                         placeholder="الاسم الأول"
                         name="firstName"
-                        value={formData.firstName.trim()}
+                        value={formData.firstName}
                         onChange={handleInputChange}
-                        required
                       />
                       {errors.firstName && (
-                        <div className="invalid-feedback">{errors.firstName}</div>
+                        <div className="invalid-feedback d-block">
+                          {errors.firstName}
+                        </div>
                       )}
+
                     </div>
                     <div className="col-md-6">
                       <label className="form-label fw-bold">اسم العائلة</label>
@@ -438,25 +510,29 @@ const ProfileCompletion = () => {
                         className={`form-control form-control-lg ${errors.lastName ? 'is-invalid' : ''}`}
                         placeholder="اسم العائلة"
                         name="lastName"
-                        value={formData.lastName.trim()}
+                        value={formData.lastName}
                         onChange={handleInputChange}
-                        required
                       />
                       {errors.lastName && (
-                        <div className="invalid-feedback">{errors.lastName}</div>
+                        <div className="invalid-feedback d-block">
+                          {errors.lastName}
+                        </div>
                       )}
                     </div>
                   </div>
+                  
+                      {/* <p className="text-danger">
+                        {formErrors.lastName?.message}
+                      </p> */}
 
                   <div className="row g-4 mb-4">
                     <div className="col-md-6">
                       <label className="form-label fw-bold">الدولة</label>
                       <select
-                        className="form-select form-select-lg"
+                        className={`form-select form-select-lg ${errors.country ? 'is-invalid' : ''}`}
                         name="country"
                         value={formData.country}
                         onChange={handleInputChange}
-                        required
                       >
                         <option value="">اختر الدولة</option>
                         {Object.entries(arabCountries).map(([code, country]) => (
@@ -465,6 +541,9 @@ const ProfileCompletion = () => {
                           </option>
                         ))}
                       </select>
+                      {errors.country && (
+                        <div className="invalid-feedback">{errors.country}</div>
+                      )}
                     </div>
                     <div className="col-md-6">
                       <label className="form-label fw-bold">اللغة</label>
@@ -540,7 +619,7 @@ const ProfileCompletion = () => {
                     <div className="mb-3">
                       <div className="form-control  d-flex flex-wrap gap-2 ">
                         {selectedSkills.map((skill) => (
-                          <span key={skill._id} className=" badge bg-primary  d-flex align-items-center ">
+                          <span key={skill._id} className=" badge  d-flex align-items-center " style={{ backgroundColor: '#2386c8', color: 'white' , borderRadius: '0'}}>
                             {skill.name}
 
                             <button
@@ -610,7 +689,7 @@ const ProfileCompletion = () => {
                   </div>
 
                   <div className="text-center">
-                    <button type="submit" className="btn btn-primary btn-lg px-5">
+                    <button type="submit" className="btn btn-lg px-5" style={{ backgroundColor: '#2386c8', color: 'white' , borderRadius: '0'}}>
                       حفظ الملف الشخصي
                     </button>
                   </div>

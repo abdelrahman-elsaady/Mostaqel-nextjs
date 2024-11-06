@@ -1,5 +1,3 @@
-
-
 'use client'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -24,6 +22,10 @@ const  AddProject = () => {
     deliveryTime: "",
     budget: { min: "", max: "" },
     category: "",
+  });
+  const [errors, setErrors] = useState({
+    title: '',
+    description: ''
   });
 
   
@@ -64,6 +66,23 @@ const  AddProject = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === 'title') {
+      if (value.length < 15) {
+        setErrors(prev => ({...prev, title: 'عنوان المشروع يجب ألا يقل عن 15 حرف'}));
+      } else {
+        setErrors(prev => ({...prev, title: ''}));
+      }
+    }
+    
+    if (name === 'description') {
+      if (value.length < 25) {
+        setErrors(prev => ({...prev, description: 'وصف المشروع يجب ألا يقل عن 25 حرف'}));
+      } else {
+        setErrors(prev => ({...prev, description: ''}));
+      }
+    }
+
     if (name === "min" || name === "max") {
       let numValue = parseInt(value) || 0;
       if (name === "min") {
@@ -114,10 +133,22 @@ const  AddProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!cookies.token) {
-    //   router.push("/login");
-    //   return;
-    // }
+
+    // Validate fields before submission
+    let hasErrors = false;
+    if (formData.title.length < 15) {
+      setErrors(prev => ({...prev, title: 'عنوان المشروع يجب ألا يقل عن 15 حرف'}));
+      hasErrors = true;
+    }
+    if (formData.description.length < 25) {
+      setErrors(prev => ({...prev, description: 'وصف المشروع يجب ألا يقل عن 25 حرف'}));
+      hasErrors = true;
+    }
+
+    // If there are any validation errors, stop the submission
+    if (hasErrors) {
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -131,7 +162,6 @@ const  AddProject = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-
         }
       );
        
@@ -190,24 +220,26 @@ const  AddProject = () => {
           <label htmlFor="title" className="form-label">عنوان المشروع</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${errors.title ? 'is-invalid' : ''}`}
             id="title"
             name="title"
             value={formData.title}
             onChange={handleInputChange}
             required
           />
+          {errors.title && <div className="invalid-feedback">{errors.title}</div>}
         </div>
         <div className="mb-3">
           <label htmlFor="description" className="form-label">وصف المشروع</label>
           <textarea
-            className="form-control"
+            className={`form-control ${errors.description ? 'is-invalid' : ''}`}
             id="description"
             name="description"
             value={formData.description}
             onChange={handleInputChange}
             required
           ></textarea>
+          {errors.description && <div className="invalid-feedback">{errors.description}</div>}
         </div>
         <div className="mb-3">
           <label htmlFor="deliveryTime" className="form-label" >مدة التسليم (أيام) <small>  اقل مدة 1 يوم</small></label>
@@ -272,7 +304,7 @@ const  AddProject = () => {
           <label className="form-label card-title"> اختر المهارات المطلوبة </label>
           <div className="d-flex flex-wrap gap-2  card-title mb-2">
             {selectedSkills.map((skill) => (
-              <span key={skill._id} className="badge card-title bg-primary">
+              <span key={skill._id} className="badge card-title " style={{ backgroundColor: '#2386c8', color: 'white' , borderRadius: '0'}}>
                 {skill.name}
                 <button
                   type="button"
@@ -282,7 +314,7 @@ const  AddProject = () => {
               </span>
             ))}
           </div>
-          <div className="d-flex flex-wrap gap-2">
+          <div className="d-flex flex-wrap gap-2 mb-3">
             {skills.map((skill) => (
               <button
               
@@ -296,7 +328,9 @@ const  AddProject = () => {
             ))}
           </div>
         </div>
-        <button type="submit" className="btn btn-primary">انشر الان</button>
+        <div className="my-3 text-center ">
+        <button type="submit" className="btn btn-lg px-5" style={{ backgroundColor: '#2386c8', color: 'white' , borderRadius: '0'}}>انشر الان</button>
+        </div>
       </form>
     </div>
     </div> : 

@@ -3,14 +3,16 @@
 
 
 
-import { FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell,
-  FaEnvelope, FaHome, FaUser, FaDollarSign, FaCog } from "react-icons/fa";
+import {
+  FaUserPlus, FaSignInAlt, FaCubes, FaUsers, FaPlus, FaBars, FaBell,
+  FaEnvelope, FaHome, FaUser, FaDollarSign, FaCog
+} from "react-icons/fa";
 
 import Link from "next/link";
 
 
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'; 
+import jwt from 'jsonwebtoken';
 import { FaBriefcase, FaRegHandBackFist } from "react-icons/fa6";
 import { GiTicket } from "react-icons/gi";
 
@@ -54,7 +56,7 @@ export default async function Navbar() {
 
   // let url = process.env.NEXTAUTH_URL
   //     console.log('API URL:', url); 
-console.log(token)
+  console.log(token)
   let isLoggedIn = false;
   let user = null;
 
@@ -71,9 +73,9 @@ console.log(token)
       }
     }
   }
-console.log(isLoggedIn);
+  console.log(isLoggedIn);
   const logout = async () => {
-     'use server';
+    'use server';
     cookies().delete('token');
     // window.location.href = '/';
     revalidatePath('/');
@@ -86,108 +88,108 @@ console.log(isLoggedIn);
 
   return (
     <>
-      <div className={`container-fluid  d-none d-md-block ${styles.bodyy}`  }>
-        <div className=  {`navvvvv g-0    row ${styles.navvvvv}`} style={{backgroundColor: '#2386c8'}}>
+      <div className={`container-fluid  d-none d-md-block ${styles.bodyy}`}>
+        <div className={`navvvvv g-0    row ${styles.navvvvv}`} style={{ backgroundColor: '#2386c8' }}>
           <div className="col-6  ">
             <ul className="navbar-nav mr-auto flex-row ">
-            {!isLoggedIn ? (
+              {!isLoggedIn ? (
                 <>
-              <li className={`log-btn  m-2 ${styles.logBtn}`}>
-                <Link
-                  className="nav-link  text-white border border-white p-2 d-flex "
-                  href="/register"
-                  // style={{fontSize: '12px'}}
-                >
-                  
-                  حساب جديد
-                  <FaUserPlus className="ms-1 mt-1" />
-                </Link>
-              </li>
+                  <li className={`log-btn  m-2 ${styles.logBtn}`}>
+                    <Link
+                      className="nav-link  text-white border border-white p-2 d-flex "
+                      href="/register"
+                    // style={{fontSize: '12px'}}
+                    >
 
-              <li className={`log-btn  m-2 ${styles.logBtn}`}>
-                <Link
-                  className=" nav-link text-white border border-white d-flex p-2"
-                  href="/login"
-                >
-                  دخول
-                  <FaSignInAlt className=" ms-1 mt-1 " />
-                </Link>
-              </li>
-              </>
-            ) : (
-              <>
+                      حساب جديد
+                      <FaUserPlus className="ms-1 mt-1" />
+                    </Link>
+                  </li>
 
-              <UserDropdown user={user} />
-                 
-              <ClientNav userId={user._id} />
-                    {/* </Link> */}
-                  
+                  <li className={`log-btn  m-2 ${styles.logBtn}`}>
+                    <Link
+                      className=" nav-link text-white border border-white d-flex p-2"
+                      href="/login"
+                    >
+                      دخول
+                      <FaSignInAlt className=" ms-1 mt-1 " />
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
 
-              </>
-            )}
+                  <UserDropdown user={user} />
+
+                  <ClientNav userId={user._id} />
+                  {/* </Link> */}
+
+
+                </>
+              )}
             </ul>
             {/* < Div3Rues/> */}
           </div>
 
           <div className="col-6  ">
 
-            
-            <ul className="d-flex navbar-nav mr-auto  flex-row " style={{height: '100%', fontSize: '14px'}}>
+
+            <ul className="d-flex navbar-nav mr-auto  flex-row " style={{ height: '100%', fontSize: '14px' }}>
               {/* <p>{user.role} isLoggedIn {isLoggedIn}</p> */}
-{(isLoggedIn  && user.role == 'freelancer')?  
-(
-              <>
-              <li className= {`nav-item ${styles.navItem}`}  >
-                <Link className="nav-link text-white d-flex" href={`/freelancers/${user._id}/portfolio`}>
-                   اعمالي
-                  <FaBriefcase className="ms-1 mt-1" />
-                </Link>
-              </li>
-              <li className= {`nav-item ${styles.navItem}`}  >
-                <Link className="nav-link text-white d-flex" href="/freelancers/bids">
-                   عروضي
-                  <GiTicket className="ms-1 mt-1" />
-                </Link>
-              </li>
-              </>
+              {(isLoggedIn && user.role == 'freelancer') ?
+                (
+                  <>
+                    <li className={`nav-item ${styles.navItem}`}  >
+                      <Link className="nav-link text-white d-flex" href={`/freelancers/${user._id}/portfolio`}>
+                        اعمالي
+                        <FaBriefcase className="ms-1 mt-1" />
+                      </Link>
+                    </li>
+                    <li className={`nav-item ${styles.navItem}`}  >
+                      <Link className="nav-link text-white d-flex" href="/freelancers/bids">
+                        عروضي
+                        <GiTicket className="ms-1 mt-1" />
+                      </Link>
+                    </li>
+                  </>
 
-          ): (
-            <>
-            
-            </>
-          )}
+                ) : (
+                  <>
 
-               { (isLoggedIn && user.role == 'client') && (
-               <>
-               <li className= {`nav-item ${styles.navItem}`}  >
-                <Link className="nav-link text-white d-flex" href="/myProjects">
-                   مشاريعي
-                   <FaBriefcase className="ms-1 mt-1" />
-                   </Link>
-              </li>
-              </>
+                  </>
+                )}
+
+              {(isLoggedIn && user.role == 'client') && (
+                <>
+                  <li className={`nav-item ${styles.navItem}`}  >
+                    <Link className="nav-link text-white d-flex" href="/myProjects">
+                      مشاريعي
+                      <FaBriefcase className="ms-1 mt-1" />
+                    </Link>
+                  </li>
+                </>
               )}
-              
-              
 
 
-              <li className= {`nav-item ${styles.navItem}`}  >
+
+
+              <li className={`nav-item ${styles.navItem}`}  >
                 <Link className="nav-link text-white d-flex" href="/project">
                   تصفح المشاريع
                   <FaCubes className="ms-1 mt-1" />
                 </Link>
               </li>
 
-{(!isLoggedIn || user.role == 'client') && (
-              <li className={`nav-item ${styles.navItem}`} >
-                <Link className="nav-link text-white d-flex" href="/freelancers">
-                  ابحث عن مستقلين
-                  <FaUsers className="ms-1 mt-1" />
-                </Link>
-              </li>
+              {(!isLoggedIn || user.role == 'client' || !user.role) && (
+                <li className={`nav-item ${styles.navItem}`} >
+                  <Link className="nav-link text-white d-flex" href="/freelancers">
+                    ابحث عن مستقلين
+                    <FaUsers className="ms-1 mt-1" />
+                  </Link>
+                </li>
 
 
-)}
+              )}
 
 
               <li className={`nav-item ${styles.navItem}`} >
@@ -196,12 +198,12 @@ console.log(isLoggedIn);
                   <FaPlus className="ms-1 mt-1" />
                 </Link>
               </li>
-             <li className="pt-2">
-              <Link  href="/"  >
-                <img
-                  className={`logo max-height ${styles.logo}`}
-                  src="https://mostaql.hsoubcdn.com/public/assets/images/custom/mostaql-logo-white.svg?id=dc639dfc13cb096309795e9d84ddd15c"
-                ></img>
+              <li className="pt-2">
+                <Link href="/"  >
+                  <img
+                    className={`logo max-height ${styles.logo}`}
+                    src="https://mostaql.hsoubcdn.com/public/assets/images/custom/mostaql-logo-white.svg?id=dc639dfc13cb096309795e9d84ddd15c"
+                  ></img>
                 </Link>
               </li>
 
@@ -213,118 +215,118 @@ console.log(isLoggedIn);
                   data-bs-target="#offcanvasNavbar"
                   aria-controls="offcanvasNavbar"
                 > */}
-                  {/* <span className="navbar-toggler-icon"></span> */}
-                  {/* <FaBars/> */}
-                    
-                  <div className="mt-2 ">
-                    <button
-                      className="btn"
-                      type="button"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasWithBothOptions"
-                      aria-controls="offcanvasWithBothOptions"
-                      style={{border: 'none'}}
-                    >
-                      <FaBars className=" text-light  h3  " />
-                    </button>
+                {/* <span className="navbar-toggler-icon"></span> */}
+                {/* <FaBars/> */}
 
-                    <div
-                      className={`offcanvas offcanvas-end w-25 ${styles.offcanvas} `}
-                      style={{ marginTop: 55 }}
-                      data-bs-scroll="true"
-                      tabIndex="-1"
-                      id="offcanvasWithBothOptions"
-                      aria-labelledby="offcanvasWithBothOptionsLabel"
-                    >
-                      <div className="offcanvas-header ">
-                        <h5
-                          className="offcanvas-title"
-                          id="offcanvasWithBothOptionsLabel"
-                        >
-                          
-                        </h5>
-                        <button
-                          type="button"
-                          className="btn-close text-reset"
-                          data-bs-dismiss="offcanvas"
-                          aria-label="Close"
-                        ></button>
-                      </div>
+                <div className="mt-2 ">
+                  <button
+                    className="btn"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasWithBothOptions"
+                    aria-controls="offcanvasWithBothOptions"
+                    style={{ border: 'none' }}
+                  >
+                    <FaBars className=" text-light  h3  " />
+                  </button>
 
-                      <div className="offcanvas-body" dir="rtl">
-                        <ul className="  mr-auto  list-unstyled  ">
-                          {!isLoggedIn && (
-                            <>
-                          <li className={`log-btn  m-2 ${styles.logBtn}`}>
-                            <Link
-                              className="nav-link text-dark border border-white p-2 d-flex"
-                              href="/register"
-                            >
-                              <FaUserPlus className="ms-1 mt-1" />
-                              حساب جديد
-                            </Link>
-                          </li>
+                  <div
+                    className={`offcanvas offcanvas-end w-25 ${styles.offcanvas} `}
+                    style={{ marginTop: 55 }}
+                    data-bs-scroll="true"
+                    tabIndex="-1"
+                    id="offcanvasWithBothOptions"
+                    aria-labelledby="offcanvasWithBothOptionsLabel"
+                  >
+                    <div className="offcanvas-header ">
+                      <h5
+                        className="offcanvas-title"
+                        id="offcanvasWithBothOptionsLabel"
+                      >
 
-                          <li className={`log-btn  m-2 ${styles.logBtn}`}>
-                            <Link
-                              className=" nav-link  text-dark border border-white d-flex p-2"
-                              href="/login"
-                            >
-                              <FaSignInAlt className=" ms-1 mt-1 " />
-                              دخول
-                            </Link>
-                          </li>
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close text-reset"
+                        data-bs-dismiss="offcanvas"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+
+                    <div className="offcanvas-body" dir="rtl">
+                      <ul className="  mr-auto  list-unstyled  ">
+                        {!isLoggedIn && (
+                          <>
+                            <li className={`log-btn  m-2 ${styles.logBtn}`}>
+                              <Link
+                                className="nav-link text-dark border border-white p-2 d-flex"
+                                href="/register"
+                              >
+                                <FaUserPlus className="ms-1 mt-1" />
+                                حساب جديد
+                              </Link>
+                            </li>
+
+                            <li className={`log-btn  m-2 ${styles.logBtn}`}>
+                              <Link
+                                className=" nav-link  text-dark border border-white d-flex p-2"
+                                href="/login"
+                              >
+                                <FaSignInAlt className=" ms-1 mt-1 " />
+                                دخول
+                              </Link>
+                            </li>
                           </>
-                          )}
+                        )}
 
-                          <li className={`nav-item ${styles.navItem}`} >
-                            <Link
-                              className="nav-link text-dark d-flex"
-                              href="#"
-                            >
-                              <FaCubes className="ms-1 mt-1" />
-                              تصفح المشاريع
-                            </Link>
-                          </li>
+                        <li className={`nav-item ${styles.navItem}`} >
+                          <Link
+                            className="nav-link text-dark d-flex"
+                            href="#"
+                          >
+                            <FaCubes className="ms-1 mt-1" />
+                            تصفح المشاريع
+                          </Link>
+                        </li>
 
-                          <li className={`nav-item ${styles.navItem}`} >
-                            <Link
-                              className="nav-link text-dark d-flex"
-                              href="#"
-                            >
-                              <FaUsers className="ms-1 mt-1" />
-                              ابحث عن مستقلين
-                            </Link>
-                          </li>
-                          <li className={`nav-item ${styles.navItem}`} >
-                            <Link
-                              className="nav-link text-dark d-flex"
-                              href="/project/create"
-                            >
-                              <FaPlus className="ms-1 mt-1" />
-                              أضف مشروع
-                            </Link>
-                          </li>
-                          {isLoggedIn && (
+                        <li className={`nav-item ${styles.navItem}`} >
+                          <Link
+                            className="nav-link text-dark d-flex"
+                            href="#"
+                          >
+                            <FaUsers className="ms-1 mt-1" />
+                            ابحث عن مستقلين
+                          </Link>
+                        </li>
+                        <li className={`nav-item ${styles.navItem}`} >
+                          <Link
+                            className="nav-link text-dark d-flex"
+                            href="/project/create"
+                          >
+                            <FaPlus className="ms-1 mt-1" />
+                            أضف مشروع
+                          </Link>
+                        </li>
+                        {isLoggedIn && (
                           <li className={`nav-item ${styles.navItem}`} >
                             <form action={logout}>
-                            <button  
-                              className="nav-link text-dark d-flex "
-                            >
-                              <FaSignOutAlt className="ms-1 mt-1" />
-                              تسجيل الخروج
-                            </button>
-                          </form>
+                              <button
+                                className="nav-link text-dark d-flex "
+                              >
+                                <FaSignOutAlt className="ms-1 mt-1" />
+                                تسجيل الخروج
+                              </button>
+                            </form>
                           </li>
-                          )}
-                        </ul>
-                      </div>
-                      
-
-
-                      
+                        )}
+                      </ul>
                     </div>
+
+
+
+
                   </div>
+                </div>
                 {/* </button> */}
               </li>
             </ul>
@@ -372,122 +374,122 @@ console.log(isLoggedIn);
 
 
           <li className="nav-item dropup">
-            
-  <button 
-    className={`nav-link text-center ${styles.bottomNavLink} dropdown-toggle`}
-    data-bs-toggle="dropdown"
-    aria-expanded="false"
-    data-bs-auto-close="outside"
-  >
-    <FaUser className={styles.bottomNavIcon} />
-    <div>حسابي</div>
-  </button>
-   
 
-
-
-  <ul className="dropdown-menu ">
-    {(isLoggedIn && user.role== "freelancer") && (
-      <>
-      <li>
-        <Link 
-          href={`/freelancers/${user._id}/portfolio`} 
-          className="dropdown-item text-decoration-none text-dark"
-        >
-          <FaBriefcase className="me-2" />
-          اعمالي
-        </Link>
-      </li>
-      </>
-    ) }
-    {(isLoggedIn && user.role== "client") && (
-      <>
-      <li>
-        <Link 
-          href="/myProjects" 
-          className="dropdown-item text-decoration-none text-dark"
-        >
-          <FaBriefcase className="me-2" />
-          مشاريعي
-        </Link>
-      </li>
-      </>
-    )}
+            <button
+              className={`nav-link text-center ${styles.bottomNavLink} dropdown-toggle`}
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              data-bs-auto-close="outside"
+            >
+              <FaUser className={styles.bottomNavIcon} />
+              <div>حسابي</div>
+            </button>
 
 
 
 
-<li  data-bs-toggle="">
-      <Link 
-        href="/project/create" 
-        className="dropdown-item text-decoration-none text-dark"
-        
-      >
-        <FaPlus className="me-2" />
-        أضف مشروع
-      </Link>
-    </li>
+            <ul className="dropdown-menu ">
+              {(isLoggedIn && user.role == "freelancer") && (
+                <>
+                  <li>
+                    <Link
+                      href={`/freelancers/${user._id}/portfolio`}
+                      className="dropdown-item text-decoration-none text-dark"
+                    >
+                      <FaBriefcase className="me-2" />
+                      اعمالي
+                    </Link>
+                  </li>
+                </>
+              )}
+              {(isLoggedIn && user.role == "client") && (
+                <>
+                  <li>
+                    <Link
+                      href="/myProjects"
+                      className="dropdown-item text-decoration-none text-dark"
+                    >
+                      <FaBriefcase className="me-2" />
+                      مشاريعي
+                    </Link>
+                  </li>
+                </>
+              )}
 
-  {!isLoggedIn ? ( 
-      <>
-        <li className="">
-          <Link 
-            href="/login" 
-            className="dropdown-item text-decoration-none text-dark"
-          >
-            <FaSignInAlt className="me-2" />
-            تسجيل دخول
-          </Link>
-        </li>
-        <li>
-          <Link 
-            href="/register" 
-            className="dropdown-item text-decoration-none text-dark"
-          >
-            <FaUserPlus className="me-2" />
-            حساب جديد
-          </Link>
-        </li>
-      </>
-    ) : (
-      <>
-     <li>
-            <Link href="/account/profile" className={`dropdown-item ${styles.dropdownItem}`}>
-              <FaCog className={styles.dropdownIcon} />
-              الإعدادات
-            </Link>
+
+
+
+              <li data-bs-toggle="">
+                <Link
+                  href="/project/create"
+                  className="dropdown-item text-decoration-none text-dark"
+
+                >
+                  <FaPlus className="me-2" />
+                  أضف مشروع
+                </Link>
+              </li>
+
+              {!isLoggedIn ? (
+                <>
+                  <li className="">
+                    <Link
+                      href="/login"
+                      className="dropdown-item text-decoration-none text-dark"
+                    >
+                      <FaSignInAlt className="me-2" />
+                      تسجيل دخول
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/register"
+                      className="dropdown-item text-decoration-none text-dark"
+                    >
+                      <FaUserPlus className="me-2" />
+                      حساب جديد
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link href="/account/profile" className={`dropdown-item ${styles.dropdownItem}`}>
+                      <FaCog className={styles.dropdownIcon} />
+                      الإعدادات
+                    </Link>
+                  </li>
+
+                  <li style={{ hover: { backgroundColor: "#5794ce" } }}>
+                    <Link href="/payment" className={`dropdown-item ${styles.dropdownItem}`}>
+                      <FaDollarSign className={styles.dropdownIcon} />
+                      الرصيد
+                    </Link>
+                  </li>
+                  <li>
+
+                    <form action={logout}>
+                      <button className="dropdown-item text-decoration-none text-dark">
+                        <FaSignOutAlt className="me-2" />
+                        تسجيل الخروج
+                      </button>
+                    </form>
+                  </li>
+                </>
+              )}
+
+
+            </ul>
           </li>
-          
-          <li style={{hover: {backgroundColor: "#5794ce"}}}>
-            <Link href="/payment" className={`dropdown-item ${styles.dropdownItem}`}>
-              <FaDollarSign className={styles.dropdownIcon} />
-              الرصيد
-            </Link>
-          </li>
-      <li>
-
-        <form action={logout}>
-          <button className="dropdown-item text-decoration-none text-dark">
-            <FaSignOutAlt className="me-2" />
-            تسجيل الخروج               
-          </button>            
-        </form>       
-      </li>              
-      </>            
-    )}                   
-
-                                                   
-  </ul>
-</li>
-</ul>
-</div>
-        
+        </ul>
+      </div>
 
 
 
 
-{/* Account Modal */}
-{/* <div className="modal fade" id="accountModal" tabIndex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+
+      {/* Account Modal */}
+      {/* <div className="modal fade" id="accountModal" tabIndex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
   <div className="modal-dialog modal-fullscreen">
     <div className="modal-content">
       <div className="modal-header">
