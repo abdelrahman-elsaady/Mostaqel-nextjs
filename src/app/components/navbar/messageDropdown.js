@@ -51,74 +51,12 @@ export default function MessageDropdown({ userId }) {
         try {
           console.log('Received message notification:', message.data);
           
-          let saveProposal = async (req, res) => {
-            let newProposal = req.body;
-            try {
-              // Save the proposal
-              let savedProposal = await proposalModel.create(newProposal);
-          
-              // Update related collections in parallel for better performance
-              await Promise.all([
-                projectModel.findByIdAndUpdate(newProposal.project, { 
-                  $push: { proposals: savedProposal._id } 
-                }),
-                userModel.findByIdAndUpdate(newProposal.freelancer, { 
-                  $push: { proposals: savedProposal._id } 
-                })
-              ]);
-          
-              // Get project and freelancer details in parallel
-              const [project, freelancer] = await Promise.all([
-                projectModel.findById(newProposal.project).populate('client'),
-                userModel.findById(newProposal.freelancer)
-              ]);
-          
-              // Get Ably instance
-              const ably = req.app.get('ably');
-          
-              // Send notifications in parallel
-              await Promise.all([
-                // Project channel notification
-                ably.channels.get(`project-${project._id}`).publish('new-proposal', {
-                  _id: savedProposal._id,
-                  freelancerId: freelancer._id,
-                  projectId: project._id,
-                  amount: newProposal.amount,
-                  createdAt: savedProposal.createdAt
-                }),
-          
-                // User channel notification
-                ably.channels.get(`user-${project.client._id}`).publish('proposal-notification', {
-                  type: 'proposal',
-                  _id: savedProposal._id,
-                  projectId: project._id,
-                  projectTitle: project.title,
-                  freelancerId: freelancer._id,
-                  freelancerName: freelancer.firstName,
-                  freelancerAvatar: freelancer.profilePicture,
-                  proposalAmount: newProposal.amount,
-                  timestamp: new Date()
-                })
-              ]);
-          
-              res.status(200).json({ 
-                message: "proposal saved successfully", 
-                data: savedProposal 
-              });
-          
-            } catch (err) {
-              console.error('Error saving proposal:', err);
-              res.status(500).json({ 
-                message: "Error saving proposal", 
-                error: err.message 
-              });
-            }
-          };(prevMessages => {
+          setMessages(prevMessages => {
             // Ensure we're not adding duplicate messages
             const exists = prevMessages.some(msg => msg._id === message.data._id);
             if (!exists) {
               // Add new message to the beginning of the array
-              const updatedMessages = [message.data, ...prevMessages].slice(0, 1);
+              const updatedMessages = [message.data, ...prevMessages].slice(0, 10); // Keep last 10 messages
               setMessageUnreadCount(prev => prev + 1);
               return updatedMessages;
             }
@@ -418,8 +356,8 @@ export default function MessageDropdown({ userId }) {
                 `     ${notification.senderName} اليك من ${notification.amount}$  تم تحويل مبلغ`
               ) : (
                 // <Link href={`/project/details/${notification.projectId}`}>
-                <Link href={`/project/details/${notification.projectId}`}>
-                    {notification.projectTitle} لمشروعك {notification.amount} $ عرضا بقيمة {notification.freelancerName}  قدم 
+                <Link href={`/project/details/${notification.projectId}`} className='text-decoration-none'>
+                    {notification.projectTitle} لمشروعك  {notification.amount}  $ عرضا بقيمة {notification.freelancerName}  قدم 
 
                  </Link>
               )}

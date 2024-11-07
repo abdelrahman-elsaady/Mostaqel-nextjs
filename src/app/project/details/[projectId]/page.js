@@ -393,7 +393,7 @@ export default function ProjectDetails() {
                       ></textarea>
                     </div>
                     <div className="text-center">
-                      <button type="submit" className="btn btn-primary btn-lg">تقديم العرض</button>
+                      <button type="submit" className="btn btn-lg" style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>تقديم العرض</button>
                     </div>
                   </form>
                 ) : (
