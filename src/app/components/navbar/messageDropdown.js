@@ -415,11 +415,13 @@ export default function MessageDropdown({ userId }) {
           <div className={styles.notificationDetails}>
             <p className={styles.notificationText}>
               {notification.type === 'money' ? (
-                `  ${notification.senderName} اليك من ${notification.amount}$  تم تحويل مبلغ`
+                `     ${notification.senderName} اليك من ${notification.amount}$  تم تحويل مبلغ`
               ) : (
-                <Link href={`/project/details/${notification.projectId}`}>
-                `    ${notification.projectTitle} لمشروعك ${notification.amount} $ عرضا بقيمة   ${notification.freelancerName}  قدم "`
-                </Link>
+                // <Link href={`/project/details/${notification.projectId}`}>
+
+                    `${notification.projectTitle} لمشروعك ${notification.amount} $ عرضا بقيمة   ${notification.freelancerName}  قدم `
+
+                // </Link>
               )}
             </p>
             <p className={styles.notificationTime}>
