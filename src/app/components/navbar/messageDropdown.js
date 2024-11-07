@@ -24,6 +24,7 @@ export default function MessageDropdown({ userId }) {
 
   useEffect(() => {
     fetchMessages();
+    fetchNotifications();
     document.addEventListener('mousedown', handleClickOutside);
   
     // Initialize Ably
@@ -50,7 +51,69 @@ export default function MessageDropdown({ userId }) {
         try {
           console.log('Received message notification:', message.data);
           
-          setMessages(prevMessages => {
+          let saveProposal = async (req, res) => {
+            let newProposal = req.body;
+            try {
+              // Save the proposal
+              let savedProposal = await proposalModel.create(newProposal);
+          
+              // Update related collections in parallel for better performance
+              await Promise.all([
+                projectModel.findByIdAndUpdate(newProposal.project, { 
+                  $push: { proposals: savedProposal._id } 
+                }),
+                userModel.findByIdAndUpdate(newProposal.freelancer, { 
+                  $push: { proposals: savedProposal._id } 
+                })
+              ]);
+          
+              // Get project and freelancer details in parallel
+              const [project, freelancer] = await Promise.all([
+                projectModel.findById(newProposal.project).populate('client'),
+                userModel.findById(newProposal.freelancer)
+              ]);
+          
+              // Get Ably instance
+              const ably = req.app.get('ably');
+          
+              // Send notifications in parallel
+              await Promise.all([
+                // Project channel notification
+                ably.channels.get(`project-${project._id}`).publish('new-proposal', {
+                  _id: savedProposal._id,
+                  freelancerId: freelancer._id,
+                  projectId: project._id,
+                  amount: newProposal.amount,
+                  createdAt: savedProposal.createdAt
+                }),
+          
+                // User channel notification
+                ably.channels.get(`user-${project.client._id}`).publish('proposal-notification', {
+                  type: 'proposal',
+                  _id: savedProposal._id,
+                  projectId: project._id,
+                  projectTitle: project.title,
+                  freelancerId: freelancer._id,
+                  freelancerName: freelancer.firstName,
+                  freelancerAvatar: freelancer.profilePicture,
+                  proposalAmount: newProposal.amount,
+                  timestamp: new Date()
+                })
+              ]);
+          
+              res.status(200).json({ 
+                message: "proposal saved successfully", 
+                data: savedProposal 
+              });
+          
+            } catch (err) {
+              console.error('Error saving proposal:', err);
+              res.status(500).json({ 
+                message: "Error saving proposal", 
+                error: err.message 
+              });
+            }
+          };(prevMessages => {
             // Ensure we're not adding duplicate messages
             const exists = prevMessages.some(msg => msg._id === message.data._id);
             if (!exists) {
@@ -138,10 +201,22 @@ export default function MessageDropdown({ userId }) {
     }
   }, [ably, userId]);
 
-  const toggleNotifications = () => {
+  const toggleNotifications = async () => {
     setShowNotifications(!showNotifications);
     if (!showNotifications) {
       setNotificationUnreadCount(0);
+      // Mark notifications as read in the backend
+      try {
+        await fetch(`${process.env.BASE_URL}/notifications/markAsRead/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${document.cookie.split('=')[1]}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch (error) {
+        console.error('Error marking notifications as read:', error);
+      }
     }
   };
   const handleMessageClick = (e, conversationId) => {
@@ -166,6 +241,25 @@ export default function MessageDropdown({ userId }) {
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch(`${process.env.BASE_URL}/notifications/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${document.cookie.split('=')[1]}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+        // Set initial unread count
+        const unreadCount = data.filter(notif => !notif.read).length;
+        setNotificationUnreadCount(unreadCount);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
     }
   };
 
@@ -202,17 +296,55 @@ export default function MessageDropdown({ userId }) {
         );
         await Promise.all(promises);
         
-        // Update local state
+        // Update local state and reset unread count
         setMessages(prevMessages => 
-          prevMessages.map(msg => 
-            unreadMessageIds.includes(msg._id) ? {...msg, readBy: [...msg.readBy, userId]} : msg
-          )
+          prevMessages.map(msg => ({
+            ...msg,
+            readBy: unreadMessageIds.includes(msg._id) ? [...msg.readBy, userId] : msg.readBy
+          }))
         );
+        setMessageUnreadCount(0);
       }
     } catch (error) {
       console.error('Error marking messages as read:', error);
     }
   };
+
+  useEffect(() => {
+    if (ably && userId) {
+      const channel = ably.channels.get(`user-${userId}`);
+      
+      const handleNewNotification = async (message) => {
+        try {
+          // Save notification to backend
+          const response = await fetch(`${process.env.BASE_URL}/notifications`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${document.cookie.split('=')[1]}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(message.data)
+          });
+          
+          if (response.ok) {
+            const savedNotification = await response.json();
+            setNotifications(prev => [savedNotification, ...prev].slice(0, 3));
+            setNotificationUnreadCount(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error('Error saving notification:', error);
+        }
+      };
+
+      channel.subscribe('money-received', handleNewNotification);
+      channel.subscribe('proposal-notification', handleNewNotification);
+
+      return () => {
+        channel.unsubscribe('money-received');
+        channel.unsubscribe('proposal-notification');
+      };
+    }
+  }, [ably, userId]);
 
   return (
     <>
@@ -283,9 +415,11 @@ export default function MessageDropdown({ userId }) {
           <div className={styles.notificationDetails}>
             <p className={styles.notificationText}>
               {notification.type === 'money' ? (
-                `تم تحويل مبلغ ${notification.amount}$ إليك من ${notification.senderName}`
+                `  ${notification.senderName} اليك من ${notification.amount}$  تم تحويل مبلغ`
               ) : (
-                `قدم ${notification.freelancerName} عرضاً بقيمة ${notification.amount}$ لمشروعك "${notification.projectTitle}"`
+                <Link href={`/project/details/${notification.projectId}`}>
+                `    ${notification.projectTitle} لمشروعك ${notification.amount} $ عرضا بقيمة   ${notification.freelancerName}  قدم "`
+                </Link>
               )}
             </p>
             <p className={styles.notificationTime}>
