@@ -413,7 +413,7 @@ export default function MessageDropdown({ userId }) {
         <div className={styles.notificationContent}>
           <img src={notification.freelancerAvatar} alt={notification.freelancerName} className={styles.senderAvatar} />
           <div className={styles.notificationDetails}>
-            <p className={styles.notificationText}>
+            <p className={styles.notificationText} dir='rtl'>
               {notification.type === 'money' ? (
                 `     ${notification.senderName} اليك من ${notification.amount}$  تم تحويل مبلغ`
               ) : (
