@@ -115,8 +115,7 @@ export default function MessageDropdown({ userId }) {
     if (ably && userId) {
       const channel = ably.channels.get(`user-${userId}`);
       
-      // Handle proposal notifications
-      channel.subscribe('proposal-received', (message) => {
+      channel.subscribe('proposal-notification', (message) => {
         console.log('Received proposal notification:', message.data);
         
         setNotifications(prev => [{
@@ -129,11 +128,12 @@ export default function MessageDropdown({ userId }) {
           amount: message.data.proposalAmount,
           timestamp: message.data.timestamp
         }, ...prev]);
+        
         setNotificationUnreadCount(prev => prev + 1);
       });
 
       return () => {
-        channel.unsubscribe('proposal-received');
+        channel.unsubscribe('proposal-notification');
       };
     }
   }, [ably, userId]);
