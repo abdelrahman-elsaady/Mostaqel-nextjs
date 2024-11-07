@@ -111,6 +111,33 @@ export default function MessageDropdown({ userId }) {
     }
   }, [ably, userId]);
 
+  useEffect(() => {
+    if (ably && userId) {
+      const channel = ably.channels.get(`user-${userId}`);
+      
+      // Handle proposal notifications
+      channel.subscribe('proposal-received', (message) => {
+        console.log('Received proposal notification:', message.data);
+        
+        setNotifications(prev => [{
+          type: 'proposal',
+          projectId: message.data.projectId,
+          projectTitle: message.data.projectTitle,
+          freelancerId: message.data.freelancerId,
+          freelancerName: message.data.freelancerName,
+          freelancerAvatar: message.data.freelancerAvatar,
+          amount: message.data.proposalAmount,
+          timestamp: message.data.timestamp
+        }, ...prev]);
+        setNotificationUnreadCount(prev => prev + 1);
+      });
+
+      return () => {
+        channel.unsubscribe('proposal-received');
+      };
+    }
+  }, [ably, userId]);
+
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     if (!showNotifications) {
@@ -252,23 +279,27 @@ export default function MessageDropdown({ userId }) {
     <li key={index}>
       <div className={`dropdown-item ${styles.notificationItem}`}>
         <div className={styles.notificationContent}>
-          <img src={notification.senderAvatar} alt={notification.senderName} className={styles.senderAvatar} />
+          <img src={notification.freelancerAvatar} alt={notification.freelancerName} className={styles.senderAvatar} />
           <div className={styles.notificationDetails}>
             <p className={styles.notificationText}>
-              تم تحويل مبلغ {notification.amount}$ إليك من {notification.senderName}
+              {notification.type === 'money' ? (
+                `تم تحويل مبلغ ${notification.amount}$ إليك من ${notification.senderName}`
+              ) : (
+                `قدم ${notification.freelancerName} عرضاً بقيمة ${notification.amount}$ لمشروعك "${notification.projectTitle}"`
+              )}
             </p>
             <p className={styles.notificationTime}>
               {new Date(notification.timestamp).toLocaleTimeString()}
             </p>
           </div>
-          </div>
-              </div>
-            </li>
-          ))}
-          {notifications.length === 0 && (
-            <li><div className="dropdown-item text-center">لا توجد إشعارات</div></li>
-          )}
-        </ul>
+        </div>
+      </div>
+    </li>
+  ))}
+  {notifications.length === 0 && (
+    <li><div className="dropdown-item text-center">لا توجد إشعارات</div></li>
+  )}
+</ul>
       </div>  
     </li>
     </>
