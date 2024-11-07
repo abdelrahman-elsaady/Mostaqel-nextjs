@@ -20,6 +20,7 @@ import { addYears, differenceInYears } from 'date-fns'; // Add this import
 import styles from './styles.module.css';
 // import { FaUserCircle } from "react-icons/fa";
 import { SiFreelancer } from "react-icons/si";
+import { useForm } from 'react-hook-form';
 
 // Register Arabic locale for the date picker
 registerLocale('ar', ar);
@@ -48,32 +49,20 @@ const ProfileCompletion = () => {
 
   const [userId, setUserId] = useState('');
 
-  const [formData, setFormData] = useState({
-
-    firstName: '',
-    lastName: '',
-    country: '',
-    languages: '',
-    gender: '',
-
-    dateOfBirth: '',
-    role: '',
-    specialization: '',
-    bio: '',
-    jobtitle: '',
-    category: ''
-  })
-  const [errors, setErrors] = useState({
-    firstName: '',
-    lastName: '',
-    bio: '',
-    jobtitle: '',
-    country: '',
-    languages: '',
-    gender: '',
-    role: '',
-    dateOfBirth: '',
-    profilePicture: ''
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      country: '',
+      languages: '',
+      gender: '',
+      dateOfBirth: '',
+      role: '',
+      specialization: '',
+      bio: '',
+      jobtitle: '',
+      category: ''
+    }
   });
 
   const arabCountries = {
@@ -146,45 +135,48 @@ const ProfileCompletion = () => {
 
 
   useEffect(() => {
-    // let token = cookies.get('token');
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUserId(decoded.id);
-    }
-
-
     const fetchData = async () => {
-      if (token) {
-        const userData = await getFreelancerById(userId);
-        setUserData(userData);
-        setSingleFreelancer(userData);
-        if (userData) {
-          setFormData({
-            firstName: userData.firstName || '',
-            lastName: userData.lastName || '',
-            country: userData.country || '',
-            languages: userData.languages || '',
-            gender: userData.gender || '',
-            dateOfBirth: userData.dateOfBirth || '',
-            role: userData.role || '',
-            category: userData.category ? userData.category._id : '',
-            bio: userData.bio || '',
-            jobtitle: userData.jobtitle || ''
-          });
-          console.log(userData);
-          setSelectedSkills(userData.skills || []);
-          setProfilePicture(userData.profilePicture || null);
-          setIsLoading(false);
+      try {
+        // First fetch categories and skills
+        const { skills: fetchedSkills, categories: fetchedCategories } = await fetchSkillsAndCategories();
+        setSkills(fetchedSkills);
+        setCategories(fetchedCategories);
+
+        // Then fetch user data and set form values
+        if (token) {
+          const decoded = jwtDecode(token);
+          setUserId(decoded.id);
+          
+          const userData = await getFreelancerById(decoded.id);
+          setUserData(userData);
+          setSingleFreelancer(userData);
+          
+          if (userData) {
+            setValue('firstName', userData.firstName || '');
+            setValue('lastName', userData.lastName || '');
+            setValue('country', userData.country || '');
+            setValue('languages', userData.languages || '');
+            setValue('gender', userData.gender || '');
+            setValue('dateOfBirth', userData.dateOfBirth ? new Date(userData.dateOfBirth) : '');
+            setValue('role', userData.role || '');
+            setValue('category', userData.category ? userData.category._id : '');
+            setValue('bio', userData.bio || '');
+            setValue('jobtitle', userData.jobtitle || '');
+            
+            setSelectedSkills(userData.skills || []);
+            setProfilePicture(userData.profilePicture || null);
+          }
         }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
       }
-      const { skills: fetchedSkills, categories: fetchedCategories } = await fetchSkillsAndCategories();
-      setSkills(fetchedSkills);
-      setCategories(fetchedCategories);
-      // setIsLoading(false);
     };
+
     fetchData();
-    // setIsLoading(false);
-  }, [userId]);
+  }, []); // Remove userId from dependencies since we get it from token
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -264,63 +256,10 @@ const ProfileCompletion = () => {
 
 
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted");
-    console.log(formData);
-
-    // Reset errors
-    const newErrors = {};
-    let isValid = true;
-
-    // Basic validation
-    if (!formData.firstName?.trim()) {
-      newErrors.firstName = 'الاسم الأول مطلوب';
-      isValid = false;
-    }
-    if (!formData.lastName?.trim()) {
-      newErrors.lastName = 'اسم العائلة مطلوب';
-      isValid = false;
-    }
-    if (!formData.country) {
-      newErrors.country = 'الدولة مطلوبة';
-      isValid = false;
-    }
-    if (!formData.languages) {
-      newErrors.languages = 'اللغة مطلوبة';
-      isValid = false;
-    }
-    if (!formData.gender) {
-      newErrors.gender = 'الجنس مطلوب';
-      isValid = false;
-    }
-    if (!formData.role) {
-      newErrors.role = 'نوع الحساب مطلوب';
-      isValid = false;
-    }
-
-    // Update the errors state
-    setErrors(newErrors);
-    console.log("Errors:", newErrors);
-
-    // Show alert if there are errors
-    if (!isValid) {
-      Swal.fire({
-        icon: 'error',
-        title: 'خطأ في البيانات',
-        text: 'يرجى إكمال جميع الحقول المطلوبة'
-      });
-      return;
-    }
-
-    // If valid, proceed with form submission
-    handleFormSubmission();
-  };
-
-  const handleFormSubmission = async () => {
+  const onSubmit = handleSubmit(async (data) => {
     try {
       const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => formDataToSend.append(key, formData[key]));
+      Object.keys(data).forEach(key => formDataToSend.append(key, data[key]));
       formDataToSend.append('skills', JSON.stringify(selectedSkills.map(skill => skill._id)));
       if (profilePicture) {
         formDataToSend.append('profilePicture', profilePicture);
@@ -332,7 +271,7 @@ const ProfileCompletion = () => {
           icon: 'success',
           title: 'تم حفظ الملف الشخصي بنجاح',
           showConfirmButton: false,
-          text: `شكراً ${formData.firstName}`,
+          text: `شكراً ${data.firstName}`,
           timer: 1500
         }).then(() => {
           window.location.href = '/';
@@ -346,7 +285,7 @@ const ProfileCompletion = () => {
         text: 'حدث خطأ أثناء حفظ البيانات'
       });
     }
-  };
+  });
 
 
   // console.log(response);
@@ -426,18 +365,15 @@ const ProfileCompletion = () => {
                           {/* Freelancer Option */}
                           <div className="form-check form-check-inline w-100 w-md-auto">
                             <input
-                              className="form-check-input visually-hidden"
+                              {...register('role', { required: 'نوع الحساب مطلوب' })}
                               type="radio"
-                              name="role"
+                              className="form-check-input visually-hidden"
                               id="freelancer"
                               value="freelancer"
-                              checked={formData.role === 'freelancer'}
-                              onChange={handleInputChange}
-                              required
                             />
                             <label
                               className={`form-check-label border border-primary text-center rounded-1 w-100 ${
-                                formData.role === 'freelancer' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
+                                watch('role') === 'freelancer' ? styles.checkedBtn : styles.uncheckedBtn
                               }`}
                               htmlFor="freelancer"
                               style={{ padding: '25px', minWidth: '200px' }}
@@ -461,18 +397,15 @@ const ProfileCompletion = () => {
                           {/* Client Option */}
                           <div className="form-check form-check-inline w-100 w-md-auto">
                             <input
-                              className="form-check-input visually-hidden"
+                              {...register('role', { required: 'نوع الحساب مطلوب' })}
                               type="radio"
-                              name="role"
+                              className="form-check-input visually-hidden"
                               id="client"
                               value="client"
-                              checked={formData.role === 'client'}
-                              onChange={handleInputChange}
-                              required
                             />
                             <label
                               className={`form-check-label border border-primary text-center rounded-1 w-100 ${
-                                formData.role === 'client' ? `${styles.checkedBtn}` : `${styles.uncheckedBtn}`
+                                watch('role') === 'client' ? styles.checkedBtn : styles.uncheckedBtn
                               }`}
                               htmlFor="client"
                               style={{ padding: '25px', minWidth: '200px' }}
@@ -487,7 +420,7 @@ const ProfileCompletion = () => {
 
                         {/* Error Message */}
                         {errors.role && (
-                          <div className="text-danger text-center mt-2">{errors.role}</div>
+                          <div className="text-danger text-center mt-2">{errors.role.message}</div>
                         )}
                       </div>
                     </div>
@@ -497,36 +430,34 @@ const ProfileCompletion = () => {
 
                   <div className="row g-4 mb-4">
                     <div className="col-md-6">
-                      <label className="form-label fw-bold">الاسم</label>
+                      <label className="form-label fw-bold">السم</label>
                       <input
+                        {...register('firstName', {
+                          required: 'الاسم الأول مطلوب',
+                          minLength: { value: 3, message: 'يجب أن يحتوي على 3 أحرف على الأقل' }
+                        })}
                         type="text"
                         className={`form-control form-control-lg ${errors.firstName ? 'is-invalid' : ''}`}
                         placeholder="الاسم الأول"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
                       />
                       {errors.firstName && (
-                        <div className="invalid-feedback d-block">
-                          {errors.firstName}
-                        </div>
+                        <div className="invalid-feedback d-block">{errors.firstName.message}</div>
                       )}
 
                     </div>
                     <div className="col-md-6">
                       <label className="form-label fw-bold">اسم العائلة</label>
                       <input
+                        {...register('lastName', {
+                          required: 'اسم العائلة مطلوب',
+                          minLength: { value: 3, message: 'يجب أن يحتوي على 3 أحرف على الأقل' }
+                        })}
                         type="text"
                         className={`form-control form-control-lg ${errors.lastName ? 'is-invalid' : ''}`}
                         placeholder="اسم العائلة"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
                       />
                       {errors.lastName && (
-                        <div className="invalid-feedback d-block">
-                          {errors.lastName}
-                        </div>
+                        <div className="invalid-feedback d-block">{errors.lastName.message}</div>
                       )}
                     </div>
                   </div>
@@ -539,10 +470,8 @@ const ProfileCompletion = () => {
                     <div className="col-md-6">
                       <label className="form-label fw-bold">الدولة</label>
                       <select
+                        {...register('country', { required: 'الدولة مطلوبة' })}
                         className={`form-select form-select-lg ${errors.country ? 'is-invalid' : ''}`}
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
                       >
                         <option value="">اختر الدولة</option>
                         {Object.entries(arabCountries).map(([code, country]) => (
@@ -552,22 +481,22 @@ const ProfileCompletion = () => {
                         ))}
                       </select>
                       {errors.country && (
-                        <div className="invalid-feedback">{errors.country}</div>
+                        <div className="invalid-feedback d-block">{errors.country.message}</div>
                       )}
                     </div>
                     <div className="col-md-6">
                       <label className="form-label fw-bold">اللغة</label>
                       <select
-                        className="form-select form-select-lg"
-                        name="languages"
-                        defaultValue={formData.languages}
-                        onChange={handleInputChange}
-                        required
+                        {...register('languages', { required: 'اللغة مطلوبة' })}
+                        className={`form-select form-select-lg ${errors.languages ? 'is-invalid' : ''}`}
                       >
                         <option value="">اختر اللغة</option>
                         <option value="عربي">عربي</option>
                         <option value="English">English</option>
                       </select>
+                      {errors.languages && (
+                        <div className="invalid-feedback d-block">{errors.languages.message}</div>
+                      )}
                     </div>
                   </div>
 
@@ -575,22 +504,22 @@ const ProfileCompletion = () => {
                     <div className="col-md-6">
                       <label className="form-label fw-bold">الجنس</label>
                       <select
-                        className="form-select form-select-lg"
-                        name="gender"
-                        defaultValue={formData.gender}
-                        onChange={handleInputChange}
-                        required
+                        {...register('gender', { required: ' مطلوب' })}
+                        className={`form-select form-select-lg ${errors.gender ? 'is-invalid' : ''}`}
                       >
                         <option value="">اختر الجنس</option>
                         <option value="ذكر">ذكر</option>
                         <option value="أنثى">أنثى</option>
                       </select>
+                      {errors.gender && (
+                        <div className="invalid-feedback d-block">{errors.gender.message}</div>
+                      )}
                     </div>
                     <div className="col-md-6">
                       <label className="form-label fw-bold">تاريخ الميلاد</label>
                       <DatePicker
-                        selected={formData.dateOfBirth ? new Date(formData.dateOfBirth) : null}
-                        onChange={handleDateChange}
+                        selected={watch('dateOfBirth')}
+                        onChange={(date) => setValue('dateOfBirth', date)}
                         dateFormat="dd/MM/yyyy"
                         className={`form-control form-control-lg ${errors.dateOfBirth ? 'is-invalid' : ''}`}
                         placeholderText="اختر تاريخ الميلاد"
@@ -598,21 +527,17 @@ const ProfileCompletion = () => {
                         scrollableYearDropdown
                         yearDropdownItemNumber={100}
                         maxDate={addYears(new Date(), -15)}
-                        required
                       />
                       {errors.dateOfBirth && (
-                        <div className="invalid-feedback">{errors.dateOfBirth}</div>
+                        <div className="invalid-feedback d-block">{errors.dateOfBirth.message}</div>
                       )}
                     </div>
                   </div>
                   <div className="mb-4">
                     <label className="form-label fw-bold">الفئة</label>
                     <select
-                      className="form-select form-select-lg"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      required
+                      {...register('category', { required: 'الفئة مطلوبة' })}
+                      className={`form-select form-select-lg ${errors.category ? 'is-invalid' : ''}`}
                     >
                       <option value="">اختر فئة</option>
                       {categories.map((category) => (
@@ -621,6 +546,9 @@ const ProfileCompletion = () => {
                         </option>
                       ))}
                     </select>
+                    {errors.category && (
+                      <div className="invalid-feedback d-block">{errors.category.message}</div>
+                    )}
                   </div>
 
 
@@ -669,32 +597,32 @@ const ProfileCompletion = () => {
                   <div className="mb-4">
                     <label className="form-label fw-bold">السيرة الذاتية</label>
                     <textarea
+                      {...register('bio', {
+                        required: 'السيرة الذاتية مطلوبة',
+                        minLength: { value: 25, message: 'يجب أن تحتوي السيرة الذاتية على 25 حرفاً على الأقل' }
+                      })}
                       className={`form-control form-control-lg ${errors.bio ? 'is-invalid' : ''}`}
                       placeholder="اكتب نبذة عن نفسك"
-                      name="bio"
-                      value={formData.bio}
-                      onChange={handleInputChange}
                       rows="4"
-                      required
-                    ></textarea>
+                    />
                     {errors.bio && (
-                      <div className="invalid-feedback">{errors.bio}</div>
+                      <div className="invalid-feedback d-block">{errors.bio.message}</div>
                     )}
                   </div>
 
                   <div className="mb-4">
                     <label className="form-label fw-bold">المسمى الوظيفي</label>
                     <input
+                      {...register('jobtitle', {
+                        required: 'المسمى الوظيفي مطلوب',
+                        minLength: { value: 5, message: 'يجب أن يحتوي المسمى الوظيفي على 5 أحرف على الأقل' }
+                      })}
                       type="text"
                       className={`form-control form-control-lg ${errors.jobtitle ? 'is-invalid' : ''}`}
                       placeholder="مثال: مصمم جرافيك"
-                      name="jobtitle"
-                      value={formData.jobtitle}
-                      onChange={handleInputChange}
-                      required
                     />
                     {errors.jobtitle && (
-                      <div className="invalid-feedback">{errors.jobtitle}</div>
+                      <div className="invalid-feedback d-block">{errors.jobtitle.message}</div>
                     )}
                   </div>
 

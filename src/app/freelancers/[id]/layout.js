@@ -63,30 +63,31 @@ export default async function FreelancerLayout({ children, params }) {
           
 
 
-          <div className="mt-3  ">
-            <ul className="nav nav-tabs ">
-<li className="nav-item">
-    <Link href={`/freelancers/${id}`} className={`nav-link ${styless.navLink}`}>الملف الشخصي</Link>
-  </li>
-  <li className="nav-item">
-    <Link href={`/freelancers/${id}/reviews`} className={`nav-link ${styless.navLink}`}>التقييمات</Link>
-  </li>
-  <li className="nav-item">
-    <Link href={`/freelancers/${id}/portfolio`} className={`nav-link ${styless.navLink}`}>معرض الأعمال</Link>
-  </li>
-            {token && (
-              <li className="nav-item position-absolute start-0 ">
-              {/* <div className="mt-3 position-absolute start-0 "> */}
-                <Link href={`/portifolio/create`} className="btn ms-1 " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
-                  اضف عمل
-                </Link>
-
-                  <Link href={`/account/profile`} className="btn " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
-                  تعديل الملف الشخصي
-                </Link>
-              {/* </div> */}
-              </li>
-            )}
+          <div className="mt-3">
+            <ul className="nav nav-tabs flex-column flex-sm-row p-0">
+              <div className="d-flex flex-column flex-sm-row flex-grow-1">
+                <li className="nav-item">
+                  <Link href={`/freelancers/${id}`} className={`nav-link ${styless.navLink} w-100`}>الملف الشخصي</Link>
+                </li>
+                <li className="nav-item">
+                  <Link href={`/freelancers/${id}/reviews`} className={`nav-link ${styless.navLink} w-100`}>التقييمات</Link>
+                </li>
+                <li className="nav-item">
+                  <Link href={`/freelancers/${id}/portfolio`} className={`nav-link ${styless.navLink} w-100`}>معرض الأعمال</Link>
+                </li>
+              </div>
+              {token && (
+                <li className="nav-item mt-2 mt-sm-0">
+                  <div className="d-flex flex-column flex-sm-row gap-2">
+                    <Link href={`/portifolio/create`} className="btn btn-sm" style={{backgroundColor: '#2386c8', borderRadius: '0', color: 'white', padding: '0.375rem 0.75rem'}}>
+                      اضف عمل
+                    </Link>
+                    <Link href={`/account/profile`} className="btn btn-sm" style={{backgroundColor: '#2386c8', borderRadius: '0', color: 'white', padding: '0.375rem 0.75rem'}}>
+                      تعديل الملف الشخصي
+                    </Link>
+                  </div>
+                </li>
+              )}
             </ul>
           </div>
         </div>
