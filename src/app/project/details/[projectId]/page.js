@@ -279,12 +279,12 @@ export default function ProjectDetails() {
           </ol>
         </nav>
 
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h4 className="mb-0">{project.title}</h4>
-          <div>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 gap-md-0 mb-4">
+          <h4 className="mb-0 text-break">{project.title}</h4>
+          <div className="d-flex flex-wrap gap-2">
             {userId == project.client._id && (
               <button
-                className={`btn ${project.status === 'open' ? 'btn-danger' : 'btn-success'} me-2`}
+                className={`btn ${project.status === 'open' ? 'btn-danger' : 'btn-success'} w-100 w-md-auto`}
                 onClick={handleStatusChange}
               >
                 {project.status === 'open' ? <FaLock className="me-1" /> : <FaLockOpen className="me-1" />}
@@ -292,7 +292,11 @@ export default function ProjectDetails() {
               </button>
             )}
             {!userId && (
-              <Link href="/login" className="btn " style={{backgroundColor : '#2386c8',borderRadius : '0',color : 'white'}}>
+              <Link 
+                href="/login" 
+                className="btn w-100 w-md-auto" 
+                style={{backgroundColor: '#2386c8', borderRadius: '0', color: 'white'}}
+              >
                 سجل الان لتضيف مشروعك
               </Link>
             )}

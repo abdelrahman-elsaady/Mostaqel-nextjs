@@ -9,6 +9,8 @@ import { jwtDecode } from "jwt-decode";
 import Swal from 'sweetalert2';
 import { Rating } from '@mui/material';
 import * as Ably from 'ably';
+import { FiPaperclip, FiFile, FiFileText } from 'react-icons/fi';
+import { AiOutlineFilePdf, AiOutlineFileWord } from 'react-icons/ai';
 
 import styles from '../ChatMessage.module.css';
 
@@ -43,6 +45,8 @@ export default function ChatPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [role, setRole] = useState("");
   const messagesContainerRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
 
   const pusherConfig = {
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
@@ -395,7 +399,7 @@ export default function ChatPage() {
       if (response.status == 200) {
         Swal.fire(
           'تم إرسال التقييم!',
-          'شكراً لك على تقييمك.',
+          'شكراً لك على تقييك.',
           'success'
         );
         setShowReview(false);
@@ -466,6 +470,151 @@ export default function ChatPage() {
   // console.log(proposalId);
   // console.log(freelancerId);
   // console.log(conversation);
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+        'image/jpeg',
+        'image/png',
+        'image/gif'
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire(
+          'خطأ!',
+          'نوع الملف غير مدعوم. يرجى اختيار ملف PDF أو Word أو TXT أو صورة.',
+          'error'
+        );
+        return;
+      }
+
+      const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > maxSize) {
+        Swal.fire(
+          'خطأ!',
+          'حجم الملف كبير جدًا. الحد الأقصى هو 10 ميجابايت.',
+          'error'
+        );
+        return;
+      }
+
+      setSelectedFile(file);
+      handleFileSend(file);
+    }
+  };
+
+  const handleFileSend = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('conversationId', conversationId);
+      formData.append('senderId', userId);
+
+      const response = await fetch(`${process.env.BASE_URL}/messages/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${new Cookies().get('token')}`,
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload file');
+      }
+
+      // Clear the selected file
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      Swal.fire(
+        'خطأ!',
+        'حدث خطأ أثناء رفع الملف.',
+        'error'
+      );
+    }
+  };
+
+  const renderMessage = (message) => {
+    if (message.fileUrl) {
+      const fileName = message.fileUrl.split('/').pop();
+      const fileExtension = fileName.split('.').pop().toLowerCase();
+      
+      // Handle different file types
+      if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+        return (
+          <div className={styles.fileMessage}>
+            <img 
+              src={message.fileUrl} 
+              alt="Shared image" 
+              className={styles.sharedImage}
+              onClick={() => window.open(message.fileUrl, '_blank')}
+            />
+            <a href={message.fileUrl} download className={styles.downloadLink}>
+              تحميل الصورة
+            </a>
+          </div>
+        );
+      } else {
+        // Choose appropriate icon based on file type
+        let FileIcon = FiFile;
+        let fileType = 'ملف';
+        
+        if (fileExtension === 'pdf') {
+          FileIcon = AiOutlineFilePdf;
+          fileType = 'PDF ملف';
+        } else if (['doc', 'docx'].includes(fileExtension)) {
+          FileIcon = AiOutlineFileWord;
+          fileType = 'Word ملف';
+        } else if (fileExtension === 'txt') {
+          FileIcon = FiFileText;
+          fileType = 'نص ملف';
+        }
+
+        return (
+          <div className={styles.fileMessage}>
+            <div className={styles.fileInfo}>
+              <FileIcon className={styles.fileIcon} />
+              <span>{fileName}</span>
+            </div>
+            <div className={styles.fileDetails}>
+              <span className={styles.fileType}>{fileType}</span>
+              <span className={styles.fileSize}>
+                {message.fileSize ? `${(message.fileSize / 1024 / 1024).toFixed(2)} MB` : ''}
+              </span>
+            </div>
+            <a 
+              href={message.fileUrl} 
+              download 
+              className={styles.downloadLink}
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(message.fileUrl, '_blank');
+              }}
+            >
+              فتح الملف
+            </a>
+            <a 
+              href={message.fileUrl} 
+              download={fileName}
+              className={styles.downloadLink}
+            >
+              تحميل الملف
+            </a>
+          </div>
+        );
+      }
+    }
+    
+    return <p>{message.content}</p>;
+  };
 
   return (
 
@@ -653,18 +802,17 @@ export default function ChatPage() {
               ) : (
                 <>
                   
-                  <div ref={messagesContainerRef} className={`${styles.chatMessages} chat-messages`} style={{ height: '400px', overflowY: 'auto', padding: '10px', scrollBehavior: 'smooth' }}>
+                  <div ref={messagesContainerRef} className={`${styles.chatMessages} chat-messages`}>
                     {messages.map((message, index) => (
-                     <div key={index} className={`${styles.message} ${message.senderId._id === userId ? styles.sent : styles.received}`}>
-
+                      <div key={index} className={`${styles.message} ${message.senderId._id === userId ? styles.sent : styles.received}`}>
                         <div className={styles.messageContent}>
-                          <p>{message.content}</p>
+                          {renderMessage(message)}
                           <span className={styles.messageTime}>
                             {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                           </span>
                         </div>
                         {message.senderId._id == userId && (
-                          <p className='text-muted'>انا</p>
+                          <p className='text-muted'></p>
                         )}
                         {message.senderId._id !== userId && (
                           <img
@@ -688,7 +836,24 @@ export default function ChatPage() {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                       />
-                      <button type="submit" className="btn btn-primary" style={{ borderRadius: '5px' }}>ارسال</button>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileSelect}
+                        className="d-none"
+                        id="fileInput"
+                        accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif"
+                      />
+                      <label 
+                        htmlFor="fileInput" 
+                        className="btn btn-outline-secondary"
+                        style={{ borderRadius: '0' }}
+                      >
+                        <FiPaperclip />
+                      </label>
+                      <button type="submit" className="btn btn-primary" style={{ borderRadius: '5px' }}>
+                        ارسال
+                      </button>
                     </div>
                   </form>
                 </>
