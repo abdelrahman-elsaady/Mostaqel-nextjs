@@ -347,7 +347,8 @@ export default function ChatPage() {
           body: JSON.stringify({
             senderId: conversation.client._id,
             receiverId: conversation.freelancerId._id,
-            amount: conversation.proposalId.amount
+            amount: conversation.proposalId.amount,
+            projectId: conversation.projectId._id
           })
         });
 
