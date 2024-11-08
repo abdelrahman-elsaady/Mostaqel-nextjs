@@ -45,6 +45,8 @@ export default function Projects() {
   const [currentPage, setCurrentPage] = useState(0);
   const projectsPerPage = 8;
   console.log(token);
+
+  
   useEffect(() => {
     fetchProjects();
     // setLoading(false);

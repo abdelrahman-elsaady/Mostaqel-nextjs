@@ -683,31 +683,48 @@ export default function ChatPage() {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} >
       {/* Breadcrumb */}
-      <div style={styles.breadcrumb} dir='rtl'>
+      <div style={styles.breadcrumb} dir='rtl' className='m-3'>
         <h5 className='mb-2'>الرئيسة / الرسائل</h5>
         <h4 className='mb-3'>{conversation?.projectId.title}</h4>
       </div>
 
       <div className="row">
         {/* Side Panel */}
-        <div className="col-lg-4 col-md-12" style={styles.sidePanel}>
+        <div className="col-lg-4 col-md-12 mb-4">
           {/* Action Buttons */}
-          <div style={styles.actionButtons}>
-            {userId === conversation?.client._id && (
+          <div className='mb-3'>
+            {userId === conversation.client._id && (
               <button
-                className="btn btn-success flex-grow-1"
+                className="btn w-100 mb-2"
                 onClick={handleSendMoney}
+                style={{
+                  backgroundColor: '#2386c8', 
+                  borderColor: '#2386c8', 
+                  color: 'white',
+                  borderRadius: '0',
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.9rem',
+                  marginBottom: '10px'
+                }}
               >
-                <div>تحويل المبلغ للمستقل</div>
-                <div>$ {proposalId?.amount}</div>
+                <p className='mb-0 fw-bold'>تحويل المبلغ للمستقل</p>
+                <p className='mb-0'>${proposalId.amount}</p>
               </button>
             )}
-            {(conversationStatus === 'open' && userId == conversation?.client._id) && (
+            {(conversationStatus === 'open' && userId == conversation.client._id) && (
               <button
-                className="btn btn-outline-danger flex-grow-1"
+                className="btn w-100"
                 onClick={handleCancelConversation}
+                style={{
+                  backgroundColor: '#dc3545', 
+                  borderColor: '#dc3545', 
+                  color: 'white',
+                  borderRadius: '0',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9rem'
+                }}
               >
                 الغاء المحادثة
               </button>
@@ -715,140 +732,186 @@ export default function ChatPage() {
           </div>
 
           {/* Proposal Card */}
-          <div className="card" style={styles.proposalCard}>
-            <div className="card-body" dir='rtl'>
-              <h5 className="card-title mb-3">صاب العرض</h5>
-              <div className="d-flex align-items-center mb-3 ms-3">
+          <div className="card border-0 rounded-4 shadow-sm">
+            <div className="card-body p-4" dir="rtl">
+              <h5 className="card-title mb-4 fw-bold">صاحب العرض</h5>
+              
+              {/* Freelancer Info */}
+              <div className="d-flex align-items-center mb-4">
                 <img
                   src={freelancerId.profilePicture || '/default-avatar.png'}
                   alt={freelancerId.firstName}
-                  width={64}
-                  height={64}
+                  width={70}
+                  height={70}
                   className="rounded-circle ms-3"
+                  style={{ objectFit: 'cover', border: '3px solid #f8f9fa' }}
                 />
                 <div>
-                  <h5 className="mb-0">{freelancerId.firstName} {freelancerId.lastName}</h5>
-                  <p className="text-muted mb-0">{freelancerId.jobTitle}</p>
+                  <h5 className="mb-1 fw-bold">
+                    {freelancerId.firstName} {freelancerId.lastName}
+                  </h5>
+                  <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+                    {freelancerId.jobTitle}
+                  </p>
                 </div>
               </div>
-              <p className="text-muted">تاريخ العرض: {new Date(proposalId.createdAt).toLocaleString('ar-EG', { month: 'long', day: '2-digit', year: 'numeric' })}</p>
-              <hr />
-              <h6 className='text-center mb-3'>تفاصيل العرض</h6>
-              <ul className='list-unstyled p-0'>
-                <li className='list-group-item mb-2'>
-                  <strong>المبلغ:</strong>
-                  <span className='float-start'> {proposalId.amount} $</span>
-                </li>
-                <li className='list-group-item mb-2'>
-                  <strong> مدة التنفيذ:</strong>
-                  <span className='float-start'>{proposalId.deliveryTime} يوم</span>
-                </li>
-                {/* <li className='list-group-item mb-2'>
-                <strong>العرض:</strong>
-                </li> */}
-                <li className='list-group-item mb-2'>
-                  <p className=''>{proposalId.proposal}</p>
-                </li>
-              </ul>
+
+              <p className="text-muted mb-4" style={{ fontSize: '0.9rem' }}>
+                تاريخ العرض: {new Date(proposalId.createdAt).toLocaleString('ar-EG', { 
+                  month: 'long', 
+                  day: '2-digit', 
+                  year: 'numeric' 
+                })}
+              </p>
+
+              <hr className="my-4" style={{ opacity: 0.1 }} />
+
+              <h6 className="text-center mb-4 fw-bold">تفاصيل العرض</h6>
+              
+              <div className="bg-light p-3 rounded-3 mb-3">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <strong className="text-dark">المبلغ:</strong>
+                  <span className="fs-5 fw-bold text-success">${proposalId.amount}</span>
+                </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-dark">مدة التنفيذ:</strong>
+                  <span className="text-primary fw-bold">{proposalId.deliveryTime} يوم</span>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h6 className="mb-3 fw-bold">وصف العرض:</h6>
+                <p className="text-muted" style={{ 
+                  fontSize: '0.95rem', 
+                  lineHeight: '1.6',
+                  backgroundColor: '#f8f9fa',
+                  padding: '15px',
+                  borderRadius: '8px'
+                }}>
+                  {proposalId.proposal}
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Accept Proposal & Review Section */}
-          {userId == conversation?.client._id && (
-            <div className="mt-3">
-              <h6 className="text-center mb-3">
-                {reviewSubmitted ? 'تم ارسال التقييم بنجاح' : 'تقييم المستقل'}
-              </h6>
-              {(!reviewSubmitted && projectStatus == 'closed') && (
-                <>                  <div className="mb-2 d-flex justify-content-between align-items-start">
-                  <Rating
-                    name="professionalism"
-                    value={review.professionalism}
-                    onChange={(event, newValue) => {
-                      setReview(prev => ({ ...prev, professionalism: newValue }));
-                    }}
-                  />
-                  <span className=' '>الاحترافية بالتعامل</span>
-                </div>
-                  <div className="mb-2 d-flex justify-content-between align-items-start">
+
+        
+
+          {userId == conversation.client._id && (
+            <>
+              <button
+                className="btn btn-primary w-100 mt-3"
+                onClick={handleAcceptProposal}
+                disabled={projectStatus === 'closed'}
+              >
+                {projectStatus == 'closed' ? 'تم قبول العرض' : 'قبول العرض'}
+              </button>
+
+              <div className="mt-3" dir=''>
+                <h6 className="text-center mb-3">
+                  {reviewSubmitted ? 'تم ارسال التقييم بنجاح' : 'تقييم المستقل'}
+                </h6>
+                {(!reviewSubmitted && projectStatus == 'closed') && (
+                  <>                  <div className="mb-2 d-flex justify-content-between align-items-start">
                     <Rating
-                      name="communication"
-                      value={review.communication}
+                      name="professionalism"
+                      value={review.professionalism}
                       onChange={(event, newValue) => {
-                        setReview(prev => ({ ...prev, communication: newValue }));
+                        setReview(prev => ({ ...prev, professionalism: newValue }));
                       }}
                     />
-                    <span>التواصل والمتابعة</span>
+                    <span className=' '>الاحترافية بالتعامل</span>
                   </div>
-                  <div className="mb-2 d-flex justify-content-between align-items-start">
-                    <Rating
-                      name="qualityOfWork"
-                      value={review.qualityOfWork}
-                      onChange={(event, newValue) => {
-                        setReview(prev => ({ ...prev, qualityOfWork: newValue }));
-                      }}
-                    />
-                    <span>جودة العمل المسلّم</span>
-                  </div>
-                  <div className="mb-2 d-flex justify-content-between align-items-start">
-                    <Rating
-                      name="expertise"
-                      value={review.expertise}
-                      onChange={(event, newValue) => {
-                        setReview(prev => ({ ...prev, expertise: newValue }));
-                      }}
-                    />
-                    <span>الخبرة بمجال المشروع</span>
-                  </div>
-                  <div className="mb-2 d-flex justify-content-between align-items-start">
-                    <Rating
-                      name="onTimeDelivery"
-                      value={review.onTimeDelivery}
-                      onChange={(event, newValue) => {
-                        setReview(prev => ({ ...prev, onTimeDelivery: newValue }));
-                      }}
-                    />
-                    <span>التسليم فى الموعد</span>
-                  </div>
-                  <div className="mb-2 d-flex justify-content-between align-items-start">
-                    <Rating
-                      name="wouldWorkAgain"
-                      value={review.wouldWorkAgain}
-                      onChange={(event, newValue) => {
-                        setReview(prev => ({ ...prev, wouldWorkAgain: newValue }));
-                      }}
-                    />
-                    <span>التعامل معه مرّة أخرى</span>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="reviewComment" className="form-label">تعليق إضافي</label>
-                    <textarea
-                      className="form-control"
-                      id="reviewComment"
-                      rows="3"
-                      value={reviewComment}
-                      onChange={(e) => setReviewComment(e.target.value)}
-                    ></textarea>
-                  </div>
-                  <button
-                    className="btn btn-primary w-100 mt-3"
-                    onClick={handleReviewSubmit}
-                  >
-                    ارسال التقييم
-                  </button>
-                </>
-              )}
-            </div>
+                    <div className="mb-2 d-flex justify-content-between align-items-start">
+                      <Rating
+                        name="communication"
+                        value={review.communication}
+                        onChange={(event, newValue) => {
+                          setReview(prev => ({ ...prev, communication: newValue }));
+                        }}
+                      />
+                      <span>التواصل والمتابعة</span>
+                    </div>
+                    <div className="mb-2 d-flex justify-content-between align-items-start">
+                      <Rating
+                        name="qualityOfWork"
+                        value={review.qualityOfWork}
+                        onChange={(event, newValue) => {
+                          setReview(prev => ({ ...prev, qualityOfWork: newValue }));
+                        }}
+                      />
+                      <span>جودة العمل المسلّم</span>
+                    </div>
+                    <div className="mb-2 d-flex justify-content-between align-items-start">
+                      <Rating
+                        name="expertise"
+                        value={review.expertise}
+                        onChange={(event, newValue) => {
+                          setReview(prev => ({ ...prev, expertise: newValue }));
+                        }}
+                      />
+                      <span>الخبرة بمجال المشروع</span>
+                    </div>
+                    <div className="mb-2 d-flex justify-content-between align-items-start">
+                      <Rating
+                        name="onTimeDelivery"
+                        value={review.onTimeDelivery}
+                        onChange={(event, newValue) => {
+                          setReview(prev => ({ ...prev, onTimeDelivery: newValue }));
+                        }}
+                      />
+                      <span>التسليم فى الموعد</span>
+                    </div>
+                    <div className="mb-2 d-flex justify-content-between align-items-start">
+                      <Rating
+                        name="wouldWorkAgain"
+                        value={review.wouldWorkAgain}
+                        onChange={(event, newValue) => {
+                          setReview(prev => ({ ...prev, wouldWorkAgain: newValue }));
+                        }}
+                      />
+                      <span>التعامل معه مرّة أخرى</span>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="reviewComment" className="form-label">تعليق إضافي</label>
+                      <textarea
+                        className="form-control"
+                        id="reviewComment"
+                        rows="3"
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                      ></textarea>
+                    </div>
+                    <button
+                      className="btn btn-primary w-100 mt-3"
+                      onClick={handleReviewSubmit}
+                    >
+                      ارسال التقييم
+                    </button>
+                  </>
+                )}
+              </div>
+
+            </>
           )}
+
+
         </div>
 
+
+
+
+
+
+
+
         {/* Chat Section */}
-        <div className="col-lg-8 col-md-12">
+        <div className="col-lg-8 col-md-12" dir='rtl'>
           <div className="card">
             <div className="card-body" style={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
               {conversationStatus === 'closed' ? (
                 <div className="alert alert-warning text-center">
-                  تم إغلاق المحادثة
+                  تم إغ��اق المحادثة
                 </div>
               ) : (
                 <>
@@ -917,8 +980,8 @@ export default function ChatPage() {
                       </label>
                       <button 
                         type="submit" 
-                        className="btn btn-primary"
-                        style={styles.sendButton}
+                        className="btn"
+                        style={{backgroundColor: '#2386c8', borderColor: '#2386c8', color: 'white',borderRadius: '0'}}
                       >
                         ارسال
                       </button>
