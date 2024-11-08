@@ -17,52 +17,52 @@ import styles from '../ChatMessage.module.css';
 // import './sssss.css';
 
 // Add these style changes at the top of the component
-const styles = {
-  container: {
-    backgroundColor: '#f8f9fa',
-    minHeight: '100vh',
-    padding: '2rem 1rem',
-  },
-  breadcrumb: {
-    backgroundColor: 'transparent',
-    padding: '0.5rem 0',
-    marginBottom: '1.5rem',
-  },
-  sidePanel: {
-    marginBottom: '1.5rem',
-  },
-  actionButtons: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1rem',
-    flexWrap: 'wrap',
-  },
-  proposalCard: {
-    borderRadius: '12px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    border: 'none',
-  },
-  chatCard: {
-    borderRadius: '12px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    border: 'none',
-    height: 'calc(100vh - 200px)',
-  },
-  messageInput: {
-    borderRadius: '20px',
-    padding: '0.75rem',
-    border: '1px solid #dee2e6',
-  },
-  sendButton: {
-    borderRadius: '20px',
-    padding: '0.75rem 1.5rem',
-  },
-  attachButton: {
-    borderRadius: '20px',
-    padding: '0.75rem',
-    marginRight: '0.5rem',
-  }
-};
+// const styles = {
+//   container: {
+//     backgroundColor: '#f8f9fa',
+//     minHeight: '100vh',
+//     padding: '2rem 1rem',
+//   },
+//   breadcrumb: {
+//     backgroundColor: 'transparent',
+//     padding: '0.5rem 0',
+//     marginBottom: '1.5rem',
+//   },
+//   sidePanel: {
+//     marginBottom: '1.5rem',
+//   },
+//   actionButtons: {
+//     display: 'flex',
+//     gap: '1rem',
+//     marginBottom: '1rem',
+//     flexWrap: 'wrap',
+//   },
+//   proposalCard: {
+//     borderRadius: '12px',
+//     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+//     border: 'none',
+//   },
+//   chatCard: {
+//     borderRadius: '12px',
+//     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+//     border: 'none',
+//     height: 'calc(100vh - 200px)',
+//   },
+//   messageInput: {
+//     borderRadius: '20px',
+//     padding: '0.75rem',
+//     border: '1px solid #dee2e6',
+//   },
+//   sendButton: {
+//     borderRadius: '20px',
+//     padding: '0.75rem 1.5rem',
+//   },
+//   attachButton: {
+//     borderRadius: '20px',
+//     padding: '0.75rem',
+//     marginRight: '0.5rem',
+//   }
+// };
 
 export default function ChatPage() {
   const { conversationId } = useParams();
@@ -543,7 +543,7 @@ export default function ChatPage() {
       if (!allowedTypes.includes(file.type)) {
         Swal.fire(
           'خطأ!',
-          'نوع الملف غير مدعوم. يرجى اخ��يار ملف PDF أو Word أو TXT أو صورة.',
+          'نوع الملف غير مدعوم. يرجى اخيار ملف PDF أو Word أو TXT أو صورة.',
           'error'
         );
         return;
@@ -622,7 +622,7 @@ export default function ChatPage() {
                   e.stopPropagation();
                 }}
               >
-                فتح الصورة
+                تحميل الصورة
               </a>
             </div>
           </div>
@@ -634,7 +634,7 @@ export default function ChatPage() {
         
         if (fileExtension === 'pdf') {
           FileIcon = AiOutlineFilePdf;
-          fileType = 'PDF م��ف';
+          fileType = 'PDF ملف';
         } else if (['doc', 'docx'].includes(fileExtension)) {
           FileIcon = AiOutlineFileWord;
           fileType = 'Word ملف';
@@ -666,13 +666,13 @@ export default function ChatPage() {
               >
                 فتح الملف
               </a>
-              {/* <a 
+              <a 
                 href={message.fileUrl} 
                 download={fileName}
                 className={styles.downloadLink}
               >
                 تحميل الملف
-              </a> */}
+              </a>
             </div>
           </div>
         );
@@ -844,22 +844,22 @@ export default function ChatPage() {
 
         {/* Chat Section */}
         <div className="col-lg-8 col-md-12">
-          <div className="card" style={styles.chatCard}>
-            <div className="card-body d-flex flex-column">
+          <div className="card">
+            <div className="card-body" style={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
               {conversationStatus === 'closed' ? (
                 <div className="alert alert-warning text-center">
                   تم إغلاق المحادثة
                 </div>
               ) : (
                 <>
-                  {/* Messages Container */}
                   <div 
-                    ref={messagesContainerRef}
-                    className={`${styles.chatMessages} flex-grow-1`}
+                    ref={messagesContainerRef} 
+                    className={`${styles.chatMessages} chat-messages`}
                     style={{ 
+                      flexGrow: 1,
                       overflowY: 'auto',
                       marginBottom: '1rem',
-                      padding: '1rem'
+                      minHeight: 0 // Important for flex container
                     }}
                   >
                     {messages.map((message, index) => (
@@ -890,9 +890,7 @@ export default function ChatPage() {
                     ))}
                     <div ref={messagesEndRef} />
                   </div>
-
-                  {/* Message Input Form */}
-                  <form onSubmit={sendMessage} className="mt-auto">
+                  <form onSubmit={sendMessage} style={{ marginTop: 'auto' }}>
                     <div className="input-group">
                       <input
                         type="text"

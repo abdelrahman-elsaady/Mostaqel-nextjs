@@ -1,6 +1,7 @@
 .chatMessages {
+  padding: 1rem;
   scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .chatMessages::-webkit-scrollbar {
@@ -8,13 +9,12 @@
 }
 
 .chatMessages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  background: transparent;
 }
 
 .chatMessages::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
 }
 
 .message {
@@ -30,6 +30,7 @@
 
 .messageContent {
   max-width: 70%;
+  word-wrap: break-word;
   padding: 0.75rem 1rem;
   border-radius: 15px;
   position: relative;
@@ -124,4 +125,148 @@
   .fileMessage {
     max-width: 250px;
   }
+}
+
+/* File and Image Container Styles */
+.fileMessage {
+  max-width: 300px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 5px 0;
+}
+
+/* Image Styles */
+.sharedImage {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  cursor: pointer;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+/* File Info Container */
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+/* File Icon */
+.fileIcon {
+  font-size: 24px;
+  min-width: 24px;
+  color: #555;
+}
+
+/* File Details Row */
+.fileDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+  margin: 8px 0;
+}
+
+/* File Type Badge */
+.fileType {
+  background-color: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* File Size Text */
+.fileSize {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+/* Download Links Container */
+.downloadLinks {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Download Link Style */
+.downloadLink {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #007bff;
+  text-decoration: none;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.downloadLink:hover {
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+}
+
+/* Message Content Adjustments */
+.messageContent {
+  padding: 10px 15px;
+  border-radius: 18px;
+  background-color: #f0f0f0;
+  position: relative;
+  word-wrap: break-word;
+}
+
+/* Sent Message File Adjustments */
+.sent .messageContent {
+  background-color: #0084ff;
+  color: white;
+}
+
+.sent .downloadLink {
+  color: white;
+  border-color: white;
+}
+
+.sent .downloadLink:hover {
+  background-color: white;
+  color: #0084ff;
+}
+
+.sent .fileMessage {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sent .fileType {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.sent .fileSize,
+.sent .fileIcon {
+  color: white;
+}
+
+.messageTime {
+  display: block;
+  font-size: 11px;
+  margin-top: 4px;
+  opacity: 0.7;
+  white-space: nowrap; /* Prevent time from wrapping */
+}
+
+/* For sent messages */
+.sent .messageTime {
+  text-align: right;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* For received messages */
+.received .messageTime {
+  text-align: left;
+  color: rgba(0, 0, 0, 0.5);
 }
