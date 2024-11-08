@@ -17,52 +17,52 @@ import styles from '../ChatMessage.module.css';
 // import './sssss.css';
 
 // Add these style changes at the top of the component
-// const styles = {
-//   container: {
-//     backgroundColor: '#f8f9fa',
-//     minHeight: '100vh',
-//     padding: '2rem 1rem',
-//   },
-//   breadcrumb: {
-//     backgroundColor: 'transparent',
-//     padding: '0.5rem 0',
-//     marginBottom: '1.5rem',
-//   },
-//   sidePanel: {
-//     marginBottom: '1.5rem',
-//   },
-//   actionButtons: {
-//     display: 'flex',
-//     gap: '1rem',
-//     marginBottom: '1rem',
-//     flexWrap: 'wrap',
-//   },
-//   proposalCard: {
-//     borderRadius: '12px',
-//     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-//     border: 'none',
-//   },
-//   chatCard: {
-//     borderRadius: '12px',
-//     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-//     border: 'none',
-//     height: 'calc(100vh - 200px)',
-//   },
-//   messageInput: {
-//     borderRadius: '20px',
-//     padding: '0.75rem',
-//     border: '1px solid #dee2e6',
-//   },
-//   sendButton: {
-//     borderRadius: '20px',
-//     padding: '0.75rem 1.5rem',
-//   },
-//   attachButton: {
-//     borderRadius: '20px',
-//     padding: '0.75rem',
-//     marginRight: '0.5rem',
-//   }
-// };
+const styles = {
+  container: {
+    backgroundColor: '#f8f9fa',
+    minHeight: '100vh',
+    padding: '2rem 1rem',
+  },
+  breadcrumb: {
+    backgroundColor: 'transparent',
+    padding: '0.5rem 0',
+    marginBottom: '1.5rem',
+  },
+  sidePanel: {
+    marginBottom: '1.5rem',
+  },
+  actionButtons: {
+    display: 'flex',
+    gap: '1rem',
+    marginBottom: '1rem',
+    flexWrap: 'wrap',
+  },
+  proposalCard: {
+    borderRadius: '12px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    border: 'none',
+  },
+  chatCard: {
+    borderRadius: '12px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    border: 'none',
+    height: 'calc(100vh - 200px)',
+  },
+  messageInput: {
+    borderRadius: '20px',
+    padding: '0.75rem',
+    border: '1px solid #dee2e6',
+  },
+  sendButton: {
+    borderRadius: '20px',
+    padding: '0.75rem 1.5rem',
+  },
+  attachButton: {
+    borderRadius: '20px',
+    padding: '0.75rem',
+    marginRight: '0.5rem',
+  }
+};
 
 export default function ChatPage() {
   const { conversationId } = useParams();
@@ -543,7 +543,7 @@ export default function ChatPage() {
       if (!allowedTypes.includes(file.type)) {
         Swal.fire(
           'خطأ!',
-          'نوع الملف غير مدعوم. يرجى اخيار ملف PDF أو Word أو TXT أو صورة.',
+          'نوع الملف غير مدعوم. يرجى اخ��يار ملف PDF أو Word أو TXT أو صورة.',
           'error'
         );
         return;
@@ -553,7 +553,7 @@ export default function ChatPage() {
       if (file.size > maxSize) {
         Swal.fire(
           'خطأ!',
-          'حجم الملف كبير ج��ًا. الحد الأقصى هو 10 ميجابايت.',
+          'حجم الملف كبير جدًا. الحد الأقصى هو 10 ميجابايت.',
           'error'
         );
         return;
@@ -634,7 +634,7 @@ export default function ChatPage() {
         
         if (fileExtension === 'pdf') {
           FileIcon = AiOutlineFilePdf;
-          fileType = 'PDF مف';
+          fileType = 'PDF م��ف';
         } else if (['doc', 'docx'].includes(fileExtension)) {
           FileIcon = AiOutlineFileWord;
           fileType = 'Word ملف';
@@ -683,30 +683,30 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="container-fluid py-5" style={{ backgroundColor: '#f5f5f5' }} >
-      <div className='' dir='rtl'>
-        <h5 className='mb-3'>الرئيسة/الرسائل</h5>
-        <h5 className='mb-3'>{conversation.projectId.title}</h5>
+    <div style={styles.container}>
+      {/* Breadcrumb */}
+      <div style={styles.breadcrumb} dir='rtl'>
+        <h5 className='mb-2'>الرئيسة / الرسائل</h5>
+        <h4 className='mb-3'>{conversation?.projectId.title}</h4>
       </div>
+
       <div className="row">
-        <div className="col-md-4">
-          <div className='d-flex justify-content-between mb-2 '>
-            {userId === conversation.client._id && (
+        {/* Side Panel */}
+        <div className="col-lg-4 col-md-12" style={styles.sidePanel}>
+          {/* Action Buttons */}
+          <div style={styles.actionButtons}>
+            {userId === conversation?.client._id && (
               <button
-                className="btn btn-success w-40"
+                className="btn btn-success flex-grow-1"
                 onClick={handleSendMoney}
               >
-                <p className='mb-0'>
-                  تحويل المبلغ للمستقل
-                </p>
-                <p className='mb-0'>
-                  $ {proposalId.amount}
-                </p>
+                <div>تحويل المبلغ للمستقل</div>
+                <div>$ {proposalId?.amount}</div>
               </button>
             )}
-            {(conversationStatus === 'open' && userId == conversation.client._id) && (
+            {(conversationStatus === 'open' && userId == conversation?.client._id) && (
               <button
-                className="btn btn-danger w-40"
+                className="btn btn-outline-danger flex-grow-1"
                 onClick={handleCancelConversation}
               >
                 الغاء المحادثة
@@ -714,35 +714,190 @@ export default function ChatPage() {
             )}
           </div>
 
-          {/* Rest of the side panel content */}
+          {/* Proposal Card */}
+          <div className="card" style={styles.proposalCard}>
+            <div className="card-body" dir='rtl'>
+              <h5 className="card-title mb-3">صاب العرض</h5>
+              <div className="d-flex align-items-center mb-3 ms-3">
+                <img
+                  src={freelancerId.profilePicture || '/default-avatar.png'}
+                  alt={freelancerId.firstName}
+                  width={64}
+                  height={64}
+                  className="rounded-circle ms-3"
+                />
+                <div>
+                  <h5 className="mb-0">{freelancerId.firstName} {freelancerId.lastName}</h5>
+                  <p className="text-muted mb-0">{freelancerId.jobTitle}</p>
+                </div>
+              </div>
+              <p className="text-muted">تاريخ العرض: {new Date(proposalId.createdAt).toLocaleString('ar-EG', { month: 'long', day: '2-digit', year: 'numeric' })}</p>
+              <hr />
+              <h6 className='text-center mb-3'>تفاصيل العرض</h6>
+              <ul className='list-unstyled p-0'>
+                <li className='list-group-item mb-2'>
+                  <strong>المبلغ:</strong>
+                  <span className='float-start'> {proposalId.amount} $</span>
+                </li>
+                <li className='list-group-item mb-2'>
+                  <strong> مدة التنفيذ:</strong>
+                  <span className='float-start'>{proposalId.deliveryTime} يوم</span>
+                </li>
+                {/* <li className='list-group-item mb-2'>
+                <strong>العرض:</strong>
+                </li> */}
+                <li className='list-group-item mb-2'>
+                  <p className=''>{proposalId.proposal}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Accept Proposal & Review Section */}
+          {userId == conversation?.client._id && (
+            <div className="mt-3">
+              <h6 className="text-center mb-3">
+                {reviewSubmitted ? 'تم ارسال التقييم بنجاح' : 'تقييم المستقل'}
+              </h6>
+              {(!reviewSubmitted && projectStatus == 'closed') && (
+                <>                  <div className="mb-2 d-flex justify-content-between align-items-start">
+                  <Rating
+                    name="professionalism"
+                    value={review.professionalism}
+                    onChange={(event, newValue) => {
+                      setReview(prev => ({ ...prev, professionalism: newValue }));
+                    }}
+                  />
+                  <span className=' '>الاحترافية بالتعامل</span>
+                </div>
+                  <div className="mb-2 d-flex justify-content-between align-items-start">
+                    <Rating
+                      name="communication"
+                      value={review.communication}
+                      onChange={(event, newValue) => {
+                        setReview(prev => ({ ...prev, communication: newValue }));
+                      }}
+                    />
+                    <span>التواصل والمتابعة</span>
+                  </div>
+                  <div className="mb-2 d-flex justify-content-between align-items-start">
+                    <Rating
+                      name="qualityOfWork"
+                      value={review.qualityOfWork}
+                      onChange={(event, newValue) => {
+                        setReview(prev => ({ ...prev, qualityOfWork: newValue }));
+                      }}
+                    />
+                    <span>جودة العمل المسلّم</span>
+                  </div>
+                  <div className="mb-2 d-flex justify-content-between align-items-start">
+                    <Rating
+                      name="expertise"
+                      value={review.expertise}
+                      onChange={(event, newValue) => {
+                        setReview(prev => ({ ...prev, expertise: newValue }));
+                      }}
+                    />
+                    <span>الخبرة بمجال المشروع</span>
+                  </div>
+                  <div className="mb-2 d-flex justify-content-between align-items-start">
+                    <Rating
+                      name="onTimeDelivery"
+                      value={review.onTimeDelivery}
+                      onChange={(event, newValue) => {
+                        setReview(prev => ({ ...prev, onTimeDelivery: newValue }));
+                      }}
+                    />
+                    <span>التسليم فى الموعد</span>
+                  </div>
+                  <div className="mb-2 d-flex justify-content-between align-items-start">
+                    <Rating
+                      name="wouldWorkAgain"
+                      value={review.wouldWorkAgain}
+                      onChange={(event, newValue) => {
+                        setReview(prev => ({ ...prev, wouldWorkAgain: newValue }));
+                      }}
+                    />
+                    <span>التعامل معه مرّة أخرى</span>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="reviewComment" className="form-label">تعليق إضافي</label>
+                    <textarea
+                      className="form-control"
+                      id="reviewComment"
+                      rows="3"
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                    ></textarea>
+                  </div>
+                  <button
+                    className="btn btn-primary w-100 mt-3"
+                    onClick={handleReviewSubmit}
+                  >
+                    ارسال التقييم
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="col-md-8" dir='rtl'>
-          <div className="card">
-            <div className="card-body" style={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
+        {/* Chat Section */}
+        <div className="col-lg-8 col-md-12">
+          <div className="card" style={styles.chatCard}>
+            <div className="card-body d-flex flex-column">
               {conversationStatus === 'closed' ? (
                 <div className="alert alert-warning text-center">
                   تم إغلاق المحادثة
                 </div>
               ) : (
                 <>
+                  {/* Messages Container */}
                   <div 
-                    ref={messagesContainerRef} 
-                    className={`${styles.chatMessages} chat-messages`}
+                    ref={messagesContainerRef}
+                    className={`${styles.chatMessages} flex-grow-1`}
                     style={{ 
-                      flexGrow: 1,
                       overflowY: 'auto',
                       marginBottom: '1rem',
-                      minHeight: 0 // Important for flex container
+                      padding: '1rem'
                     }}
                   >
-                    {/* Messages content */}
+                    {messages.map((message, index) => (
+                      <div key={index} className={`${styles.message} ${message.senderId._id === userId ? styles.sent : styles.received}`}>
+                        <div className={styles.messageContent}>
+                          {renderMessage(message)}
+                          <span className={styles.messageTime}>
+                            {new Date(message.createdAt).toLocaleTimeString('en-US', { 
+                              hour: 'numeric',
+                              minute: '2-digit',
+                              hour12: true
+                            })}
+                          </span>
+                        </div>
+                        {message.senderId._id == userId && (
+                          <p className='text-muted'></p>
+                        )}
+                        {message.senderId._id !== userId && (
+                          <img
+                            src={message.senderId._id !== conversation.client._id ? conversation.freelancerId.profilePicture : conversation.client.profilePicture}
+                            alt="Sender Avatar"
+                            width={30}
+                            height={30}
+                            className={styles.senderAvatar}
+                          />
+                        )}
+                      </div>
+                    ))}
+                    <div ref={messagesEndRef} />
                   </div>
-                  <form onSubmit={sendMessage} style={{ marginTop: 'auto' }}>
+
+                  {/* Message Input Form */}
+                  <form onSubmit={sendMessage} className="mt-auto">
                     <div className="input-group">
                       <input
                         type="text"
                         className="form-control"
+                        style={styles.messageInput}
                         placeholder="اكتب رسالتك..."
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
@@ -758,11 +913,15 @@ export default function ChatPage() {
                       <label 
                         htmlFor="fileInput" 
                         className="btn btn-outline-secondary"
-                        style={{ borderRadius: '0' }}
+                        style={styles.attachButton}
                       >
                         <FiPaperclip />
                       </label>
-                      <button type="submit" className="btn btn-primary" style={{ borderRadius: '5px' }}>
+                      <button 
+                        type="submit" 
+                        className="btn btn-primary"
+                        style={styles.sendButton}
+                      >
                         ارسال
                       </button>
                     </div>
