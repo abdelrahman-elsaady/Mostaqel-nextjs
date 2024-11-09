@@ -287,7 +287,8 @@ export default function ProjectDetails() {
                 className={`btn ${project.status === 'open' ? 'btn-danger' : 'btn-success'} w-100 w-md-auto`}
                 onClick={handleStatusChange}
               >
-                {project.status === 'open' ? <FaLock className="me-1" /> : <FaLockOpen className="me-1" />}
+                
+                {project.status === 'open' ? <FaLock className="ms-2" /> : <FaLockOpen className="ms-2" />}
                 {project.status === 'open' ? 'إغلاق المشروع' : 'فتح المشروع'}
               </button>
             )}

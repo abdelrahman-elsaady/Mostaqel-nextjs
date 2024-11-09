@@ -6,6 +6,8 @@ import Cookies from 'universal-cookie';
 import { jwtDecode } from "jwt-decode";
 import { useAppContext } from '../../context/AppContext';
 import Swal from 'sweetalert2';
+import styles from './PortfolioForm.module.css';
+
 const PortfolioItemForm = ({ searchParams }) => {
   const { id } = searchParams;
   const router = useRouter();
@@ -119,78 +121,88 @@ console.log(portfolioData);
   }
 
   return (
-    <div className="container pt-5" dir="rtl" style={{backgroundColor: '#f5f5f5'}}>
-      <div className="row">
-        <div className="col-md-9">
-          <h1 className="text-2xl font-bold mb-6 text-right">إضافة عمل جديد</h1>
-          <form onSubmit={handleSubmit}>
-            <input type="hidden" name="id" value={id || ''} />
-            <label className="mt-3">عنوان العمل *</label>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="title"
-                defaultValue={portfolioItem?.title || ''}
-                placeholder="أدخل عنوانا موجزا يصف العمل بشكل دقيق."
-                className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="text-bold">صورة مصغرة *</label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                <div className="space-y-1 text-center">
-                  {/* <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg> */}
-                  <div className="flex text-sm text-gray-600">
-                    <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                      <span>اسحب الصورة إلى هنا</span>
+    <div className="container py-5" dir="rtl">
+      <div className="row g-4">
+        {/* Main Form Column */}
+        <div className="col-lg-9">
+          <div className="bg-white p-4 rounded shadow-sm">
+            <h1 className="h3 mb-4">إضافة عمل جديد</h1>
+            <form onSubmit={handleSubmit}>
+              <input type="hidden" name="id" value={id || ''} />
+              
+              <div className="mb-3">
+                <label className={`form-label fw-bold ${styles.formLabel}`}>عنوان العمل *</label>
+                <input
+                  type="text"
+                  name="title"
+                  defaultValue={portfolioItem?.title || ''}
+                  placeholder="أدخل عنوانا موجزا يصف العمل بشكل دقيق."
+                  className="form-control"
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className={`form-label fw-bold ${styles.formLabel}`}>صورة مصغرة *</label>
+                <div className={`upload-area p-4 rounded border border-2 border-dashed text-center ${styles.uploadArea}`}>
+                  <div className="mb-3">
+                    <label htmlFor="file-upload" className="btn btn-outline-primary mb-2">
+                      <span>اختر صورة</span>
                       <input
                         id="file-upload"
                         name="profilePicture"
                         type="file"
-                        className="sr-only"
+                        className="d-none"
                         onChange={handleImageUpload}
                         accept="image/*"
                       />
                     </label>
-                    <p className="pl-1">أو انقر للاختيار يدويا</p>
+                    <p className="text-muted small mb-0">اسحب الصورة إلى هنا أو انقر للاختيار يدويا</p>
+                    <p className="text-muted small">أضف صورة مميزة عن العمل.</p>
                   </div>
-                  <p className="text-xs text-gray-500">أضف صورة مميزة عن العمل.</p>
+                  {profilePicture && (
+                    <div className="mt-3">
+                      <img 
+                        src={profilePicture} 
+                        alt="Preview" 
+                        className="img-fluid rounded" 
+                        style={{ maxHeight: '200px' }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
-              {profilePicture && (
-                <div className="mt-2">
-                  <img src={profilePicture} alt="Preview" className="max-w-xs h-auto" />
-                </div>
-              )}
-            </div>
-            <label className="mt-3">وصف العمل *</label>
-            <div className="mb-4">
-              <textarea
-                name="description"
-                defaultValue={portfolioItem?.description || ''}
-                placeholder="اكتب وصفا تفصيليا للعمل"
-                rows="6"
-                className="w-100"
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="btn btn-primary"
-            >
-              {id ? 'تحديث العمل' : 'إضافة العمل'}
-            </button>
-          </form>
+
+              <div className="mb-3">
+                <label className={`form-label fw-bold ${styles.formLabel}`}>وصف العمل *</label>
+                <textarea
+                  name="description"
+                  defaultValue={portfolioItem?.description || ''}
+                  placeholder="اكتب وصفا تفصيليا للعمل"
+                  rows="6"
+                  className="form-control"
+                  required
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary px-4 py-2"
+              >
+                {id ? 'تحديث العمل' : 'إضافة العمل'}
+              </button>
+            </form>
+          </div>
         </div>
-        <div className="col-md-3 text-right">
-          <h2 className="text-lg font-semibold mb-3">ابدأ بناء معرض أعمالك</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            أضف أعمالك السابقة التي قمت بتنفيذها. إضافة الأعمال للملف الشخصي يساعد أصحاب المشاريع على معرفة مهاراتك ويزيد من فرص توظيفك.
-          </p>
-          {/* ... (rest of the sidebar content) ... */}
+
+        {/* Sidebar Column */}
+        <div className="col-lg-3">
+          <div className="bg-white p-4 rounded shadow-sm">
+            <h2 className="h5 mb-3 fw-bold">ابدأ بناء معرض أعمالك</h2>
+            <p className="text-muted small">
+              أضف أعمالك السابقة التي قمت بتنفيذها. إضافة الأعمال للملف الشخصي يساعد أصحاب المشاريع على معرفة مهاراتك ويزيد من فرص توظيفك.
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -238,6 +238,12 @@ const  AddProject = () => {
             value={formData.description}
             onChange={handleInputChange}
             required
+            rows="4"
+            style={{ 
+              minHeight: '120px',
+              resize: 'vertical' // Allows vertical resizing only
+            }}
+            placeholder="اكتب وصفاً تفصيلياً لمشروعك..."
           ></textarea>
           {errors.description && <div className="invalid-feedback">{errors.description}</div>}
         </div>
@@ -257,30 +263,34 @@ const  AddProject = () => {
         </div>
         <div className="mb-3">
           <label className="form-label">الميزانية</label>
-          {/* <p></p> */}
-          <div className="input-group">
-          <input
-      type="number"
-      className="form-control"
-      placeholder="أقل مبلغ"
-      name="min"
-      value={formData.budget.min}
-      onChange={handleInputChange}
-      min="5"
-      required
-    />
-    <input
-      type="number"
-      className="form-control"
-      placeholder=" أقصى مبلغ"
-      name="max"
-      value={formData.budget.max}
-      onChange={handleInputChange}
-      min="10"
-      required
-    />
-  </div>
-  <small>  اقل مبلغ 5 $  </small>
+          <div className="row">
+            <div className="col-6">
+              <input
+                type="number"
+                className="form-control"
+                placeholder="أقل مبلغ"
+                name="min"
+                value={formData.budget.min}
+                onChange={handleInputChange}
+                min="5"
+                required
+              />
+              <small className="text-muted">اقل مبلغ 5 $</small>
+            </div>
+            <div className="col-6">
+              <input
+                type="number"
+                className="form-control"
+                placeholder="أقصى مبلغ"
+                name="max"
+                value={formData.budget.max}
+                onChange={handleInputChange}
+                min="10"
+                required
+              />
+              <small className="text-muted">اقصى مبلغ </small>
+            </div>
+          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="category" className="form-label">الفئة</label>

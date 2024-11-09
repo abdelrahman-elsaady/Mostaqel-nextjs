@@ -49,6 +49,8 @@ const ProfileCompletion = () => {
 
   const [userId, setUserId] = useState('');
 
+  const [imageError, setImageError] = useState('');
+
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     defaultValues: {
       firstName: '',
@@ -221,34 +223,25 @@ const ProfileCompletion = () => {
     const file = e.target.files[0];
     if (file) {
       // Validate file type
-      // if (!file.type.startsWith('image/')) {
-      //   setErrors({ ...errors, profilePicture: 'يرجى اختيار ملف صورة صالح' });
-      //   return;
-      // }
+      if (!file.type.startsWith('image/')) {
+        setImageError('يرجى اختيار ملف صورة صالح (jpg, jpeg, png, gif)');
+        return;
+      }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        setErrors({ ...errors, profilePicture: 'حجم الصورة يجب أن يكون أقل من 5 ميجابايت' });
+        setImageError('حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
         return;
       }
 
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result;
-
-        // Validate image URL format
-        const isValidFormat =
-          result.startsWith('data:image/') ||
-          result.startsWith('http') ||
-          /\.(jpg|jpeg|png|gif|webp)$/i.test(result);
-
-        if (!isValidFormat) {
-          setErrors({ ...errors, profilePicture: 'صيغة الصورة غير صالحة' });
-          return;
-        }
-
         setProfilePicture(result);
-        setErrors({ ...errors, profilePicture: '' });
+        setImageError(''); // Clear any previous errors
+      };
+      reader.onerror = () => {
+        setImageError('حدث خطأ أثناء قراءة الملف');
       };
       reader.readAsDataURL(file);
     }
@@ -344,9 +337,9 @@ const ProfileCompletion = () => {
                         onChange={handleImageUpload}
                         accept="image/*"
                       />
-                      {errors.profilePicture && (
+                      {imageError && (
                         <div className="text-danger mt-2 text-center">
-                          {errors.profilePicture}
+                          {imageError}
                         </div>
                       )}
                     </div>

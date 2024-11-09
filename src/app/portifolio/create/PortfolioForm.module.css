@@ -1,0 +1,13 @@
+.uploadArea {
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.uploadArea:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+.formLabel {
+  text-align: right;
+} 
