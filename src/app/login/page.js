@@ -46,7 +46,7 @@ export default function Login() {
 
     Swal.fire({
       title: ' مش شغااال',
-      text: 'بلاش فزلكة ملقتش غير مايكروسوفت؟',
+      text: '    بس جوجل شغال',
 
       imageUrl: "/balaash.gif",
       imageWidth: 400,
