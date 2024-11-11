@@ -1,7 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import { revalidatePath } from 'next/cache'
 
 export async function loginUser(formData) {
 
@@ -59,4 +59,9 @@ export async function getIdFromCookie() {
     return null
   }
   return getIdFromToken(token)
+}
+
+export async function logout() {
+  cookies().delete('token');
+  revalidatePath('/');
 }
