@@ -26,8 +26,8 @@ export const AppProvider = ({ children }) => {
 
   const fetchFreelancers = async () => {
     try {
-      const response = await axios.get(`${process.env.BASE_URL}/users/freelancers`);
-      const sortedFreelancers = response.data.freelancers.sort((a, b) => 
+      const response = await axios.get(`${process.env.BASE_URL}/users`);
+      const sortedFreelancers = response.data.users.sort((a, b) => 
         new Date(b.createdAt) - new Date(a.createdAt)
       );
       setFreelancers(sortedFreelancers);

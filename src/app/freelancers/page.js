@@ -56,6 +56,8 @@ export default function Freelancers() {
         : [...prev, category]
     );
   };
+
+  
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
