@@ -16,6 +16,8 @@ export default function Freelancers() {
   const [freelancersPerPage] = useState(8);
   const [showFilters, setShowFilters] = useState(false);
 
+
+
   useEffect(() => {
     const loadFreelancers = async () => {
       await fetchFreelancers();
