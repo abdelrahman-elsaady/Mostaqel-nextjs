@@ -165,7 +165,7 @@ export default function Projects() {
 
               <div>
                 <p className="mb-3"> التصنيف </p>
-                {['برمجة', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+                {Array.from(new Set(projects.map(project => project.category?.name))).map((category, index) => (
                   <div 
                     className="form-check py-2" 
                     key={index}
@@ -209,7 +209,7 @@ export default function Projects() {
 
               <div>
                 <h5 className="mb-3">التصنيف</h5>
-                {['برمجة', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت واليديو', 'إدارة الأعمال'].map((category, index) => (
+                {Array.from(new Set(projects.map(project => project.category?.name))).map((category, index) => (
                   <div 
                     className="form-check  py-2" 
                     key={index}
