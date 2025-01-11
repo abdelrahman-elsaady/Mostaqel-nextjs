@@ -165,7 +165,7 @@ export default function Projects() {
 
               <div>
                 <p className="mb-3"> التصنيف </p>
-                {Array.from(new Set(projects.map(project => project.category?.name))).map((category, index) => (
+                {Array.from(new Set(projects.map(project => project.category?.name).filter(Boolean))).map((category, index) => (
                   <div 
                     className="form-check py-2" 
                     key={index}
@@ -209,7 +209,7 @@ export default function Projects() {
 
               <div>
                 <h5 className="mb-3">التصنيف</h5>
-                {Array.from(new Set(projects.map(project => project.category?.name))).map((category, index) => (
+                {Array.from(new Set(projects.map(project => project.category?.name).filter(Boolean))).map((category, index) => (
                   <div 
                     className="form-check  py-2" 
                     key={index}

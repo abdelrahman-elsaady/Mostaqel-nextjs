@@ -149,7 +149,8 @@ export default function Freelancers() {
 
             <div>
               <p className="mb-3">التخصص</p>
-              {['برمجة', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+              {Array.from(new Set(freelancers.map(freelancer => freelancer.category?.name).filter(Boolean))).map((category, index) => (
+                  
                 <div className="form-check" key={index}>
                   <input
                     type="checkbox"
@@ -188,7 +189,7 @@ export default function Freelancers() {
 
             <div>
               <p className="mb-3">التخصص</p>
-              {['برمجة', 'التصميم والوسائط المتعددة', 'الكتابة والترجمة', 'التسويق الرقمي', 'البيانات والتحليل', 'مهارات متخصصة', 'الصوت والفيديو', 'إدارة الأعمال'].map((category, index) => (
+              {Array.from(new Set(freelancers.map(freelancer => freelancer.category?.name).filter(Boolean))).map((category, index) => (
                 <div className="form-check py-2" key={index}>
                   <input
                     type="checkbox"
