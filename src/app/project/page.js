@@ -281,7 +281,7 @@ export default function Projects() {
 
                         <small className="">
                           <MdPerson2 />
-                          {project.client.firstName}
+                          {project.client.firstName || undefined}
                         </small>
 
                         <small className="pe-3">
