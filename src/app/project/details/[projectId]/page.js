@@ -282,7 +282,8 @@ export default function ProjectDetails() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 gap-md-0 mb-4">
           <h4 className="mb-0 text-break">{project.title}</h4>
           <div className="d-flex flex-wrap gap-2">
-            {userId == project.client?._id && (
+            {/* {} */}
+            {project.client?._id && userId == project.client?._id && (
               <button
                 className={`btn ${project.status === 'open' ? 'btn-danger' : 'btn-success'} w-100 w-md-auto`}
                 onClick={handleStatusChange}
@@ -292,6 +293,7 @@ export default function ProjectDetails() {
                 {project.status === 'open' ? 'إغلاق المشروع' : 'فتح المشروع'}
               </button>
             )}
+
             {!userId && (
               <Link 
                 href="/login" 
