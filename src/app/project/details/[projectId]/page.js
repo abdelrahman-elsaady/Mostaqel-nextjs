@@ -136,7 +136,7 @@ export default function ProjectDetails() {
     console.log(userId);
     // console.log("userId");
     console.log(project.client._id);
-    if (userId == project.client._id) {
+    if (userId == project.client?._id) {
       Swal.fire({
         title: 'بلاش غباوة',
         text: 'لا يمكنك تقديم عرض على مشروعك الخاص',
@@ -282,7 +282,7 @@ export default function ProjectDetails() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 gap-md-0 mb-4">
           <h4 className="mb-0 text-break">{project.title}</h4>
           <div className="d-flex flex-wrap gap-2">
-            {userId == project.client._id && (
+            {userId == project.client?._id && (
               <button
                 className={`btn ${project.status === 'open' ? 'btn-danger' : 'btn-success'} w-100 w-md-auto`}
                 onClick={handleStatusChange}
@@ -439,7 +439,7 @@ export default function ProjectDetails() {
                               </div>
                             </div>
                           </div>
-                          {userId == project.client._id && (
+                          {userId == project.client?._id && (
                             <button
                               className="btn btn-outline-primary"
                               onClick={() => handleStartConversation(proposal.freelancer._id, proposal._id)}
@@ -512,12 +512,12 @@ export default function ProjectDetails() {
               </div>
 
               <div className="card-body">
-                <h6>{project.client.firstName}</h6>
+                <h6>{project.client?.firstName}</h6>
                 {/* <p className="text-muted mb-2">{project.clientTitle || 'لقب العميل'}</p> */}
                 <ul className="list-unstyled mb-0 p-0">
                   {/* <strong>{new Date(project.createdAt).toLocaleDateString('ar-EG')}</strong> */}
 
-                  <li><small>تاريخ التسجيل: {new Date(project.client.createdAt).toLocaleDateString('ar-EG')}</small></li>
+                  <li><small>تاريخ التسجيل: {new Date(project.client?.createdAt).toLocaleDateString('ar-EG')}</small></li>
                   {/* <li><small>معدل التوظيف: {project.clientHireRate || '0.00'}%</small></li>
                 <li><small>المشاريع المفتوحة: {project.clientOpenProjects || 0}</small></li> */}
                 </ul>
