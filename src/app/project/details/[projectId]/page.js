@@ -423,20 +423,20 @@ export default function ProjectDetails() {
                         <div className="d-flex justify-content-between align-items-start mb-2">
                           <div className="d-flex flex-grow-1">
                             <img
-                              src={proposal.freelancer.profilePicture || '/default-avatar.png'}
-                              alt={proposal.freelancer.firstName}
+                              src={proposal.freelancer?.profilePicture || '/default-avatar.png'}
+                              alt={proposal.freelancer?.firstName}
                               className="rounded-circle me-2"
                               style={{ width: '48px', height: '48px' }}
                             />
                             <div>
                               <div className="d-flex align-items-center">
-                                <strong className="me-2">{proposal.freelancer.firstName}</strong>
+                                <strong className="me-2">{proposal.freelancer?.firstName}</strong>
                                 <div className="star-rating" dir="ltr">
-                                  <Rating name="half-rating-read" value={proposal.freelancer.averageRating} precision={0.5} readOnly />
+                                  <Rating name="half-rating-read" value={proposal.freelancer?.averageRating} precision={0.5} readOnly />
                                 </div>
                               </div>
                               <div className="d-flex text-muted small">
-                                <span className='ms-2'>{proposal.freelancer.jobtitle}</span>
+                                <span className='ms-2'>{proposal.freelancer?.jobtitle}</span>
                                 <span>{proposal.createdAt ? formatDateArabic(proposal.createdAt) : 'Unknown Date'}</span>
                               </div>
                             </div>
