@@ -281,7 +281,7 @@ export default function Projects() {
 
                         <small className="">
                           <MdPerson2 />
-                          {project.client.firstName || undefined}
+                          {project.client.firstName || 'غير متوفر'}
                         </small>
 
                         <small className="pe-3">
