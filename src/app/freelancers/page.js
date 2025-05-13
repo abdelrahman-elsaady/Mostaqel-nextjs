@@ -7,64 +7,99 @@ import Pagination from '@mui/material/Pagination';
 import { IoFilterSharp } from "react-icons/io5";
 
 export default function Freelancers() {
-  const { freelancers, fetchFreelancers } = useAppContext();
-  const [filteredFreelancers, setFilteredFreelancers] = useState([]);
+  const { freelancers, fetchFreelancers, paginationInfo, categories, fetchCategories } = useAppContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [freelancersPerPage] = useState(8);
   const [showFilters, setShowFilters] = useState(false);
 
-
-
   useEffect(() => {
-    const loadFreelancers = async () => {
-      await fetchFreelancers();
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([
+        fetchFreelancers(page, searchTerm, selectedCategories[0] || ''),
+        fetchCategories()
+      ]);
       setLoading(false);
     };
-    loadFreelancers();
-  }, []);
+    loadData();
+  }, [page, selectedCategories]);
 
-  useEffect(() => {
-    const filtered = freelancers.filter(freelancer => {
-      const categoryMatch = selectedCategories.length === 0 ||
-        (freelancer.category ? selectedCategories.includes(freelancer.category.name) : false);
-      const searchMatch = freelancer.firstName.toLowerCase().includes(searchTerm.toLowerCase());
-      return categoryMatch && searchMatch;
-    });
-    setFilteredFreelancers(filtered);
+  const handleSearch = () => {
     setPage(1);
-  }, [freelancers, selectedCategories, searchTerm]);
+    fetchFreelancers(1, searchTerm, selectedCategories[0] || '');
+  };
 
-
-
-
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   const handlePageChange = (event, value) => {
     setPage(value);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const indexOfLastFreelancer = page * freelancersPerPage;
-  const indexOfFirstFreelancer = indexOfLastFreelancer - freelancersPerPage;
-  const currentFreelancers = filteredFreelancers.slice(indexOfFirstFreelancer, indexOfLastFreelancer);
 
   const handleCategoryChange = (category) => {
     setSelectedCategories(prev =>
       prev.includes(category)
         ? prev.filter(c => c !== category)
-        : [...prev, category]
+        : [category]
     );
+    setPage(1);
   };
 
-  
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  const renderCategoryFilters = () => (
+    <div>
+      <p className="mb-3">التخصص</p>
+      {categories.map((category) => (
+        <div className="form-check py-2" key={category._id}>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id={`category${category._id}`}
+            checked={selectedCategories.includes(category.name)}
+            onChange={() => handleCategoryChange(category.name)}
+          />
+          <label className="form-check-label" htmlFor={`category${category._id}`}>
+            {category.name}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderSearchInput = () => (
+    <div className="mb-3">
+      <label htmlFor="search" className="form-label">بحث</label>
+      <div className="input-group">
+        <input
+          type="text"
+          id="search"
+          className="form-control"
+          style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="ابحث عن مستقل..."
+        />
+        <button 
+          className="btn btn-primary" 
+          type="button"
+          onClick={handleSearch}
+          style={{ borderRadius: '10px' }}
+        >
+          بحث
+        </button>
+      </div>
+    </div>
+  );
 
   if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
     <div className="spinner-border text-primary" role="status">
@@ -74,35 +109,17 @@ export default function Freelancers() {
 
   return (
     <>
-
-
-
-
-
-
-
-      {/* <div style={{ paddingTop: "20px" }}>
-        <p style={{ display: "block", marginRight: "100px" }}> الرئيسية</p>
-      </div> */}
-
-
-
-
-      <div className="container-fluid  mb-5" style={{ direction: "rtl", backgroundColor: "#f0f0f0" ,paddingBottom : '80px'}} >
-
-      <div style={{ paddingTop: "20px" }}>
+      <div className="container-fluid mb-5" style={{ direction: "rtl", backgroundColor: "#f0f0f0", paddingBottom: '80px' }}>
+        <div style={{ paddingTop: "20px" }}>
           <p style={{ display: "block" }}> الرئيسية / المستقلين</p>
         </div>
 
         <div className="d-flex justify-content-between">
-
           <div >
-
             <nav className="navbar navbar-light ">
               <a className="navbar-brand pe-3" style={{ marginRight: "75px" }} href="#">
                 <h3>جميع المستقلين</h3>
               </a>
-
             </nav>
           </div>
           <div className="d-md-none  m-3">
@@ -117,7 +134,6 @@ export default function Freelancers() {
             </button>
           </div>
         </div>
-        {/* Add Offcanvas */}
         <div
           className="offcanvas offcanvas-start"
           tabIndex="-1"
@@ -126,7 +142,6 @@ export default function Freelancers() {
           style={{ direction: "rtl" }}
         >
           <div className="offcanvas-header">
-            {/* <h5 className="offcanvas-title" id="filterOffcanvasLabel">الفلاتر</h5> */}
             <button
               type="button"
               className="btn btn-primary"
@@ -135,88 +150,23 @@ export default function Freelancers() {
             > عرض النتائج</button>
           </div>
           <div className="offcanvas-body">
-            <div className="mb-3">
-              <label htmlFor="search" className="form-label">بحث</label>
-              <input
-                type="text"
-                id="search"
-                className="form-control"
-                style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-
-            <div>
-              <p className="mb-3">التخصص</p>
-              {Array.from(new Set(freelancers.map(freelancer => freelancer.category?.name).filter(Boolean))).map((category, index) => (
-                  
-                <div className="form-check" key={index}>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id={`category${index + 1}`}
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCategoryChange(category)}
-                  />
-                  <label className="form-check-label" htmlFor={`category${index + 1}`}>
-                    {category}
-                  </label>
-                </div>
-              ))}
-            </div>
+            {renderSearchInput()}
+            {renderCategoryFilters()}
           </div>
         </div>
 
-
-
-
-
         <div className="row mt-4">
-          {/* sidebar */}
           <aside className="col-lg-3 col-md-2 pe-5 d-none d-md-block" style={{ marginRight: '40px' }}>
-            <div className="mb-3">
-              <label htmlFor="search" className="form-label">بحث</label>
-              <input
-                type="text"
-                id="search"
-                className="form-control"
-                style={{ borderRadius: '0px', backgroundColor: '#fafafa' }}
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-
-            <div>
-              <p className="mb-3">التخصص</p>
-              {Array.from(new Set(freelancers.map(freelancer => freelancer.category?.name).filter(Boolean))).map((category, index) => (
-                <div className="form-check py-2" key={index}>
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id={`category${index + 1}`}
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCategoryChange(category)}
-                  />
-                  <label className="form-check-label" htmlFor={`category${index + 1}`}>
-                    {category}
-                  </label>
-                </div>
-              ))}
-            </div>
-
-
+            {renderSearchInput()}
+            {renderCategoryFilters()}
           </aside>
 
-          {/* content */}
           <section className="col-lg-8 col-md-7" style={{ marginLeft: '50px' }}>
             <div className="list-group">
-              {currentFreelancers.length > 0 ? (
-
-                currentFreelancers.map((freelancer, index) => (
+              {freelancers.length > 0 ? (
+                freelancers.map((freelancer) => (
                   <div className="proposals-list" key={freelancer._id}>
                     <Link href={`/freelancers/${freelancer._id}`} className="text-decoration-none">
-
                       <div className="list-group-item list-group-item-action p-4">
                         <div className="d-flex justify-content-between align-items-start mb-2">
                           <div className="d-flex">
@@ -230,9 +180,6 @@ export default function Freelancers() {
                               <div className="d-flex align-items-center">
                                 <strong className="me-2">{freelancer.firstName}</strong>
                                 <div className="star-rating" dir="ltr">
-                                  {/* <Rating name="read-only " value={freelancer.averageRating} readOnly /> */}
-
-
                                 </div>
                               </div>
                               <div className="d-flex text-muted small">
@@ -240,18 +187,13 @@ export default function Freelancers() {
                                   <Rating name="half-rating-read" value={freelancer.averageRating} precision={0.5} readOnly />
                                 </span>
                                 <span className='me-2'>
-
                                   {freelancer.jobtitle}
-
                                 </span>
                                 <span className='ms-2'>
-
-                                  {/* {freelancer.projectCompletionRate} % */}
                                 </span>
                               </div>
                             </div>
                           </div>
-
                         </div>
                         <p className="mb-1">
                           {freelancer.bio?.slice(0, 150)}
@@ -259,21 +201,22 @@ export default function Freelancers() {
                         </p>
                       </div>
                     </Link>
-
                   </div>
                 ))
               ) : (
-                <h4>  مفييييييييشششش</h4>
+                <h4>لا يوجد نتائج</h4>
               )}
             </div>
             <div className="d-flex justify-content-center mt-4">
-              <Pagination
-                count={Math.ceil(filteredFreelancers.length / freelancersPerPage)}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-                size="large"
-              />
+              {paginationInfo && (
+                <Pagination
+                  count={paginationInfo.totalPages}
+                  page={paginationInfo.currentPage}
+                  onChange={handlePageChange}
+                  color="primary"
+                  size="large"
+                />
+              )}
             </div>
           </section>
         </div>

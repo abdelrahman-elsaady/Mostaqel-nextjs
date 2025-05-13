@@ -12,25 +12,36 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
     
   const [isProfileComplete, setIsProfileComplete] = useState(false);
-
   const [freelancers, setFreelancers] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState('');
   const [token, setToken] = useState('');
   const [singleFreelancer, setSingleFreelancer] = useState({});
   const [singleProject, setSingleProject] = useState({});
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalFreelancers: 0,
+    freelancersPerPage: 10
+  });
   // const { data: session } = useSession()
 
   // console.log(session);
 
-  const fetchFreelancers = async () => {
+  const fetchFreelancers = async (page = 1, search = '', category = '') => {
     try {
-      const response = await axios.get(`${process.env.BASE_URL}/users`);
-      const sortedFreelancers = response.data.users.sort((a, b) => 
-        new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      setFreelancers(sortedFreelancers);
+      const params = new URLSearchParams({
+        page: page.toString()
+      });
+      
+      if (search) params.append('search', search);
+      if (category) params.append('category', category);
+
+      const response = await axios.get(`${process.env.BASE_URL}/users/freelancers?${params.toString()}`);
+      setFreelancers(response.data.users);
+      setPaginationInfo(response.data.pagination);
     } catch (err) {
       console.error("Error fetching freelancers:", err);
     }
@@ -96,6 +107,15 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${process.env.BASE_URL}/categories`);
+      setCategories(response.data.categories);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
   // let cookies = new Cookies();
   // let token = cookies.get('token');
 
@@ -124,14 +144,17 @@ export const AppProvider = ({ children }) => {
     <AppContext.Provider value={{
       freelancers,
       projects,
+      categories,
       isLoggedIn,
       userId,
       token,
+      paginationInfo,
       singleFreelancer,
       singleProject,
       setSingleFreelancer,
       fetchFreelancers,
       fetchProjects,
+      fetchCategories,
       getFreelancerById,
       getProjectById,
       updateProfile,
