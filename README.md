@@ -1,5 +1,6 @@
-# Mostaqel - Freelancing Platform
 <a href="https://deepwiki.com/abdelrahman-elsaady/Mostaqel-nextjs"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+
+# Mostaqel - Freelancing Platform
 Mostaqel is a full-stack freelancing platform built with Next.js and Node.js, providing a marketplace for freelancers and clients to connect and collaborate on projects.
 
 ## 🚀 Features
