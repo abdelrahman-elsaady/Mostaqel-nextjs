@@ -1,133 +1,124 @@
 <a href="https://deepwiki.com/abdelrahman-elsaady/Mostaqel-nextjs"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 
-# Mostaqel - Freelancing Platform
-Mostaqel is a full-stack freelancing platform built with Next.js and Node.js, providing a marketplace for freelancers and clients to connect and collaborate on projects.
+# Mostaqel Next.js Project
+
+A modern freelance platform built with Next.js, featuring a robust tech stack and comprehensive features for freelancers and clients.
 
 ## 🚀 Features
 
-- **User Authentication**
-  - Google and Microsoft OAuth integration
+- **Authentication & Authorization**
+  - Google OAuth integration
+  - Microsoft login support
   - JWT-based authentication
-  - Secure session management
-
-- **Freelancer Features**
-  - Profile management
-  - Portfolio showcase
-  - Rating and review system
-  - Category-based specialization
-  - Real-time messaging
-
-- **Client Features**
-  - Project posting
-  - Freelancer search and filtering
-  - Proposal management
-  - Payment integration
+  - NextAuth.js integration
 
 - **Payment Integration**
-  - PayPal integration
   - Stripe payment processing
-  - Secure transaction handling
+  - PayPal integration
+  - Secure payment handling
 
 - **Real-time Features**
-  - Live chat using Socket.IO
-  - Real-time notifications
-  - Instant messaging
+  - Socket.IO for real-time communication
+  - Pusher integration for live updates
+  - Ably for real-time messaging
+
+- **Internationalization**
+  - i18next integration
+  - Multi-language support
+  - RTL support
+
+- **UI/UX**
+  - Material-UI components
+  - NextUI components
+  - Tailwind CSS for styling
+  - Framer Motion animations
+  - Responsive design
+  - Bootstrap integration
+
+- **Form Handling**
+  - Formik integration
+  - React Hook Form
+  - Yup validation
+  - Date picker
+  - Select components
+
+- **Additional Features**
+  - Email notifications (SendGrid)
+  - Cookie management
+  - Country list integration
+  - Pagination
+  - Toast notifications
+  - SweetAlert2 for beautiful alerts
 
 ## 🛠️ Tech Stack
 
-### Frontend (Mostaqel-nextjs)
-- Next.js 14
-- React 18
-- Material-UI
-- Tailwind CSS
-- Bootstrap
-- Socket.IO Client
-- i18next for internationalization
-- Formik & Yup for form handling
-- React Hook Form
+- **Frontend Framework**: Next.js 14
+- **UI Libraries**: 
+  - Material-UI
+  - NextUI
+  - Tailwind CSS
+  - Bootstrap
+- **State Management**: React Hooks
+- **Form Management**: Formik, React Hook Form
+- **Validation**: Yup
+- **Authentication**: NextAuth.js, JWT
+- **Payment Processing**: Stripe, PayPal
+- **Real-time Communication**: Socket.IO, Pusher, Ably
+- **Internationalization**: i18next
+- **Styling**: Tailwind CSS, Emotion
+- **Development Tools**: ESLint, PostCSS
 
-### Backend (mostaqelCloneBackEnd)
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- Socket.IO
-- JWT Authentication
-- PayPal SDK
-- Stripe API
-- Cloudinary for image handling
-- Multer for file uploads
+## 🚀 Getting Started
 
-## 📦 Installation
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/Mostaqel-nextjs.git
+   cd Mostaqel-nextjs
+   ```
 
-### Frontend Setup
-```bash
-cd Mostaqel-nextjs
-npm install
-npm run dev
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### Backend Setup
-```bash
-cd mostaqelCloneBackEnd
-npm install
-npm start
-```
+3. **Set up environment variables**
+   Create a `.env.local` file with the following variables:
+   ```
+   BASE_URL=your_base_url
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_key
+   LOCAL_URL=your_local_url
+   NEXT_PUBLIC_API_URL=your_api_url
+   ```
 
-## 🔧 Environment Variables
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-### Frontend (.env)
-```
-NEXT_PUBLIC_API_URL=your_backend_url
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
-NEXT_PUBLIC_MICROSOFT_CLIENT_ID=your_microsoft_client_id
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_key
-```
+5. **Build for production**
+   ```bash
+   npm run build
+   npm start
+   ```
 
-### Backend (.env)
-```
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-PAYPAL_CLIENT_ID=your_paypal_client_id
-PAYPAL_CLIENT_SECRET=your_paypal_secret
-STRIPE_SECRET_KEY=your_stripe_secret
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_key
-CLOUDINARY_API_SECRET=your_cloudinary_secret
-```
+## 📝 Available Scripts
 
-## 🏗️ Project Structure
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
 
-### Frontend
-```
-Mostaqel-nextjs/
-├── src/
-│   ├── app/           # Next.js app directory
-│   ├── components/    # Reusable components
-│   ├── context/       # React context providers
-│   ├── hooks/         # Custom hooks
-│   └── utils/         # Utility functions
-├── public/            # Static files
-└── styles/           # Global styles
-```
+## 🔧 Configuration
 
-### Backend
-```
-mostaqelCloneBackEnd/
-├── controllers/      # Route controllers
-├── models/          # Database models
-├── routes/          # API routes
-├── middlewares/     # Custom middlewares
-├── uploads/         # File uploads
-└── static/          # Static files
-```
+The project uses various configuration files:
+- `next.config.mjs` - Next.js configuration
+- `tailwind.config.js` - Tailwind CSS configuration
+- `postcss.config.mjs` - PostCSS configuration
+- `.eslintrc.json` - ESLint configuration
 
-## 🔐 Security Features
+## 📦 Dependencies
 
-- JWT-based authentication
-- Password hashing with bcrypt
-- Input validation with Joi
-- CORS protection
-- Secure file uploads
-- Environment variable protection
+The project uses a wide range of dependencies for different functionalities. Check `package.json` for the complete list.
+
 
 
