@@ -130,27 +130,4 @@ mostaqelCloneBackEnd/
 - Secure file uploads
 - Environment variable protection
 
-## 🌐 API Documentation
 
-The API documentation is available at `/api-docs` when running the backend server.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
-## 👥 Authors
-
-- Your Name - Initial work
-
-## 🙏 Acknowledgments
-
-- Next.js team for the amazing framework
-- All contributors who have helped shape this project
